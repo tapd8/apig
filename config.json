@@ -1,0 +1,9 @@
+{
+  "intervalsDesc": "检查配置文件更新间隔时间，单位为毫秒",
+  "intervals": 30000,
+  "host": "0.0.0.0",
+  "port": 3030,
+  "tapDataServer": {
+    "url": "http://127.0.0.1/config.json?access_token=ABDcekfsldfseWedfAdfEwgfsdfalpOj"
+  }
+}
