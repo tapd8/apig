@@ -1,0 +1,24 @@
+<% if (isModelBaseBuiltin) { -%>
+import {<%= modelBaseClass %>, model, property} from '@loopback/repository';
+<% } else { -%>
+import {model, property} from '@loopback/repository';
+import {<%= modelBaseClass %>} from '.';
+<% } -%>
+
+@model()
+export class <%= className %> extends <%= modelBaseClass %> {
+<% Object.entries(properties).forEach(([key, val]) => { -%>
+  @property({
+  <%_ Object.entries(val).forEach(([propKey, propVal]) => { -%>
+    <%_ if (!['tsType'].includes(propKey)) { -%>
+    <%= propKey %>: <%- propVal %>,
+    <%_ } -%>
+  <%_ }) -%>
+  })
+  <%= key %><%if (!val.required) {%>?<% } %>: <%= val.tsType %>;
+
+<% }) -%>
+  constructor(data?: Partial<<%= className %>>) {
+    super(data);
+  }
+}
