@@ -1,21 +1,42 @@
-let Generator = require('../generators');
+let {ModelGenerator, DataSourceGenerator, RepositoryGenerator} = require('../generators');
 
-let generator = new Generator();
 
-/*console.log(generator.sourceRoot());
-console.log(generator.destinationRoot());
+new DataSourceGenerator({
+	name: 'mongodb',
+	settings: {
+		"url": "mongodb://localhost:27017/test",
+		"host": "localhost",
+		"port": 27017,
+		"user": "",
+		"password": "",
+		"database": "test"
+	}
+});
 
-console.log(generator.templatePath('model', 'template', 'model.ejs'));
-console.log(generator.destinationPath('models'));*/
+new RepositoryGenerator({
+	name: 'order',
+	dataSourceName: 'mongodb',
+	idProperty: 'id'
+});
 
-// 允许类型：
-generator.model({
+new ModelGenerator({
 	name: 'test',
 	properties: {
-		id: {type: '\'number\'', id: true, tsType: 'number'},
-		name: {type: '\'string\'', tsType: 'string', required: true},
-		title: {type: '\'string\'', tsType: 'string'},
-		amount: {type: '\'number\'', tsType: 'number'},
-		desc: {type: '\'string\'', tsType: 'string'},
+		id: {type: 'number', id: true, },
+		name: {type: 'string', required: true},
+		title: {type: 'array', itemType: 'string'},
+		amount: {type: 'number'},
+		desc: {type: 'buffer'},
+	},
+});
+
+new ModelGenerator({
+	name: 'order',
+	properties: {
+		id: {type: 'number', id: true, },
+		name: {type: 'string', required: true},
+		title: {type: 'array', itemType: 'string', required: true},
+		amount: {type: 'number'},
+		desc: {type: 'buffer'},
 	},
 });

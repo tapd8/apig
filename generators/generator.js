@@ -4,18 +4,20 @@ const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
 const through = require('through2');
-const log = require('../log');
+const log = require('../log').generator;
 const updateIndex = require('./update-index');
 const utils = require('./utils');
 
 class Generator {
 
 	constructor(){
+		this.artifactInfo = {};
 		this.log = log;
 		const store = memFs.create();
 		this.fs = editor.create(store);
 
 		this.sourceRoot(`${__dirname}/../${utils.sourceRootDir}`);
+		this.destinationRoot(`${__dirname}/../${utils.destinationRootDir}`);
 
 		store.on('change', this._writeFiles.bind(this));
 	}
@@ -28,16 +30,18 @@ class Generator {
 	_writeFiles(done){
 		done = done || function(){};
 
-		const transformStreams = [through.obj(function(file, enc, cb){
+		const transformStreams = [];/*[through.obj(function(file, enc, cb){
 			const stream = this;
 
 			const filename = path.basename(file.path);
+			console.log(filename);
 
 			stream.push(file);
 			cb();
-		})];
+		})];*/
 
 		this.fs.commit(transformStreams, () => {
+			this._updateIndexFiles();
 			done();
 		});
 	}
@@ -70,7 +74,7 @@ class Generator {
 		},
 	}){
 
-		this.fs.copyTpl(from, to, context);
+		this.fs.copyTpl(from, to, context, templateOptions, copyOptions);
 	}
 
 	/**
@@ -153,40 +157,31 @@ class Generator {
 	 *   file: 'file to add to index.ts',
 	 * }, {dir: '...', file: '...'}]
 	 */
-	async _updateIndexFiles(artifactInfo) {
+	async _updateIndexFiles() {
 		// Index Update Disabled
-		if (artifactInfo.disableIndexUpdate) return;
+		if (this.artifactInfo.disableIndexUpdate) return;
 
-		if (!artifactInfo.indexesToBeUpdated) {
-			artifactInfo.indexesToBeUpdated = [];
+		if (!this.artifactInfo.indexesToBeUpdated) {
+			this.artifactInfo.indexesToBeUpdated = [];
 		}
 
 		// No Array given for Index Update, Create default array
 		if (
-			artifactInfo.outDir &&
-			artifactInfo.outFile &&
-			artifactInfo.indexesToBeUpdated.length === 0
+			this.artifactInfo.outDir &&
+			this.artifactInfo.outFile &&
+			this.artifactInfo.indexesToBeUpdated.length === 0
 		) {
-			artifactInfo.indexesToBeUpdated = [
-				{dir: artifactInfo.outDir, file: artifactInfo.outFile},
-			];
+			this.artifactInfo.indexesToBeUpdated = [ {
+				dir: this.destinationPath(this.artifactInfo.outDir),
+				file: this.artifactInfo.outFile
+			}];
 		}
 
-		for (const idx of artifactInfo.indexesToBeUpdated) {
+		for (const idx of this.artifactInfo.indexesToBeUpdated) {
 			await updateIndex(idx.dir, idx.file);
 			// Output for users
-			const updateDirRelPath = path.relative(
-				artifactInfo.relPath,
-				idx.dir,
-			);
-
-			const outPath = path.join(
-				artifactInfo.relPath,
-				updateDirRelPath,
-				'index.ts',
-			);
-
-			this.log('   update', `${outPath}`);
+			const outPath = this.destinationPath(this.artifactInfo.outDir, 'index.ts');
+			this.log.info('update', `${outPath}`);
 		}
 	}
 }

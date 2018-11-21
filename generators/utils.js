@@ -1,12 +1,5 @@
 const _ = require('lodash');
-
-/**
- *  Returns the modelName in the directory file format for the model
- * @param {string} modelName
- */
-exports.getModelFileName = function(modelName) {
-	return `${_.kebabCase(modelName)}.model.ts`;
-};
+const camelCase = require('change-case').camelCase;
 
 /**
  * Converts a name to class name after validation
@@ -18,6 +11,14 @@ exports.toClassName = function(name) {
 };
 
 /**
+ *  Returns the modelName in the directory file format for the model
+ * @param {string} modelName
+ */
+exports.getModelFileName = function(modelName) {
+	return `${_.kebabCase(modelName)}.model.ts`;
+};
+
+/**
  * Returns the repositoryName in the directory file format for the repository
  * @param {string} repositoryName
  */
@@ -26,16 +27,28 @@ exports.getRepositoryFileName = function(repositoryName) {
 };
 
 /**
- * Returns the serviceName in the directory file format for the service
- * @param {string} serviceName
+ * Returns the dataSourceName in the directory file format for the dataSource
+ * @param {string} dataSourceName
  */
-exports.getServiceFileName = function(serviceName) {
-	return `${_.kebabCase(serviceName)}.service.ts`;
+exports.getDataSourceFileName = function(dataSourceName) {
+	return `${_.kebabCase(dataSourceName)}.datasource.ts`;
 };
+
+/**
+ * Returns the controllerName in the directory file format for the controller
+ * @param {string} controllerName
+ */
+exports.getControllerFileName = function(controllerName) {
+	return `${_.kebabCase(controllerName)}.datasource.ts`;
+};
+
+exports.kebabCase = _.kebabCase;
+exports.camelCase = camelCase;
 
 exports.controllersDir = 'controllers';
 exports.repositoriesDir = 'repositories';
 exports.datasourcesDir = 'datasources';
 exports.servicesDir = 'services';
 exports.modelsDir = 'models';
-exports.sourceRootDir = 'src';
+exports.sourceRootDir = 'generators';
+exports.destinationRootDir = 'src';

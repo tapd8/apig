@@ -8,21 +8,21 @@ const BASE_MODELS = [
 	{type: 'separator', line: '----- Custom Models -----'},
 ];
 
-class GeneratorModel extends Generator {
+class ModelGenerator extends Generator {
 
 	constructor(modelConfig) {
 		super(modelConfig);
 
 		this.artifactInfo = Object.assign({
 			type: 'model',
-			rootDir: this.sourceRoot(utils.sourceRootDir),
-			outDir: 'src/models',
-			outFile: '',
+			rootDir: this.destinationRoot(),
+			outDir: utils.modelsDir,
 			isModelBaseBuiltin: true,
 			modelBaseClass: 'Entity',
 			className: '',
 		}, modelConfig);
 
+		this.artifactInfo.className = utils.toClassName(this.artifactInfo.name);
 		// Data for templates
 		this.artifactInfo.outFile = utils.getModelFileName(this.artifactInfo.name);
 
@@ -90,6 +90,8 @@ class GeneratorModel extends Generator {
 		let template = this.templatePath('model', MODEL_TEMPLATE_PATH);
 
 		this.copyTemplateTpl(template, tsPath, this.artifactInfo);
+		this.log.info(`generator model ${tsPath}`);
 	}
 
 }
+module.exports = ModelGenerator;

@@ -16,9 +16,9 @@ log4js.configure({
 			backups: 5,
 			compress: true
 		},
-		main: {
+		generator: {
 			type: 'file',
-			filename: 'logs/main.log',
+			filename: 'logs/generator.log',
 			maxLogSize: 500 * 1024 * 1024,
 			backups: 5,
 			compress: true
@@ -29,7 +29,7 @@ log4js.configure({
 	},
 	categories: {
 		default: {
-			appenders: ['main', 'out'],
+			appenders: ['app', 'out'],
 			level: 'debug'
 		},
 		app: {
@@ -39,6 +39,10 @@ log4js.configure({
 		monitor: {
 			appenders: ['monitor', 'out'],
 			level: 'debug'
+		},
+		generator: {
+			appenders: ['generator', 'out'],
+			level: 'debug'
 		}
 	},
 });
@@ -47,3 +51,4 @@ module.exports = log4js.getLogger();
 
 module.exports.app = log4js.getLogger('app');
 module.exports.monitor = log4js.getLogger('monitor');
+module.exports.generator = log4js.getLogger('generator');
