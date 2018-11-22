@@ -26,6 +26,7 @@
     "test": "lb-mocha --allow-console-logs \"dist/test\"",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js && npm run posttest",
+    "prestart": "npm run build",
     "start": "node $NODE_DEBUG_OPTION .",
     "prepublishOnly": "npm run test"
   },
@@ -60,7 +61,7 @@
     "mem-fs": "^1.1.3",
     "mem-fs-editor": "^5.1.0",
     "request": "^2.88.0",
-    "scan-fs": "0.0.4",
+    "scan-fs": "0.0.5",
     "through2": "^3.0.0"
   },
   "devDependencies": {

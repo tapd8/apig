@@ -24,6 +24,12 @@ const loadConfig = function() {
 			} else {
 				log.debug('download config success.');
 
+				body = body.trim();
+				if( !body.startsWith("{") || !body.endsWith("}")){
+					log.error('the configuration file is not in the expected JSON format.', body);
+					return;
+				}
+
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
 				log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);

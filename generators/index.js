@@ -1,4 +1,4 @@
-const ScanFS = require('scan-fs');
+
 const log = require('../log').generator;
 const utils = require('./utils');
 const path = require('path');
@@ -113,21 +113,17 @@ const validateConfig = function(config){
 /**
  * 删除旧文件
  */
+const includeDirector = [utils.controllersDir, utils.datasourcesDir, utils.repositoriesDir, utils.modelsDir, utils.servicesDir];
+const includeFileSuffix = [utils.modelSuffix, utils.dataSourceSuffix, utils.repositorySuffix, utils.controllerSuffix, '.datasource.json'];
 const deleteOldTs = function(cb){
-	const scanFS = ScanFS.create();
-	scanFS.exclude(/.*\.js$/);
-	scanFS.exclude(/.*\.md$/);
-	scanFS.exclude(/application.ts/);
-	scanFS.exclude(/sequence.ts/);
+	const scanFS = require('scan-fs').create();
 
-	const includeDirector = [utils.controllersDir, utils.datasourcesDir, utils.repositoriesDir, utils.modelsDir, utils.servicesDir];
-	const includeFileSuffix = [utils.modelSuffix, utils.dataSourceSuffix, utils.repositorySuffix, utils.controllerSuffix, '.datasource.json'];
+	let dir = `${__dirname}/../${utils.destinationRootDir}`;
 
-	scanFS.setRecursive(true).listeners({
-		file: function(filePath, eOpts){
+	scanFS.listeners({
+		'file': function(filePath, eOpts){
 
 			const fileName = path.basename(filePath);
-			console.log(fileName );
 
 			if( !includeDirector.includes(path.basename(path.dirname(filePath))) )
 				return;
@@ -139,10 +135,11 @@ const deleteOldTs = function(cb){
 			log.info(`delete typescript file ${filePath}`);
 			fs.unlinkSync(filePath);
 		},
-		complete: function(){
+		'complete': function(){
 			if( typeof cb === 'function' ) cb();
 		}
-	}).scan(`${__dirname}/../${utils.destinationRootDir}`)
+	}).setRecursive(true)
+	  .scan(dir)
 };
 
 /**
