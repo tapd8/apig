@@ -3,6 +3,9 @@ const Generator = require('../generator');
 const utils = require('../utils');
 const CONTROLLER_REST_TEMPLATE_PATH = 'templates/controller-rest-template.ts.ejs';
 
+/**
+ * controller 生成器
+ */
 class ControllerGenerator extends Generator {
 
 	constructor(config) {
@@ -16,15 +19,28 @@ class ControllerGenerator extends Generator {
 
 		this.artifactInfo.className = utils.toClassName(this.artifactInfo.name);
 		this.artifactInfo.modelName = utils.toClassName(this.artifactInfo.name);
-		this.artifactInfo.repositoryName = utils.toClassName(this.artifactInfo.name);
+		this.artifactInfo.repositoryName = utils.toClassName(this.artifactInfo.name) + 'Repository';
 		this.artifactInfo.modelVariableName = utils.camelCase(this.artifactInfo.modelName);
 		this.artifactInfo.repositoryNameCamel = utils.camelCase(this.artifactInfo.repositoryName);
-		this.artifactInfo.httpPathName = this.artifactInfo.name;
-		this.artifactInfo.idType = 'number';
+		this.artifactInfo.httpPathName = this.artifactInfo.httpPathName || this.artifactInfo.name;
 
 		this.artifactInfo.outFile = utils.getControllerFileName(this.artifactInfo.name);
+
+		const tsPath = this.destinationPath(
+			this.artifactInfo.outDir,
+			this.artifactInfo.outFile
+		);
+
+		const templatePath = this.templatePath(
+			'controller', CONTROLLER_REST_TEMPLATE_PATH
+		);
+
+		this.copyTemplateTpl(templatePath, tsPath, this.artifactInfo);
+		this.log.info(`generator controller ${tsPath}`);
 
 	}
 
 
 }
+
+module.exports = ControllerGenerator;

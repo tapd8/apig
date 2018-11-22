@@ -1,4 +1,5 @@
-let {ModelGenerator, DataSourceGenerator, RepositoryGenerator} = require('../generators');
+let {ModelGenerator, DataSourceGenerator, RepositoryGenerator, ControllerGenerator} = require('../generators');
+
 
 
 new DataSourceGenerator({
@@ -39,4 +40,10 @@ new ModelGenerator({
 		amount: {type: 'number'},
 		desc: {type: 'buffer'},
 	},
+});
+
+new ControllerGenerator({
+	name: 'order',
+	httpPathName: 'orders',
+	idType: 'number'
 });

@@ -1,0 +1,35 @@
+{
+	"apiVersion": "v1.0.1",
+	"dataSource": {
+		"name": "mongodb",
+		"settings": {
+			"url": "mongodb://localhost:27017/test",
+			"host": "localhost",
+			"port": 27017,
+			"user": "",
+			"password": "",
+			"database": "test"
+		}
+	},
+	"models":[{
+		"name": "order",
+		"httpPathName": "order",
+		"properties": {
+			"id": {"type": "number", "id": true },
+			"name": {"type": "string", "required": true},
+			"title": {"type": "array", "itemType": "string", "required": true},
+			"amount": {"type": "number"},
+			"desc": {"type": "buffer"}
+		}
+	}, {
+		"name": "order",
+		"properties": {
+			"id": {"type": "number", "id": true },
+			"name": {"type": "string", "required": true},
+			"title": {"type": "array", "itemType": "string", "required": true},
+			"amount": {"type": "number"},
+			"desc": {"type": "buffer"}
+		}
+	}]
+
+}

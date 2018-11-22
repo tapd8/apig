@@ -3,6 +3,9 @@ const Generator = require('../generator');
 const utils = require('../utils');
 const DATA_SOURCE_TEMPLATE_PATH = 'templates/datasource.ts.ejs';
 
+/**
+ * 数据源生成器
+ */
 class DataSourceGenerator extends Generator {
 	constructor(dataSourceConfig) {
 		super(dataSourceConfig);

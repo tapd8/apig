@@ -2,7 +2,9 @@ const Generator = require('../generator');
 const utils = require('../utils');
 const REPOSITORIES_CRUD_TEMPLATE_PATH = 'templates/repository-crud-default-template.ts.ejs';
 
-
+/**
+ * 存储服务生成器
+ */
 class RepositoryGenerator extends Generator {
 
 	constructor(repositoriesConfig) {

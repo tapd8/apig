@@ -8,6 +8,9 @@ const BASE_MODELS = [
 	{type: 'separator', line: '----- Custom Models -----'},
 ];
 
+/**
+ * 模型生成器
+ */
 class ModelGenerator extends Generator {
 
 	constructor(modelConfig) {
