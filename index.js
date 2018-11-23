@@ -1,5 +1,5 @@
 const fork = require('child_process').fork;
-const log = require('./log');
+const log = require('./dist').log.default ;
 const generator = require('./generators').generator;
 
 class Main{
@@ -71,8 +71,9 @@ class Main{
 		this.configMonitor.on('message', (event) => {
 			if( event && event.type === 'changed'){
 
+				log.info('config is changed, regenerator api.')
+
 				const config = event.data;
-				log.info('tap data config is changed');
 
 				// 生成代码
 				this.__generator(config);
@@ -86,9 +87,14 @@ class Main{
 	 * @private
 	 */
 	__generator(config){
+		log.info('开始生成代码');
 		generator(config, (result) => {
-			if( result )
+			if( result ){
+				log.info('生成代码完成，重启应用');
 				this.startApp();
+			} else {
+				log.info('生成代码失败');
+			}
 		});
 	}
 

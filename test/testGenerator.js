@@ -12,15 +12,19 @@ new DataSourceGenerator({
 		"password": "",
 		"database": "test"
 	}
+}).on('done', ()=>{
+	console.log('生成完成');
 });
 
 new RepositoryGenerator({
 	name: 'order',
 	dataSourceName: 'mongodb',
 	idProperty: 'id'
+}).on('done', ()=>{
+	console.log('生成完成');
 });
 
-new ModelGenerator({
+/*new ModelGenerator({
 	name: 'test',
 	properties: {
 		id: {type: 'number', id: true, },
@@ -29,7 +33,9 @@ new ModelGenerator({
 		amount: {type: 'number'},
 		desc: {type: 'buffer'},
 	},
-});
+}).on('done', ()=>{
+	console.log('生成完成');
+});*/
 
 new ModelGenerator({
 	name: 'order',
@@ -40,10 +46,14 @@ new ModelGenerator({
 		amount: {type: 'number'},
 		desc: {type: 'buffer'},
 	},
+}).on('done', ()=>{
+	console.log('生成完成');
 });
 
 new ControllerGenerator({
 	name: 'order',
 	httpPathName: 'orders',
 	idType: 'number'
+}).on('done', ()=>{
+	console.log('生成完成');
 });

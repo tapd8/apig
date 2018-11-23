@@ -1,6 +1,6 @@
-const log4js = require('log4js');
+import {configure, getLogger} from 'log4js';
 
-log4js.configure({
+configure({
 	appenders: {
 		app: {
 			type: 'file',
@@ -29,26 +29,27 @@ log4js.configure({
 	},
 	categories: {
 		default: {
-			appenders: ['app', 'out'],
-			level: 'debug'
+			appenders: ['monitor', 'out'],
+			level: 'info'
 		},
 		app: {
 			appenders: ['app', 'out'],
-			level: 'debug'
+			level: 'info'
 		},
 		monitor: {
 			appenders: ['monitor', 'out'],
-			level: 'debug'
+			level: 'info'
 		},
 		generator: {
 			appenders: ['generator', 'out'],
-			level: 'debug'
+			level: 'info'
 		}
 	},
 });
 
-module.exports = log4js.getLogger();
-
-module.exports.app = log4js.getLogger('app');
-module.exports.monitor = log4js.getLogger('monitor');
-module.exports.generator = log4js.getLogger('generator');
+export const log = {
+	default: getLogger(),
+	app: getLogger('app'),
+	monitor: getLogger('monitor'),
+	generator: getLogger('generator')
+};

@@ -13,3 +13,5 @@ export async function main(options: ApplicationConfig = {}) {
 
   return app;
 }
+
+export * from './log';

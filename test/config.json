@@ -15,20 +15,55 @@
 		"name": "order",
 		"httpPathName": "order",
 		"properties": {
-			"id": {"type": "number", "id": true },
+			"id": {"type": "string", "id": true },
 			"name": {"type": "string", "required": true},
 			"title": {"type": "array", "itemType": "string", "required": true},
 			"amount": {"type": "number"},
 			"desc": {"type": "buffer"}
 		}
 	}, {
-		"name": "order",
+		"name": "product",
 		"properties": {
-			"id": {"type": "number", "id": true },
+			"id": {"type": "string", "id": true },
 			"name": {"type": "string", "required": true},
 			"title": {"type": "array", "itemType": "string", "required": true},
 			"amount": {"type": "number"},
-			"desc": {"type": "buffer"}
+			"desc": {"type": "string"}
+		}
+	}, {
+		"name": "user",
+		"properties": {
+			"id": {"type": "string", "id": true },
+			"name": {"type": "string", "required": true},
+			"age": {"type": "number", "required": true},
+			"sex": {"type": "string", "required": true},
+			"desc": {"type": "string"}
+		}
+	}, {
+		"name": "merchant",
+		"properties": {
+			"id": {"type": "string", "id": true },
+			"name": {"type": "string", "required": true},
+			"registerTime": {"type": "date", "required": true},
+			"desc": {"type": "string"}
+		}
+	}, {
+		"name": "trade_record",
+		"properties": {
+			"id": {"type": "string", "id": true },
+			"name": {"type": "string", "required": true},
+			"type": {"type": "string", "required": true},
+			"amount": {"type": "number", "required": true},
+			"desc": {"type": "string"}
+		}
+	}, {
+		"name": "trade",
+		"properties": {
+			"id": {"type": "string", "id": true },
+			"name": {"type": "string", "required": true},
+			"type": {"type": "string", "required": true},
+			"amount": {"type": "number", "required": true},
+			"desc": {"type": "string"}
 		}
 	}]
 

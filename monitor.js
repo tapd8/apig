@@ -1,4 +1,4 @@
-const log = require('./log').monitor;
+const log = require('./dist').log.monitor;
 const request = require('request');
 const appConfig = require('./config');
 const hashCode = require('hashcode').hashCode;
@@ -17,7 +17,7 @@ let lastHashCode = null;
  */
 const loadConfig = function() {
 
-		log.info('download load config from tapDataServer ' + appConfig.tapDataServer.url);
+		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
 		request.get(appConfig.tapDataServer.url, function(err, response, body) {
 			if( err ){
 				log.error('download config fail.', err);
@@ -36,6 +36,8 @@ const loadConfig = function() {
 
 				if( newHashCode !== lastHashCode ){
 					lastHashCode = newHashCode;
+
+					log.info('tap data config is changed, cache remote config to local.');
 
 					// 保存到本地缓存目录
 					fs.writeFileSync(getCacheConfig(), body + "\n");
@@ -68,7 +70,7 @@ const loadConfig = function() {
 		const localConfigFilePath = getCacheConfig();
 		if( fs.existsSync( localConfigFilePath ) ){
 			let config = fs.readFileSync(localConfigFilePath).toString();
-			lastHashCode = hashCode().value(config);
+			lastHashCode = hashCode().value(config.trim());
 		}
 		cb();
 	},

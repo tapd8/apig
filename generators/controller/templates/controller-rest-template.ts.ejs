@@ -25,6 +25,7 @@ export class <%= className %>Controller {
   ) {}
 
   @post('<%= httpPathName %>', {
+    summary: "新增接口",
     responses: {
       '200': {
         description: '<%= modelName %> model instance',
@@ -37,6 +38,7 @@ export class <%= className %>Controller {
   }
 
   @get('<%= httpPathName %>/count', {
+    summary: "查询总记录数接口",
     responses: {
       '200': {
         description: '<%= modelName %> model count',
@@ -51,6 +53,7 @@ export class <%= className %>Controller {
   }
 
   @get('<%= httpPathName %>', {
+    summary: "分页查询接口",
     responses: {
       '200': {
         description: 'Array of <%= modelName %> model instances',
@@ -68,22 +71,8 @@ export class <%= className %>Controller {
     return await this.<%= repositoryNameCamel %>.find(filter);
   }
 
-  @patch('<%= httpPathName %>', {
-    responses: {
-      '200': {
-        description: '<%= modelName %> PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
-      },
-    },
-  })
-  async updateAll(
-    @requestBody() <%= modelVariableName %>: <%= modelName %>,
-    @param.query.object('where', getWhereSchemaFor(<%= modelName %>)) where?: Where,
-  ): Promise<Count> {
-    return await this.<%= repositoryNameCamel %>.updateAll(<%= modelVariableName %>, where);
-  }
-
   @get('<%= httpPathName %>/{id}', {
+    summary: "根据ID查询记录接口",
     responses: {
       '200': {
         description: '<%= modelName %> model instance',
@@ -96,6 +85,7 @@ export class <%= className %>Controller {
   }
 
   @patch('<%= httpPathName %>/{id}', {
+    summary: "根据ID更新记录接口",
     responses: {
       '204': {
         description: '<%= modelName %> PATCH success',
@@ -110,6 +100,7 @@ export class <%= className %>Controller {
   }
 
   @del('<%= httpPathName %>/{id}', {
+    summary: "根据ID删除记录接口",
     responses: {
       '204': {
         description: '<%= modelName %> DELETE success',

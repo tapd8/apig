@@ -4,13 +4,19 @@ const fs = require('fs');
 const path = require('path');
 const makeDir = require('make-dir');
 const through = require('through2');
-const log = require('../log').generator;
+const log = require('../dist').log.generator;
 const updateIndex = require('./update-index');
 const utils = require('./utils');
+const EventEmitter = require('events').EventEmitter;
 
-class Generator {
+/**
+ * source code generator base class.
+ */
+class Generator extends EventEmitter{
 
-	constructor(){
+	constructor(props){
+		super(props);
+
 		this.artifactInfo = {};
 		this.log = log;
 		const store = memFs.create();
@@ -39,10 +45,16 @@ class Generator {
 			stream.push(file);
 			cb();
 		})];*/
-
+		this._temp = null;
 		this.fs.commit(transformStreams, () => {
-			this._updateIndexFiles();
-			done();
+			if( this._temp ){
+				clearTimeout(this._temp);
+				this._temp = null;
+			}
+			this._temp = setTimeout(()=>{
+				this._updateIndexFiles();
+				done();
+			}, 1000);
 		});
 	}
 
@@ -183,6 +195,7 @@ class Generator {
 			const outPath = this.destinationPath(this.artifactInfo.outDir, 'index.ts');
 			this.log.info('update', `${outPath}`);
 		}
+		this.emit('done');
 	}
 }
 

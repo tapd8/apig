@@ -29,12 +29,6 @@ class ModelGenerator extends Generator {
 		// Data for templates
 		this.artifactInfo.outFile = utils.getModelFileName(this.artifactInfo.name);
 
-		// Resolved Output Path
-		const tsPath = this.destinationPath(
-			this.artifactInfo.outDir,
-			this.artifactInfo.outFile,
-		);
-
 		this.artifactInfo.isModelBaseBuiltin = BASE_MODELS.includes(
 			this.artifactInfo.modelBaseClass,
 		);
@@ -89,6 +83,12 @@ class ModelGenerator extends Generator {
 				delete val.id;
 			}
 		});
+
+		// Resolved Output Path
+		const tsPath = this.destinationPath(
+			this.artifactInfo.outDir,
+			this.artifactInfo.outFile,
+		);
 
 		let template = this.templatePath('model', MODEL_TEMPLATE_PATH);
 

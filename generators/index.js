@@ -1,13 +1,11 @@
 
-const log = require('../log').generator;
-const utils = require('./utils');
-const path = require('path');
-const fs = require('fs');
+const log = require('../dist').log.default;
 const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
 const RepositoryGenerator = exports.RepositoryGenerator = require('./repository');
 const ControllerGenerator = exports.ControllerGenerator = require('./controller');
 
+const deleteTs = require('./delete-ts');
 
 /**
  * 检验配置合法
@@ -111,64 +109,83 @@ const validateConfig = function(config){
 };
 
 /**
- * 删除旧文件
+ * 生成代码
+ * @private
  */
-const includeDirector = [utils.controllersDir, utils.datasourcesDir, utils.repositoriesDir, utils.modelsDir, utils.servicesDir];
-const includeFileSuffix = [utils.modelSuffix, utils.dataSourceSuffix, utils.repositorySuffix, utils.controllerSuffix, '.datasource.json'];
-const deleteOldTs = function(cb){
-	const scanFS = require('scan-fs').create();
+const _generator = function(classConfig, cb){
 
-	let dir = `${__dirname}/../${utils.destinationRootDir}`;
+	// 生成 data source
+	// 生成 model
+	// 生成 repository
+	// 生成 controller
 
-	scanFS.listeners({
-		'file': function(filePath, eOpts){
+	let padding = 0;
 
-			const fileName = path.basename(filePath);
-
-			if( !includeDirector.includes(path.basename(path.dirname(filePath))) )
-				return;
-
-			let suffix = fileName.slice(fileName.indexOf('.'));
-			if( !includeFileSuffix.includes(suffix) && fileName !== 'index.ts' )
-				return;
-
-			log.info(`delete typescript file ${filePath}`);
-			fs.unlinkSync(filePath);
-		},
-		'complete': function(){
-			if( typeof cb === 'function' ) cb();
+	let finish = function(){
+		padding--;
+		log.debug('padding write file ' + padding);
+		if( padding === 0 && typeof cb === 'function'){
+			cb(true);
 		}
-	}).setRecursive(true)
-	  .scan(dir)
+	};
+	padding++;
+	new DataSourceGenerator(classConfig.dataSource).on('done', finish);
+	classConfig.models.forEach((model) => {
+		padding++;
+		new ModelGenerator(model).on('done', finish);
+	});
+	classConfig.repositories.forEach((repository) => {
+		padding++;
+		new RepositoryGenerator(repository).on('done', finish);
+	});
+	classConfig.controllers.forEach((controller) => {
+		padding++;
+		new ControllerGenerator(controller).on('done', finish);
+	});
+
 };
+
+const build = require('./build');
 
 /**
  * 根据配置生成代码
  * @param config
  */
-exports.generator = async function(config){
+exports.generator = function(config, cb){
 
 	// 检查配置文件正确性
 	const classConfig = validateConfig(config);
 
 	if( !classConfig ){
 		// 校验未通过
+		cb(false);
 		return;
 	}
 
 	// 删除当前ts文件
-	deleteOldTs(() => {
-		console.log('删除完成');
+	deleteTs((result) => {
+		if( result ){
+			log.info('delete old api source code.');
+			_generator(classConfig, (result) => {
+				if( result ){
+					log.info('generator api source code done.');
+					build((result) => {
+						if( result ){
+							log.info('complied.');
+							cb(true);
+						} else {
+							log.error('generator api source code fail, cancel updated.');
+						}
+					});
+				} else {
+					log.error('generator api source code fail, cancel update.');
+					cb(false);
+				}
+			});
+		} else{
+			log.error('delete old api source code fail, cancel update.');
+			cb(false);
+		}
 	});
-
-	console.log(classConfig);
-
-	// 生成 data source
-	//new DataSourceGenerator(config.dataSource);
-	// 生成 model
-	// 生成 repository
-	// 生成 controller
-	// 编译 ts
-	return true;
 
 };
