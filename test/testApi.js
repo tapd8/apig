@@ -42,7 +42,11 @@ const create = function(cb){
 		}
 	}, (err, resp, body) => {
 
-		console.log(resp.statusCode + " 新增成功：", body);
+		if( resp.statusCode === 200 ){
+			console.log(resp.statusCode + " 新增成功：", body);
+		} else {
+			console.log(resp.statusCode + " 新增失败：", body);
+		}
 
 		cb(body);
 	});
@@ -108,7 +112,7 @@ queryPage = function(page, pageSize, cb){
 },
 
 getCount = function(){
-	
+
 };
 
 
