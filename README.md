@@ -74,7 +74,7 @@ let config = {
 		],
 		"paths" : [
 			{
-				"path" : "/api/v1/roles",	// REST API 请求地址
+				"path" : "/{id}",	// 请求资源名称，拼接后的REST API URL 为： /api/${apiVersion}/${basePath}/{id}，不提供时：/api/${apiVersion}/${basePath}
 				"method" : "POST",			// 请求方法，POST 新增，PATCH 部分更新，DELETE 删除，GET 查询
 				"description" : "create a new record",	// 接口描述
 				"filter" : {				// 【针对查询接口有效】如果提供，将会对这个API所有的数据库查询应用此查询条件，与用户查询条件 and 组合
