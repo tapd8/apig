@@ -30,8 +30,8 @@
 	```
 
 2. 配置文件说明
-	```json
-	{
+	```javascript
+	let config = {
       "intervals": 30000,   //检查配置文件更新间隔时间，单位为毫秒
       "host": "0.0.0.0",	// api gateway 监听地址
       "port": 3030,			// api gateway 监听端口
@@ -45,8 +45,8 @@
 
 ####  Tap data Server 配置文件
 
-```json
-{
+```javascript
+let config = {
 	"apiVersion": "v1",						// api 版本，默认拼接到 API请求地址中: /api/${apiVersion}/${basePath}
 	"dataSource": {
 		"name": "mongodb",
