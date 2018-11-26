@@ -1,5 +1,5 @@
 {
-	"apiVersion": "v1.0.1",
+	"apiVersion": "v1",
 	"dataSource": {
 		"name": "mongodb",
 		"settings": {
@@ -11,60 +11,55 @@
 			"database": "test"
 		}
 	},
-	"models":[{
-		"name": "order",
-		"httpPathName": "order",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"title": {"type": "array", "itemType": "string", "required": true},
-			"amount": {"type": "number"},
-			"desc": {"type": "buffer"}
-		}
-	}, {
-		"name": "product",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"title": {"type": "array", "itemType": "string", "required": true},
-			"amount": {"type": "number"},
-			"desc": {"type": "string"}
-		}
-	}, {
-		"name": "user",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"age": {"type": "number", "required": true},
-			"sex": {"type": "string", "required": true},
-			"desc": {"type": "string"}
-		}
-	}, {
-		"name": "merchant",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"registerTime": {"type": "date", "required": true},
-			"desc": {"type": "string"}
-		}
-	}, {
-		"name": "trade_record",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"type": {"type": "string", "required": true},
-			"amount": {"type": "number", "required": true},
-			"desc": {"type": "string"}
-		}
-	}, {
-		"name": "trade",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"type": {"type": "string", "required": true},
-			"amount": {"type": "number", "required": true},
-			"desc": {"type": "string"}
-		}
-	}]
-
+	"models": [{
+		"tablename" : "order",
+		"basePath" : "order",
+		"description" : "",
+		"fields" : [
+			{
+				"field_name" : "_id",
+				"data_type" : "string",
+				"primary_key_position" : 1
+			},
+			{
+				"field_name": "name",
+				"data_type": "string",
+				"required": true
+			},
+			{
+				"field_name": "title",
+				"data_type": "string"
+			},
+			{
+				"field_name": "tag",
+				"data_type": "array",
+				"itemType": "string"
+			},
+			{
+				"field_name": "desc",
+				"data_type": "buffer"
+			}
+		],
+		"paths" : [
+			{
+				"method" : "POST",
+				"description" : "create a new record"
+			},
+			{
+				"path": "{id}",
+				"method" : "PATCH",
+				"description" : "update a new record"
+			},
+			{
+				"path" : "{id}",
+				"method" : "DELETE",
+				"description" : "delete a new record"
+			},
+			{
+				"path": "{id}",
+				"method" : "GET",
+				"description" : "根据 ID 查询"
+			}
+		]
+	} ]
 }

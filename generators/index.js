@@ -7,6 +7,17 @@ const ControllerGenerator = exports.ControllerGenerator = require('./controller'
 
 const deleteTs = require('./delete-ts');
 
+// Model Property Types
+const typeChoices = [
+	'string',
+	'number',
+	'boolean',
+	'array',
+	'date',
+	'buffer'
+];
+const methods = ['POST', 'GET', 'PATCH', 'DELETE'];
+
 /**
  * 检验配置合法
  */
@@ -17,7 +28,8 @@ const validateConfig = function(config){
 		controllers:[],
 		models: [],
 		repositories: []
-	};
+	},
+		apiVersion = config.apiVersion || 'v1';
 
 	// 检查数据源
 	if( !config.dataSource )
@@ -53,29 +65,62 @@ const validateConfig = function(config){
 
 		for( let i = 0; i < models.length; i++){
 			let model = models[i];
-			if( !model.name ){
-				log.error(`缺少数据实体名称配置（config.models[${i}].name）`);
+			if( !model.tablename ){
+				log.error(`缺少数据实体名称配置（config.models[${i}].tablename）`);
 				continue;
 			}
-			if( !model.properties ){
-				log.error(`缺少数据实体字段属性配置（config.models[${i}].properties）`);
+			if( !model.fields ){
+				log.error(`缺少数据实体字段属性配置（config.models[${i}].fields）`);
 				continue;
 			}
-			if( !model.properties ){
-				log.error(`数据实体字段属性配置必须为数组（config.models[${i}].properties）`);
+			if( Array.isArray(model.fields) ){
+				log.error(`数据实体字段属性配置必须为数组（config.models[${i}].fields）`);
 				continue;
 			}
 
-			let name = model.name,
-				properties = model.properties,
-				httpPathName = model.httpPathName || model.httpPath || model.path || model.name;
+			let name = model.tablename,
+				fields = model.fields,
+				httpPathName = model.basePath || model.path || name;
 			let id = null,
-				idType = '';
+				idType = '',
+				properties = {};
 
-			Object.entries(properties).forEach(([key, val]) => {
-				if( id === null && ( val.id === true || val.id === 'true' )){
-					id = key;
-					idType = val.type
+			// 校验转化字段配置
+			fields.forEach((field, idx) => {
+
+				let name = field['field_name'],
+					isId = field['primary_key_position']=== 1,
+					type = field['data_type'] || '',
+					required = field['required'],
+					itemType = type === 'array' ? field['itemType'] : null;
+
+				type = type.toLowerCase();
+				if( ['int', 'integer', 'long', 'double'].includes(type))
+					type = 'number';
+
+				if( !typeChoices.includes(type) ){
+					log.error(`数据实体字段类型不合法（config.models[${i}].fields[${idx}].data_type）: ${type}`);
+					return;
+				}
+				if( itemType ){
+					if( ['int', 'integer', 'long', 'double'].includes(itemType))
+						itemType = 'number';
+					if( !typeChoices.includes(itemType) ){
+						log.error(`数据实体字段类型不合法（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
+						return;
+					}
+				}
+
+				properties[name] = {
+					type: type,
+					id: isId,
+					required: required === true || required === 'true',
+					itemType: itemType
+				};
+
+				if( id === null && isId ){
+					id = properties[name];
+					idType = type;
 				}
 			});
 
@@ -84,9 +129,45 @@ const validateConfig = function(config){
 				continue;
 			}
 
+			// 校验转化 API配置
+			const apis = [],
+				paths = model.paths || [];
+
+			if( httpPathName.startsWith('/'))
+				httpPathName = httpPathName.slice(1);
+
+			paths.forEach((item, idx) => {
+				let path = item['path'],
+					method = item['method'] || '',
+					summary = item['description'],
+					filter = item['filter'],
+					params = item['params'],
+					fields = item['fields'],
+					hasPathParam = /\{.+\}/.test(path);
+
+				let reqPath = `/api/${apiVersion}/${httpPathName}`;
+				if( path ){
+					if( path.startsWith('/'))
+						reqPath += path;
+					else
+						reqPath += '/' + path;
+				}
+				method = method.toUpperCase();
+				if( !methods.includes(method) ){
+					log.error(`实体对象API配置请求方法不合法（config.models[${i}].paths[${idx}].method）：${method}`);
+					return;
+				}
+
+				apis.push({
+					path: reqPath,
+					method: method,
+					summary: summary
+				});
+
+			});
+
 			result.models.push({
 				name: name,
-				httpPathName: httpPathName,
 				properties: properties
 			});
 
@@ -99,7 +180,8 @@ const validateConfig = function(config){
 			result.controllers.push({
 				name: name,
 				httpPathName: httpPathName,
-				idType: idType
+				idType: idType,
+				apis: apis
 			});
 		}
 

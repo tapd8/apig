@@ -1,0 +1,63 @@
+import {
+	Count,
+	CountSchema,
+	Filter,
+	repository,
+	Where,
+} from '@loopback/repository';
+import {
+	post,
+	param,
+	get,
+	getFilterSchemaFor,
+	getWhereSchemaFor,
+	patch,
+	del,
+	requestBody,
+} from '@loopback/rest';
+import {<%= modelName %>} from '../models';
+import {<%= repositoryName %>} from '../repositories';
+
+export class <%= className %>Controller {
+	constructor(
+		@repository(<%= repositoryName %>)
+		public <%= repositoryNameCamel %> : <%= repositoryName %>,
+	) {}
+
+	<% apis.forEach((api) => { %>
+
+		<% if( api.method === 'POST') {%>
+
+	@post('<%= httpPathName %>', {
+			summary: "新增接口",
+			responses: {
+				'200': {
+				description: '<%= modelName %> model instance',
+				content: {'application/json': {schema: {'x-ts-type': <%= modelName %>}}},
+			},
+		},
+	})
+	async create(@requestBody() <%= modelVariableName %>: <%= modelName %>): Promise<<%= modelName %>> {
+		return await this.<%= repositoryNameCamel %>.create(<%= modelVariableName %>);
+	}
+
+		<% } %>
+
+		<% if( api.method === 'DELETE') {%>
+
+	@del('<%= httpPathName %>/{id}', {
+			summary: <%= api.summary || ''%>,
+			responses: {
+			'204': {
+				description: '<%= modelName %> 删除成功',
+			},
+		},
+	})
+	async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
+		await this.<%= repositoryNameCamel %>.deleteById(id);
+	}
+		<% } %>
+
+	<% }) %>
+
+}
