@@ -74,24 +74,21 @@ let config = {
 		],
 		"paths" : [
 			{
-				"path" : "/{id}",	// 请求资源名称，拼接后的REST API URL 为： /api/${apiVersion}/${basePath}/{id}，不提供时：/api/${apiVersion}/${basePath}
-				"method" : "POST",			// 请求方法，POST 新增，PATCH 部分更新，DELETE 删除，GET 查询
-				"description" : "create a new record",	// 接口描述
+				"name": "create",			// 可选值："create", "findById", "updateById", "deleteById", "findPage"
+				"type": "preset", 			// 预设API
+			},
+			{
+				"type": "custom",			// 自定义API
+				"path" : "/order",			// 【必填项】请求资源名称，拼接后的REST API URL 为： /api/${apiVersion}/${basePath}/order
+				"description" : "自定义方法查询",	// 接口描述
 				"filter" : {				// 【针对查询接口有效】如果提供，将会对这个API所有的数据库查询应用此查询条件，与用户查询条件 and 组合
 					"name": "aa",			// tapdata 根据用户设置，生成查询条件；主要目的是保留前端灵活性
 					"amount": {
 						"$gt": 20
 					}
 				},
-				"params" : [				// 【针对查询接口有效】如果提供，用户调用API只能传入以下指定参数；不提供则可以传入 Model 包含的所有字作为查询条件段
-					{
-						"name" : "name",
-						"type" : "string",
-						"description" : "角色名词"
-					}
-				],
 				"fields" : [				// 【针对查询接口有效】,如果提供，查询结果只包含指定的字段
-					"id", "name", "parent"
+					"_id", "name", "parent"
 				]
 			}
 		]

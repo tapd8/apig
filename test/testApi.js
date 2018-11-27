@@ -1,29 +1,3 @@
-const config = {
-	"apiVersion": "v1.0.1",
-	"dataSource": {
-		"name": "mongodb",
-		"settings": {
-			"url": "mongodb://localhost:27017/test",
-			"host": "localhost",
-			"port": 27017,
-			"user": "",
-			"password": "",
-			"database": "test"
-		}
-	},
-	"models":[{
-		"name": "order",
-		"httpPathName": "order",
-		"properties": {
-			"id": {"type": "string", "id": true },
-			"name": {"type": "string", "required": true},
-			"title": {"type": "array", "itemType": "string", "required": true},
-			"amount": {"type": "number"},
-			"desc": {"type": "buffer"}
-		}
-	}]
-};
-
 const request = require('request');
 
 /**
@@ -90,21 +64,59 @@ getById = function(id, cb){
 		cb(body);
 	});
 },
-queryPage = function(page, pageSize, cb){
-	request({
-		url: 'http://127.0.0.1:3030/order',
-		method: 'GET',
-		json: true,
-		filter: {
-			"where": {},
+	/**
+	 * filter: {
+			"where": {"name": "手机"},
 			"fields": {},
 			"offset": 0,
 			"limit": pageSize,
 			"skip": (page-1) * pageSize,
 			"order": []
 		}
-	}, (err, resp, body) => {
+	 *  序列化为
+	 * filter[offset]=0&filter[limit]=10&filter[skip]=0&filter[where][name]=test&filter[order][0]=string&filter[order][1]=test
+	 *
+	 * @param key
+	 * @param val
+	 * @returns {*}
+	 */
+	parameterSerialization = function(key, val){
+		if( typeof val === 'object'){
+			if( Array.isArray(val)){
+				let result = [];
+				for( let i = 0; i < val.length; i++)
+					result.push(parameterSerialization(`${key}[${i}]`, val[i]));
+				return result.join("&");
+			} else {
+				let result = [];
+				for( let name in val) {
+					if( val.hasOwnProperty(name)){
+						let temp = parameterSerialization(`${key}[${name}]`, val[name]);
+						if( temp)
+							result.push(temp);
+					}
+				}
+				return result.join("&");
+			}
+		} else{
+			return `${key}=${val}`;
+		}
+	},
+queryPage = function(page, pageSize, cb){
+	request.get('http://127.0.0.1:3030/api/v1/order?' + encodeURI(parameterSerialization('filter',
+		{
+			"where": {"name": "手机"},
+			"fields": {"name": 1},
+			"offset": 0,
+			"limit": pageSize,
+			"skip": (page-1) * pageSize,
+			"order": ['name']
+		}
+	)), (err, resp, body) => {
 
+		if( err ){
+			console.error('查询失败', err);
+		}
 		console.log(resp.statusCode + " 查询成功", body);
 
 		cb(body);
@@ -116,7 +128,7 @@ getCount = function(){
 };
 
 
-create((order)=>{
+/*create((order)=>{
 
 	order.amount = 2000;
 	order.name = '飞利浦剃须刀';
@@ -137,5 +149,8 @@ create((order)=>{
 
 	});
 
-});
+});*/
 
+queryPage(1, 10, (list) => {
+	console.log(list);
+});

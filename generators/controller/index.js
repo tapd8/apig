@@ -22,7 +22,6 @@ class ControllerGenerator extends Generator {
 		this.artifactInfo.repositoryName = utils.toClassName(this.artifactInfo.name) + 'Repository';
 		this.artifactInfo.modelVariableName = utils.camelCase(this.artifactInfo.modelName);
 		this.artifactInfo.repositoryNameCamel = utils.camelCase(this.artifactInfo.repositoryName);
-		this.artifactInfo.httpPathName = this.artifactInfo.httpPathName || this.artifactInfo.name;
 
 		this.artifactInfo.outFile = utils.getControllerFileName(this.artifactInfo.name);
 

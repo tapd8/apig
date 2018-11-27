@@ -35,7 +35,7 @@ export class MySequence implements SequenceHandler {
 			const _end = new Date().getTime();
 			const ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
-			log.app.info(`client ${ip}, ${request.method} ${request.url}, param ${JSON.stringify(args)}, time ${_end - _start}ms`);
+			log.app.info(`client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}, time ${_end - _start}ms`);
 		} catch (err) {
 			this.reject(context, err);
 			log.app.error('process request error', err);

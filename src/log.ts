@@ -1,24 +1,28 @@
 import {configure, getLogger} from 'log4js';
+import * as appConfig from '../config.json';
+import * as path from 'path';
+
+const logPath = path.join(path.resolve(path.dirname(path.dirname(__dirname))), appConfig.logDir || 'logs');
 
 configure({
 	appenders: {
 		app: {
 			type: 'file',
-			filename: 'logs/app.log',
+			filename: logPath + '/app.log',
 			maxLogSize: 500 * 1024 * 1024,
 			backups: 5,
 			compress: true
 		},
 		monitor: {
 			type: 'file',
-			filename: 'logs/monitor.log',
+			filename: logPath + '/monitor.log',
 			maxLogSize: 500 * 1024 * 1024,
 			backups: 5,
 			compress: true
 		},
 		generator: {
 			type: 'file',
-			filename: 'logs/generator.log',
+			filename: logPath + '/generator.log',
 			maxLogSize: 500 * 1024 * 1024,
 			backups: 5,
 			compress: true

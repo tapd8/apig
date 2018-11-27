@@ -14,7 +14,7 @@
 	"models": [{
 		"tablename" : "order",
 		"basePath" : "order",
-		"description" : "",
+		"description" : "订单信息",
 		"fields" : [
 			{
 				"field_name" : "_id",
@@ -42,23 +42,38 @@
 		],
 		"paths" : [
 			{
-				"method" : "POST",
-				"description" : "create a new record"
+				"name" : "create",
+				"type" : "preset"
 			},
 			{
-				"path": "{id}",
-				"method" : "PATCH",
-				"description" : "update a new record"
+				"name" : "findById",
+				"type" : "preset"
 			},
 			{
-				"path" : "{id}",
-				"method" : "DELETE",
-				"description" : "delete a new record"
+				"name" : "updateById",
+				"type" : "preset"
 			},
 			{
-				"path": "{id}",
-				"method" : "GET",
-				"description" : "根据 ID 查询"
+				"name" : "deleteById",
+				"type" : "preset"
+			},
+			{
+				"name" : "findPage",
+				"type" : "preset"
+			},
+			{
+				"path": "custom",
+				"type": "custom",
+				"description" : "自定义查询",
+				"filter": {
+					"name": "手机",
+					"amount": {
+						"$gt": 500
+					}
+				},
+				"fields" : [
+					"_id","name","title"
+				]
 			}
 		]
 	} ]

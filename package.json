@@ -28,7 +28,8 @@
     "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js && npm run posttest",
     "prestart": "npm run build",
     "start": "node $NODE_DEBUG_OPTION .",
-    "prepublishOnly": "npm run test"
+    "prepublishOnly": "npm run test",
+    "run": "node $NODE_DEBUG_OPTION app.js"
   },
   "repository": {
     "type": "git"
@@ -67,6 +68,7 @@
   "devDependencies": {
     "@loopback/build": "^1.0.1",
     "@loopback/testlab": "^1.0.1",
-    "@types/node": "^10.11.2"
+    "@types/node": "^10.11.2",
+    "query-string": "^6.2.0"
   }
 }

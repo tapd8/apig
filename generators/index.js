@@ -73,15 +73,15 @@ const validateConfig = function(config){
 				log.error(`缺少数据实体字段属性配置（config.models[${i}].fields）`);
 				continue;
 			}
-			if( Array.isArray(model.fields) ){
+			if( !Array.isArray(model.fields) ){
 				log.error(`数据实体字段属性配置必须为数组（config.models[${i}].fields）`);
 				continue;
 			}
 
 			let name = model.tablename,
 				fields = model.fields,
-				httpPathName = model.basePath || model.path || name;
-			let id = null,
+				basePath = model.basePath || model.path || name;
+			let idProperty = null,
 				idType = '',
 				properties = {};
 
@@ -114,55 +114,70 @@ const validateConfig = function(config){
 				properties[name] = {
 					type: type,
 					id: isId,
-					required: required === true || required === 'true',
-					itemType: itemType
+					required: required === true || required === 'true'
 				};
 
-				if( id === null && isId ){
-					id = properties[name];
+				if( type === 'array')
+					properties[name]['itemType'] = itemType;
+
+				if( idProperty === null && isId ){
+					idProperty = name;
 					idType = type;
 				}
 			});
 
-			if( !id ){
+			if( !idProperty ){
 				log.error(`实体对象缺少唯一主键字段配置（config.models[${i}]）`);
 				continue;
 			}
 
 			// 校验转化 API配置
-			const apis = [],
+			const api = {},
 				paths = model.paths || [];
 
-			if( httpPathName.startsWith('/'))
-				httpPathName = httpPathName.slice(1);
+			if( basePath.startsWith('/'))
+				basePath = basePath.slice(1);
 
 			paths.forEach((item, idx) => {
-				let path = item['path'],
-					method = item['method'] || '',
+				let type = item['type'],
+					name = item['name'],
+					path = item['path'],
 					summary = item['description'],
 					filter = item['filter'],
 					params = item['params'],
-					fields = item['fields'],
-					hasPathParam = /\{.+\}/.test(path);
+					fields = item['fields'];
 
-				let reqPath = `/api/${apiVersion}/${httpPathName}`;
+				if( type === 'custom' ){
+					name = `find_${idx}`;
+
+					if( !path || path.trim().length === 0){
+						log.error(`实体api配置缺少请求路径字段（config.models[${i}].paths[${idx}].path）`);
+						return;
+					}
+				}
+
+				let reqPath = `/api/${apiVersion}/${basePath}`;
 				if( path ){
 					if( path.startsWith('/'))
 						reqPath += path;
 					else
 						reqPath += '/' + path;
 				}
-				method = method.toUpperCase();
-				if( !methods.includes(method) ){
-					log.error(`实体对象API配置请求方法不合法（config.models[${i}].paths[${idx}].method）：${method}`);
-					return;
-				}
 
-				apis.push({
+				api[name] = {
+					type: type,
+					name: name,
 					path: reqPath,
-					method: method,
-					summary: summary
-				});
+					summary: summary,
+					filter: filter,
+					params: params,
+					fields: fields
+				};
+				if( Array.isArray(fields) ){
+					api[name].fields = {};
+					for(let i = 0; i < fields.length; i++)
+						api[name].fields[fields[i]] = 1;
+				}
 
 			});
 
@@ -174,14 +189,13 @@ const validateConfig = function(config){
 			result.repositories.push({
 				name: name,
 				dataSourceName: result.dataSource.name,
-				idProperty: id
+				idProperty: idProperty
 			});
 
 			result.controllers.push({
 				name: name,
-				httpPathName: httpPathName,
 				idType: idType,
-				apis: apis
+				api: api
 			});
 		}
 

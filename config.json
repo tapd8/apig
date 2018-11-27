@@ -6,5 +6,6 @@
   "tapDataServer": {
     "url": "http://127.0.0.1/config.json?access_token=ABDcekfsldfseWedfAdfEwgfsdfalpOj"
   },
-  "cacheDir": "cache"
+  "cacheDir": "cache",
+  "logDir": "logs"
 }

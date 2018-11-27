@@ -67,3 +67,9 @@ api-docs/
 .idea
 
 cache
+
+src/controllers/*.ts
+src/datasources/*.ts
+src/datasources/*.json
+src/models/*.ts
+src/repositories/*.ts
