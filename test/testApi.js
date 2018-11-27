@@ -1,25 +1,25 @@
 const request = require('request');
 
+const serverUrl = 'http://127.0.0.1:3030';
+
 /**
  * 测试新增
  * @param cb
  */
 const create = function(cb){
-	let req = request.post('http://127.0.0.1:3030/order', {
+	let req = request.post(serverUrl + '/api/v1/order', {
 		json: true,
 		body: {
 			"name": "剃须刀",
-			"title": [
-				"测试", "^_^"
-			],
-			"amount": 1000
+			"title": "剃须刀拉拉",
+			"tag": ["标签"]
 		}
 	}, (err, resp, body) => {
 
 		if( resp.statusCode === 200 ){
-			console.log(resp.statusCode + " 新增成功：", body);
+			console.log(resp.statusCode, body);
 		} else {
-			console.log(resp.statusCode + " 新增失败：", body);
+			console.log(resp.statusCode, body);
 		}
 
 		cb(body);
@@ -28,13 +28,13 @@ const create = function(cb){
 
 updateById = function(data, cb){
 	request({
-		url: 'http://127.0.0.1:3030/order/' + data.id,
+		url: serverUrl + '/api/v1/order/' + data.id,
 		method: 'PATCH',
 		json: true,
 		body: data
 	}, (err, resp, body) => {
 
-		console.log(resp.statusCode + " 更新成功");
+		console.log(resp.statusCode);
 
 		cb();
 	});
@@ -42,11 +42,11 @@ updateById = function(data, cb){
 
 deleteById = function(id, cb){
 	request({
-		url: 'http://127.0.0.1:3030/order/' + id,
+		url: serverUrl + '/api/v1/order/' + id,
 		method: 'DELETE'
 	}, (err, resp, body) => {
 
-		console.log(resp.statusCode + " 删除成功");
+		console.log(resp.statusCode);
 
 		cb();
 	});
@@ -54,12 +54,12 @@ deleteById = function(id, cb){
 
 getById = function(id, cb){
 	request({
-		url: 'http://127.0.0.1:3030/order/' + id,
+		url: serverUrl + '/api/v1/order/' + id,
 		method: 'GET',
 		json: true
 	}, (err, resp, body) => {
 
-		console.log(resp.statusCode + " 查询成功", body);
+		console.log(resp.statusCode, body);
 
 		cb(body);
 	});
@@ -103,7 +103,7 @@ getById = function(id, cb){
 		}
 	},
 queryPage = function(page, pageSize, cb){
-	request.get('http://127.0.0.1:3030/api/v1/order?' + encodeURI(parameterSerialization('filter',
+	request.get(serverUrl + '/api/v1/order?' + encodeURI(parameterSerialization('filter',
 		{
 			"where": {"name": "手机"},
 			"fields": {"name": 1},
@@ -117,22 +117,19 @@ queryPage = function(page, pageSize, cb){
 		if( err ){
 			console.error('查询失败', err);
 		}
-		console.log(resp.statusCode + " 查询成功", body);
+		console.log(resp.statusCode, body);
 
 		cb(body);
 	});
-},
-
-getCount = function(){
-
 };
 
 
-/*create((order)=>{
+create((order)=>{
 
-	order.amount = 2000;
+	let id = order._id;
 	order.name = '飞利浦剃须刀';
-	order.title.push('全自动');
+	order.title = '测试修改标题';
+	order.id = id;
 
 	updateById(order, ()=>{
 
@@ -140,7 +137,7 @@ getCount = function(){
 
 			queryPage(1, 10, (list) => {
 
-				deleteById(order.id, () => {
+				deleteById(id, () => {
 
 				});
 
@@ -149,8 +146,4 @@ getCount = function(){
 
 	});
 
-});*/
-
-queryPage(1, 10, (list) => {
-	console.log(list);
 });

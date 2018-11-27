@@ -95,5 +95,10 @@ let config = {
 	} ]
 }
 
-
 ```
+
+#### 如何测试？
+
+1. 运行 API Gateway
+2. 指定 tab data server 配置为 test/config.json
+3. 运行测试用例 test/testApi.js
