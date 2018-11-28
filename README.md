@@ -69,7 +69,8 @@ let config = {
 				"data_type" : "string",	// 数据类型：string, number, array
 				"primary_key_position" : 1,	// 主键标识，1-主键, 0或空-非主键
 				"required": true, 			// 是否必填,
-				"itemType": "string"		// 数组元素数据类型，data_type 为 Array 时有效
+				"itemType": "string",		// 数组元素数据类型，data_type 为 Array 时有效
+				"description": ""			// 字段描述
 			}
 		],
 		"paths" : [

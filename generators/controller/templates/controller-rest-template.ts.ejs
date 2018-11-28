@@ -51,7 +51,7 @@ export class <%= className %>Controller {
                 'application/json': {
                   schema: {type: 'object', properties: {
                     data: {type: 'array', items: {'x-ts-type': <%= modelName %>}},
-                    total: {schema: CountSchema}
+                    total: { type: 'object', properties: { count: { type: 'number' } } }
                   }},
                 },
               },
@@ -123,7 +123,7 @@ export class <%= className %>Controller {
               'application/json': {
                 schema: {type: 'object', properties: {
                   data: {type: 'array', items: {'x-ts-type': <%= modelName %>}},
-                  total: 'number'
+                  total: { type: 'object', properties: { count: { type: 'number' } } }
                 }},
               },
             },

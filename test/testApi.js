@@ -133,7 +133,7 @@ create((order)=>{
 
 	updateById(order, ()=>{
 
-		getById(order.id, (order) => {
+		getById(id, (order) => {
 
 			queryPage(1, 10, (list) => {
 

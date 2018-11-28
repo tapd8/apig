@@ -14,30 +14,35 @@
 	"models": [{
 		"tablename" : "order",
 		"basePath" : "order",
-		"description" : "订单信息",
+		"description" : "订单信息 ",
 		"fields" : [
 			{
 				"field_name" : "_id",
 				"data_type" : "string",
-				"primary_key_position" : 1
+				"primary_key_position" : 1,
+				"description": "主键ID"
 			},
 			{
 				"field_name": "name",
 				"data_type": "string",
-				"required": true
+				"required": true,
+				"description": "名称"
 			},
 			{
 				"field_name": "title",
-				"data_type": "string"
+				"data_type": "string",
+				"description": "标题"
 			},
 			{
 				"field_name": "tag",
 				"data_type": "array",
-				"itemType": "string"
+				"itemType": "string",
+				"description": "标签"
 			},
 			{
 				"field_name": "desc",
-				"data_type": "buffer"
+				"data_type": "buffer",
+				"description": "描述"
 			}
 		],
 		"paths" : [

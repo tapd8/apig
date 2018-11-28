@@ -91,6 +91,7 @@ const validateConfig = function(config){
 				let name = field['field_name'],
 					isId = field['primary_key_position']=== 1,
 					type = field['data_type'] || '',
+					description = field['description'] || null,
 					required = field['required'],
 					itemType = type === 'array' ? field['itemType'] : null;
 
@@ -114,11 +115,13 @@ const validateConfig = function(config){
 				properties[name] = {
 					type: type,
 					id: isId,
-					required: required === true || required === 'true'
+					required: required === true || required === 'true',
 				};
 
 				if( type === 'array')
 					properties[name]['itemType'] = itemType;
+				if( description )
+					properties[name]['description'] = `'${description}'`;
 
 				if( idProperty === null && isId ){
 					idProperty = name;
