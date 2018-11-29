@@ -81,5 +81,65 @@
 				]
 			}
 		]
+	}, {
+		"tablename" : "merchant",
+		"basePath" : "merchant",
+		"description" : "商户信息 ",
+		"fields" : [
+			{
+				"field_name" : "_id",
+				"data_type" : "string",
+				"primary_key_position" : 1,
+				"description": "主键ID"
+			},
+			{
+				"field_name": "name",
+				"data_type": "string",
+				"required": true,
+				"description": "商户名称"
+			},
+			{
+				"field_name": "address",
+				"data_type": "string",
+				"description": "商户注册地址"
+			},
+			{
+				"field_name": "type",
+				"data_type": "string",
+				"description": "商户类型"
+			},
+			{
+				"field_name": "desc",
+				"data_type": "string",
+				"description": "描述"
+			}
+		],
+		"paths" : [
+			{
+				"name" : "create",
+				"type" : "preset"
+			},
+			{
+				"name" : "findById",
+				"type" : "preset"
+			},
+			{
+				"name" : "updateById",
+				"type" : "preset"
+			},
+			{
+				"name" : "deleteById",
+				"type" : "preset"
+			},
+			{
+				"name" : "findPage",
+				"type" : "preset"
+			},
+			{
+				"path": "secondary",
+				"type": "custom",
+				"description" : "二级商户查询"
+			}
+		]
 	} ]
 }
