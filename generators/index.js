@@ -1,5 +1,5 @@
 
-const log = require('../dist').log.default;
+const log = require('../dist').log.generator;
 const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
 const RepositoryGenerator = exports.RepositoryGenerator = require('./repository');

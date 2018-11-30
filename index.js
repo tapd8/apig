@@ -51,9 +51,6 @@ class Main{
 	 */
 	startApp(){
 
-		if( this.appWorker )
-			this.appWorker.kill();
-
 		this.appWorker = fork(`${__dirname}/app.js`);
 
 	}
@@ -76,7 +73,7 @@ class Main{
 				const config = event.data;
 
 				// 生成代码
-				this.__generator(config);
+				this.generator(config);
 			}
 		} );
 	}
@@ -86,12 +83,16 @@ class Main{
 	 * @param config
 	 * @private
 	 */
-	__generator(config){
+	generator(config){
 		log.info('开始生成代码');
 		generator(config, (result) => {
 			if( result ){
 				log.info('生成代码完成，重启应用');
-				this.startApp();
+
+				this.appWorker.send({
+					type: 'restart'
+				});
+
 			} else {
 				log.info('生成代码失败');
 			}

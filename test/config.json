@@ -153,5 +153,46 @@
 				"description" : "二级商户查询"
 			}
 		]
+	}, {
+		"dataSourceName": "mongodb_prod",
+		"tablename" : "trade",
+		"basePath" : "trade",
+		"description" : "交易信息",
+		"fields" : [
+			{
+				"field_name" : "_id",
+				"data_type" : "string",
+				"primary_key_position" : 1,
+				"description": "主键ID"
+			},
+			{
+				"field_name": "name",
+				"data_type": "string",
+				"required": true,
+				"description": "交易名称"
+			},
+			{
+				"field_name": "amount",
+				"data_type": "number",
+				"description": "交易金额"
+			},
+			{
+				"field_name": "type",
+				"data_type": "string",
+				"description": "交易类型"
+			},
+			{
+				"field_name": "desc",
+				"data_type": "string",
+				"description": "描述"
+			}
+		],
+		"paths" : [
+			{
+				"path": "trade",
+				"type": "custom",
+				"description" : "交易查询"
+			}
+		]
 	} ]
 }

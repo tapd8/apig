@@ -11,6 +11,7 @@ export async function main(options: ApplicationConfig = {}, cb ?: (result : bool
 
   const url = app.restServer.url;
 	log.app.info(`Server is running at ${url}`);
+	console.log(`Server is running at ${url}`);
 
 	if( cb )
 	  cb(true);

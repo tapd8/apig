@@ -6,6 +6,18 @@
   "tapDataServer": {
     "url": "http://127.0.0.1:3030/config.json?access_token=ABDcekfsldfseWedfAdfEwgfsdfalpOj"
   },
+
+  "reportServer": {
+    "url": "http://127.0.0.1:3030/api/Workers"
+  },
+  "reportIntervals": 5000,
+  "reportData": {
+    "worker_ip": "127.0.0.1",
+    "process_id": "api-gateway@gmail.com",
+    "worker_type": "api-server",
+    "user_id": "user_id"
+  },
+
   "cacheDir": "cache",
   "logDir": "logs"
 }

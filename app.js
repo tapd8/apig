@@ -1,9 +1,16 @@
-global.appConfig = require('./config');
-const application = require('./dist');
+const cluster = require('cluster');
+const log = require('./dist').log.app;
 
-module.exports = application;
+let appWorker = null;
 
-if (require.main === module) {
+/**
+ * 工作进程
+ */
+const workerRun = function(){
+	const appConfig = require('./config');
+	const application = require('./dist');
+	const report = require('./report');
+
 	// Run the application
 	const config = {
 		rest: {
@@ -21,7 +28,33 @@ if (require.main === module) {
 				type: 'started',
 			});
 	}).catch(err => {
-		console.error('Cannot start the application.', err);
+		log.error('Cannot start the application.', err);
 		process.exit(1);
 	});
+},
+
+	/**
+	 * 主进程
+	 */
+	startWorker = function(){
+		// 监听父进程消息，接收到重启指令后，重启app
+		let worker = cluster.fork();
+		worker.on('message', (event) => {
+			if( event && event.type === 'started'){
+				if( appWorker ){
+					appWorker.kill();
+				}
+				appWorker = worker;
+			}
+		});
+	};
+
+if( cluster.isMaster ){
+	startWorker();
+	process.on('message', (event) => {
+		if( event && event.type === 'restart')
+			startWorker();
+	})
+} else {
+	workerRun();
 }
