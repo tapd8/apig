@@ -103,6 +103,11 @@ class Main{
 
 const main = new Main();
 main.start();
-process.on('exit',function(){
+
+const exitHandler = function(){
+	log.info("Stoping api gateway...");
 	main.stop();
-});
+	log.info("api gateway stoped.");
+};
+process.on('exit', exitHandler);
+//process.on('SIGKILL', exitHandler);
