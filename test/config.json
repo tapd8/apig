@@ -1,6 +1,6 @@
 {
 	"apiVersion": "v1",
-	"dataSource": {
+	"dataSource": [{
 		"name": "mongodb",
 		"settings": {
 			"url": "mongodb://localhost:27017/test",
@@ -10,8 +10,19 @@
 			"password": "",
 			"database": "test"
 		}
-	},
+	}, {
+		"name": "mongodb_prod",
+		"settings": {
+			"url": "mongodb://localhost:27017/test",
+			"host": "localhost",
+			"port": 27017,
+			"user": "",
+			"password": "",
+			"database": "test"
+		}
+	}],
 	"models": [{
+		"dataSourceName": "mongodb",
 		"tablename" : "order",
 		"basePath" : "order",
 		"description" : "订单信息 ",
@@ -82,6 +93,7 @@
 			}
 		]
 	}, {
+		"dataSourceName": "mongodb_prod",
 		"tablename" : "merchant",
 		"basePath" : "merchant",
 		"description" : "商户信息 ",

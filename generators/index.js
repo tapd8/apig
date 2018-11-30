@@ -34,53 +34,71 @@ const validateConfig = function(config){
 	// 检查数据源
 	if( !config.dataSource )
 		log.error('缺少数据源配置（config.dataSource）');
-	else {
-		let ds = config.dataSource;
-		if( !ds.name )
-			log.error('缺少数据源名称配置（config.dataSource.name）');
+	if( !Array.isArray(config.dataSource) ) {
+		log.error('数据源配置（config.dataSource）必须为数组');
+	} else {
+		for( let i = 0; i < config.dataSource.length; i++ ){
+			let ds = config.dataSource[i];
+			if( !ds.name ){
+				log.error(`缺少数据源名称配置（config.dataSource[${i}].name）`);
+				return null;
+			}
 
-		/**
-		 * {
-		 * 	"url": "mongodb://localhost:27017/test",
-		 * 	"host": "localhost",
-		 * 	"port": 27017,
-		 * 	"user": "",
-		 * 	"password": "",
-		 * 	"database": "test"
-		 * }
-		 * 优先使用url，如果url为空按如下格式拼接连接串
-		 * [protocol] + '://' + [username|user] + ':' + [password] + '@' + [hostname|host] + ':' + [port] + '/' + [database|db]
-		 */
-		if( !ds.settings )
-			log.error('缺少数据源连接参数配置（config.dataSource.settings）');
-		else
-			result.dataSource = config.dataSource;
+			/**
+			 * {
+			 * 	"url": "mongodb://localhost:27017/test",
+			 * 	"host": "localhost",
+			 * 	"port": 27017,
+			 * 	"user": "",
+			 * 	"password": "",
+			 * 	"database": "test"
+			 * }
+			 * 优先使用url，如果url为空按如下格式拼接连接串
+			 * [protocol] + '://' + [username|user] + ':' + [password] + '@' + [hostname|host] + ':' + [port] + '/' + [database|db]
+			 */
+			if( !ds.settings ){
+				log.error(`缺少数据源连接参数配置（config.dataSource[${i}].settings）`);
+				return null;
+			}
+
+			result.dataSource[ds.name] = config.dataSource[i];
+		}
 	}
 
 	// 检查 model
-	if( !config.models )
+	if( !config.models ){
 		log.error('缺少数据实体配置（config.models）');
-	else {
+		return null;
+	} else {
 		let models = Array.isArray(config.models) ? config.models : [config.models];
 
 		for( let i = 0; i < models.length; i++){
 			let model = models[i];
 			if( !model.tablename ){
 				log.error(`缺少数据实体名称配置（config.models[${i}].tablename）`);
-				continue;
+				return null;
 			}
 			if( !model.fields ){
 				log.error(`缺少数据实体字段属性配置（config.models[${i}].fields）`);
-				continue;
+				return null;
 			}
 			if( !Array.isArray(model.fields) ){
 				log.error(`数据实体字段属性配置必须为数组（config.models[${i}].fields）`);
-				continue;
+				return null;
+			}
+			if( !model.dataSourceName ){
+				log.error(`数据实体缺少数据源配置（config.models[${i}].dataSourceName）`);
+				return null;
+			}
+			if( !result.dataSource[model.dataSourceName] ){
+				log.error(`数据实体配置的数据源名称不存在（config.models[${i}].dataSourceName）:${model.dataSourceName}`);
+				return null;
 			}
 
 			let name = model.tablename,
 				fields = model.fields,
-				basePath = model.basePath || model.path || name;
+				basePath = model.basePath || model.path || name,
+				dataSourceName = model.dataSourceName;
 			let idProperty = null,
 				idType = '',
 				properties = {};
@@ -131,7 +149,7 @@ const validateConfig = function(config){
 
 			if( !idProperty ){
 				log.error(`实体对象缺少唯一主键字段配置（config.models[${i}]）`);
-				continue;
+				return null;
 			}
 
 			// 校验转化 API配置
@@ -191,7 +209,7 @@ const validateConfig = function(config){
 
 			result.repositories.push({
 				name: name,
-				dataSourceName: result.dataSource.name,
+				dataSourceName: dataSourceName,
 				idProperty: idProperty
 			});
 
@@ -227,8 +245,10 @@ const _generator = function(classConfig, cb){
 			cb(true);
 		}
 	};
-	padding++;
-	new DataSourceGenerator(classConfig.dataSource).on('done', finish);
+	Object.entries(classConfig.dataSource).forEach(([dataSourceName, dataSourceConfig]) => {
+		padding++;
+		new DataSourceGenerator(dataSourceConfig).on('done', finish);
+	});
 	classConfig.models.forEach((model) => {
 		padding++;
 		new ModelGenerator(model).on('done', finish);
