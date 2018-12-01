@@ -4,6 +4,7 @@ const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
 const RepositoryGenerator = exports.RepositoryGenerator = require('./repository');
 const ControllerGenerator = exports.ControllerGenerator = require('./controller');
+const adapterTapDataConfig = require('./adapter');
 
 const deleteTs = require('./delete-ts');
 
@@ -28,14 +29,16 @@ const validateConfig = function(config){
 		controllers:[],
 		models: [],
 		repositories: []
-	},
-		apiVersion = config.apiVersion || 'v1';
+	};
 
 	// 检查数据源
-	if( !config.dataSource )
+	if( !config.dataSource ){
 		log.error('缺少数据源配置（config.dataSource）');
+		return null;
+	}
 	if( !Array.isArray(config.dataSource) ) {
 		log.error('数据源配置（config.dataSource）必须为数组');
+		return null;
 	} else {
 		for( let i = 0; i < config.dataSource.length; i++ ){
 			let ds = config.dataSource[i];
@@ -154,7 +157,8 @@ const validateConfig = function(config){
 
 			// 校验转化 API配置
 			const api = {},
-				paths = model.paths || [];
+				paths = model.paths || [],
+				apiVersion = config.apiVersion || 'v1';
 
 			if( basePath.startsWith('/'))
 				basePath = basePath.slice(1);
@@ -180,7 +184,7 @@ const validateConfig = function(config){
 				let reqPath = `/api/${apiVersion}/${basePath}`;
 				if( path ){
 					if( path.startsWith('/'))
-						reqPath += path;
+						reqPath = path;
 					else
 						reqPath += '/' + path;
 				}
@@ -271,6 +275,11 @@ const build = require('./build');
  * @param config
  */
 exports.generator = function(config, cb){
+
+	/**
+	 * 适配接口返回数据
+	 */
+	config = adapterTapDataConfig(config);
 
 	// 检查配置文件正确性
 	const classConfig = validateConfig(config);

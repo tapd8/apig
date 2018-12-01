@@ -47,7 +47,6 @@
 
 ```javascript
 let config = {
-	"apiVersion": "v1",						// api 版本，默认拼接到 API请求地址中: /api/${apiVersion}/${basePath}
 	"dataSource": [{
 		"name": "mongodb",
 		"settings": { 						// 数据库连接配置，优先使用url，url为空时使用其他参数拼接
@@ -64,6 +63,7 @@ let config = {
 		"dataSourceName": "mongodb",		// 必须，指定这个model的api使用那个数据源 
 		"basePath" : "roles",				// 拼接到API请求地址中，为空时，默认取值 model name
 		"description" : "",					// 模型描述
+		"apiVersion": "v1",					// api 版本，默认拼接到 API请求地址中: /api/${apiVersion}/${basePath}
 		"fields" : [
 			{
 				"field_name" : "_id",		// 字段名称

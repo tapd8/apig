@@ -85,18 +85,22 @@ class Main{
 	 */
 	generator(config){
 		log.info('开始生成代码');
-		generator(config, (result) => {
-			if( result ){
-				log.info('生成代码完成，重启应用');
+		try {
+			generator(config, (result) => {
+				if( result ){
+					log.info('生成代码完成，重启应用');
 
-				this.appWorker.send({
-					type: 'restart'
-				});
+					this.appWorker.send({
+						type: 'restart'
+					});
 
-			} else {
-				log.info('生成代码失败');
-			}
-		});
+				} else {
+					log.info('生成代码失败');
+				}
+			});
+		} catch (e) {
+			log.error('生成代码失败', e);
+		}
 	}
 
 }

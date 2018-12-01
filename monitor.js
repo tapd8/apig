@@ -25,7 +25,7 @@ const loadConfig = function() {
 				log.debug('download config success.');
 
 				body = body.trim();
-				if( !body.startsWith("{") || !body.endsWith("}")){
+				if( !(/^\{.*\}$/.test(body) || /^\[.*\]$/.test(body))){
 					log.error('the configuration file is not in the expected JSON format.', body);
 					return;
 				}

@@ -4,11 +4,11 @@
   "host": "0.0.0.0",
   "port": 3080,
   "tapDataServer": {
-    "url": "http://127.0.0.1:3030/config.json?access_token=ABDcekfsldfseWedfAdfEwgfsdfalpOj"
+    "url": "http://47.107.36.184:3030/api/apiModules"
   },
 
   "reportServer": {
-    "url": "http://127.0.0.1:3030/api/Workers"
+    "url": "http://47.107.36.184:3030/api/Workers"
   },
   "reportIntervals": 5000,
   "reportData": {
