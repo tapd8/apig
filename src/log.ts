@@ -38,7 +38,7 @@ configure({
 		},
 		app: {
 			appenders: ['app', 'out'],
-			level: 'info'
+			level: 'debug'
 		},
 		monitor: {
 			appenders: ['monitor', 'out'],

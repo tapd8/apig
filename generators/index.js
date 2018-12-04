@@ -170,7 +170,8 @@ const validateConfig = function(config){
 					summary = item['description'],
 					filter = item['filter'],
 					params = item['params'],
-					fields = item['fields'];
+					fields = item['fields'],
+					roles = item['roles'];
 
 				if( type === 'custom' ){
 					name = `find_${idx}`;
@@ -196,7 +197,8 @@ const validateConfig = function(config){
 					summary: summary,
 					filter: filter,
 					params: params,
-					fields: fields
+					fields: fields,
+					roles: roles || []
 				};
 				if( Array.isArray(fields) ){
 					api[name].fields = {};

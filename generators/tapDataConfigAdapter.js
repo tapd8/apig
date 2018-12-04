@@ -127,7 +127,8 @@ module.exports = function(models){
 		model.paths.forEach((customApi) => {
 			let apiConfig = {
 				type: customApi.type,
-				description: customApi.description || ''
+				description: customApi.description || '',
+				roles: customApi['acl'] || []
 			};
 			if( apiConfig.type === 'preset' ){
 				apiConfig.name = customApi.name;

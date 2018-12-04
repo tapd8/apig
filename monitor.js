@@ -28,10 +28,10 @@ const
 				log.debug('download config success.');
 
 				body = body.trim();
-				if( !(/^\{.*\}$/.test(body) || /^\[.*\]$/.test(body))){
+				/*if( ! (/^\{.*\}$/.test(body) || /^\[.*\]$/.test(body)) ){
 					log.error('the configuration file is not in the expected JSON format.', body);
 					return;
-				}
+				}*/
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);

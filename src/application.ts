@@ -6,11 +6,22 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import {MySequence} from './sequence';
 import * as path from 'path';
 
+import {
+	AuthenticationComponent,
+	AuthenticationBindings,
+} from '@loopback/authentication';
+import {AuthStrategyProvider } from './providers';
+
 export class ApiGatewayApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+	this.component(AuthenticationComponent);
+	this.bind(AuthenticationBindings.STRATEGY).toProvider(
+	  AuthStrategyProvider
+	);
 
     // Set up the custom sequence
     this.sequence(MySequence);

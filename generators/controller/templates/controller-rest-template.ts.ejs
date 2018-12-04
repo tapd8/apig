@@ -17,6 +17,11 @@ import {
 } from '@loopback/rest';
 import {<%= modelName %>} from '../models';
 import {<%= repositoryName %>} from '../repositories';
+import {
+  AuthenticationBindings,
+  UserProfile,
+  authenticate,
+} from '@loopback/authentication';
 
 export class <%= className %>Controller {
   constructor(
@@ -28,6 +33,7 @@ export class <%= className %>Controller {
     <%_ if (val['type'] === 'preset') { -%>
 
       <%_ if (val['name'] === 'create') { -%>
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @post('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
           responses: {
@@ -42,6 +48,7 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'findPage') { %>
 
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @get('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
           responses: {
@@ -68,6 +75,7 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'findById') { %>
 
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @get('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           responses: {
@@ -82,6 +90,7 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'updateById') { %>
 
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @patch('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           responses: {
@@ -98,6 +107,7 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'deleteById') { %>
 
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @del('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           responses: {
@@ -112,6 +122,7 @@ export class <%= className %>Controller {
       <%_ }  %>
     <%_ } else {-%>
 
+      @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
       @get('<%= val['path'] %>', {
         summary: '<%= val['summary']%>',
         responses: {

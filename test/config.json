@@ -1,198 +1,1706 @@
-{
-	"apiVersion": "v1",
-	"dataSource": [{
-		"name": "mongodb",
-		"settings": {
-			"url": "mongodb://localhost:27017/test",
-			"host": "localhost",
-			"port": 27017,
-			"user": "",
-			"password": "",
-			"database": "test"
-		}
-	}, {
-		"name": "mongodb_prod",
-		"settings": {
-			"url": "mongodb://localhost:27017/test",
-			"host": "localhost",
-			"port": 27017,
-			"user": "",
-			"password": "",
-			"database": "test"
-		}
-	}],
-	"models": [{
-		"dataSourceName": "mongodb",
-		"tablename" : "order",
-		"basePath" : "order",
-		"description" : "订单信息 ",
-		"fields" : [
+[
+	{
+		"datasource": "5c00e0af16748c32246ef2d6",
+		"tablename": "user",
+		"apiVersion": "v1",
+		"basePath": "user",
+		"description": "test",
+		"status": "active",
+		"paths": [
 			{
-				"field_name" : "_id",
-				"data_type" : "string",
-				"primary_key_position" : 1,
-				"description": "主键ID"
+				"path": "/api/v1/user",
+				"method": "POST",
+				"description": "create a new record",
+				"name": "create",
+				"result": "Document",
+				"type": "preset",
+				"acl": ["role id 1", "role id 2", "role id 3"]
 			},
 			{
-				"field_name": "name",
-				"data_type": "string",
-				"required": true,
-				"description": "名称"
-			},
-			{
-				"field_name": "title",
-				"data_type": "string",
-				"description": "标题"
-			},
-			{
-				"field_name": "tag",
-				"data_type": "array",
-				"itemType": "string",
-				"description": "标签"
-			},
-			{
-				"field_name": "desc",
-				"data_type": "buffer",
-				"description": "描述"
-			}
-		],
-		"paths" : [
-			{
-				"name" : "create",
-				"type" : "preset"
-			},
-			{
-				"name" : "findById",
-				"type" : "preset"
-			},
-			{
-				"name" : "updateById",
-				"type" : "preset"
-			},
-			{
-				"name" : "deleteById",
-				"type" : "preset"
-			},
-			{
-				"name" : "findPage",
-				"type" : "preset"
-			},
-			{
-				"path": "custom",
-				"type": "custom",
-				"description" : "自定义查询",
-				"filter": {
-					"name": "手机",
-					"amount": {
-						"$gt": 500
+				"path": "/api/v1/user/{id}",
+				"method": "GET",
+				"description": "get record by id",
+				"name": "findById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"defaultvalue": 1,
+						"description": "document id"
 					}
+				],
+				"result": "Document",
+				"type": "preset",
+				"acl": ["role id 1", "role id 2", "role id 3"]
+			},
+			{
+				"path": "/api/v1/user/{id}",
+				"method": "PATCH",
+				"name": "updateById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"defaultvalue": 1,
+						"description": "document id"
+					}
+				],
+				"description": "update record by id",
+				"result": "Document",
+				"type": "preset",
+				"acl": ["role id 1", "role id 2", "role id 3"]
+			},
+			{
+				"path": "/api/v1/user/{id}",
+				"method": "DELETE",
+				"name": "deleteById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"description": "document id"
+					}
+				],
+				"description": "delete record by id",
+				"type": "preset",
+				"acl": ["role id 1", "role id 2", "role id 3"]
+			},
+			{
+				"path": "/api/v1/user",
+				"method": "GET",
+				"name": "findPage",
+				"params": [
+					{
+						"name": "page",
+						"type": "int",
+						"defaultvalue": 1,
+						"description": "page number"
+					},
+					{
+						"name": "limit",
+						"type": "int",
+						"defaultvalue": 20,
+						"description": "max records per page"
+					},
+					{
+						"name": "sort",
+						"type": "object",
+						"description": "sort setting,Array ,format like [{'propertyName':'ASC'}]"
+					},
+					{
+						"name": "filter",
+						"type": "object",
+						"description": "search filter object,Array"
+					}
+				],
+				"description": "get record list by page and limit",
+				"result": "Page<Document>",
+				"type": "preset",
+				"acl": ["role id 1", "role id 2", "role id 3"]
+			},
+			{
+				"method": "GET",
+				"condition": {
+					"values": [
+						{
+							"field": {
+								"name": "role",
+								"type": "Integer"
+							},
+							"expression": {
+								"id": "==",
+								"text": "==",
+								"name": 6
+							},
+							"value": 1,
+							"valuetype": "",
+							"right": 0,
+							"left": 0
+						},
+						{
+							"field": {
+								"name": "email",
+								"type": "String"
+							},
+							"expression": {
+								"id": "like",
+								"text": "like",
+								"name": null
+							},
+							"value": "gmail.com",
+							"valuetype": "",
+							"right": 0,
+							"left": 0,
+							"relation": {
+								"id": "&&",
+								"text": "&&"
+							}
+						}
+					]
 				},
-				"fields" : [
-					"_id","name","title"
-				]
+				"fields": [
+					{
+						"field_name": "_id",
+						"table_name": "user",
+						"data_type": "ObjectId",
+						"primary_key_position": 1,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": "PRI",
+						"precision": null,
+						"scale": null,
+						"visible": false
+					},
+					{
+						"field_name": "accesscode",
+						"table_name": "user",
+						"data_type": "String",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null,
+						"visible": false
+					},
+					{
+						"field_name": "password",
+						"table_name": "user",
+						"data_type": "String",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null,
+						"visible": false
+					},
+					{
+						"field_name": "email",
+						"table_name": "user",
+						"data_type": "String",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "emailVerified",
+						"table_name": "user",
+						"data_type": "Boolean",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "role",
+						"table_name": "user",
+						"data_type": "Integer",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "account_status",
+						"table_name": "user",
+						"data_type": "Integer",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					}
+				],
+				"type": "custom",
+				"name": "admin",
+				"description": "get admin user",
+				"filter": {
+					"items": [
+						{
+							"column": "role",
+							"operation": 6,
+							"value": 1,
+							"datatype": "string",
+							"relation": "&&"
+						},
+						{
+							"column": "email",
+							"value": "gmail.com",
+							"datatype": "string",
+							"relation": "&&"
+						}
+					]
+				},
+				"params": [
+					{
+						"name": "page",
+						"type": "int",
+						"defaultvalue": 1,
+						"description": "page number"
+					},
+					{
+						"name": "limit",
+						"type": "int",
+						"defaultvalue": 20,
+						"description": "max records per page"
+					},
+					{
+						"name": "sort",
+						"type": "object",
+						"description": "sort setting,Array ,format like [{'propertyName':'ASC'}]"
+					},
+					{
+						"name": "filter",
+						"type": "object",
+						"description": "search filter object,Array"
+					}
+				],
+				"path": "/api/v1/user/cust/admin",
+				"acl": ["role id 1", "role id 2", "role id 3"]
 			}
-		]
-	}, {
-		"dataSourceName": "mongodb_prod",
-		"tablename" : "merchant",
-		"basePath" : "merchant",
-		"description" : "商户信息 ",
-		"fields" : [
+		],
+		"user_id": "5c00d53e6443c7310e9e0ada",
+		"fields": [
 			{
-				"field_name" : "_id",
-				"data_type" : "string",
-				"primary_key_position" : 1,
-				"description": "主键ID"
+				"field_name": "_id",
+				"table_name": "user",
+				"data_type": "ObjectId",
+				"primary_key_position": 1,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": "PRI",
+				"precision": null,
+				"scale": null
 			},
 			{
-				"field_name": "name",
-				"data_type": "string",
-				"required": true,
-				"description": "商户名称"
+				"field_name": "accesscode",
+				"table_name": "user",
+				"data_type": "String",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			},
 			{
-				"field_name": "address",
-				"data_type": "string",
-				"description": "商户注册地址"
+				"field_name": "password",
+				"table_name": "user",
+				"data_type": "String",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			},
 			{
-				"field_name": "type",
-				"data_type": "string",
-				"description": "商户类型"
+				"field_name": "email",
+				"table_name": "user",
+				"data_type": "String",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
+			},
+			{
+				"field_name": "emailVerified",
+				"table_name": "user",
+				"data_type": "Boolean",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
+			},
+			{
+				"field_name": "role",
+				"table_name": "user",
+				"data_type": "Integer",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
+			},
+			{
+				"field_name": "account_status",
+				"table_name": "user",
+				"data_type": "Integer",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
+			}
+		],
+		"connection": {
+			"_id": "5c00e0af16748c32246ef2d6",
+			"name": "mongo_demo",
+			"connection_type": "source_and_target",
+			"database_type": "mongodb",
+			"database_host": "",
+			"database_username": "",
+			"database_port": 0,
+			"database_uri": "mongodb://localhost:27017/tapdata",
+			"database_name": "",
+			"database_password": "",
+			"retry": 0,
+			"nextRetry": null,
+			"user_id": "5c00d53e6443c7310e9e0ada",
+			"ssl": false,
+			"fill": "uri",
+			"plain_password": "",
+			"auth_db": "",
+			"schema": {
+				"tables": [
+					{
+						"table_name": "Connections",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "Connections",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "name",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "connection_type",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_type",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_host",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_username",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_port",
+								"table_name": "Connections",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_uri",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_name",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "database_password",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "retry",
+								"table_name": "Connections",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "nextRetry",
+								"table_name": "Connections",
+								"data_type": "NULL",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "user_id",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "ssl",
+								"table_name": "Connections",
+								"data_type": "Boolean",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "fill",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "plain_password",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "auth_db",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "schema",
+								"table_name": "Connections",
+								"data_type": "Document",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "status",
+								"table_name": "Connections",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "response_body",
+								"table_name": "Connections",
+								"data_type": "Document",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "Workers",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "Workers",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "worker_ip",
+								"table_name": "Workers",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "process_id",
+								"table_name": "Workers",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "start_time",
+								"table_name": "Workers",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "ping_time",
+								"table_name": "Workers",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "worker_type",
+								"table_name": "Workers",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "total_thread",
+								"table_name": "Workers",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "running_thread",
+								"table_name": "Workers",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "job_ids",
+								"table_name": "Workers",
+								"data_type": "ArrayList",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "user_id",
+								"table_name": "Workers",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "Logs",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "Logs",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "level",
+								"table_name": "Logs",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "loggerName",
+								"table_name": "Logs",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "message",
+								"table_name": "Logs",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "threadId",
+								"table_name": "Logs",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "threadName",
+								"table_name": "Logs",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "threadPriority",
+								"table_name": "Logs",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "millis",
+								"table_name": "Logs",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "date",
+								"table_name": "Logs",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "thrown",
+								"table_name": "Logs",
+								"data_type": "NULL",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "contextMap",
+								"table_name": "Logs",
+								"data_type": "Document",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "contextStack",
+								"table_name": "Logs",
+								"data_type": "ArrayList",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "AccessToken",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "AccessToken",
+								"data_type": "String",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "ttl",
+								"table_name": "AccessToken",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "created",
+								"table_name": "AccessToken",
+								"data_type": "Date",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "userId",
+								"table_name": "AccessToken",
+								"data_type": "ObjectId",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "Settings",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "category",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "key",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "value",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "default_value",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "documentation",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "last_update",
+								"table_name": "Settings",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "last_update_by",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "scope",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "sort",
+								"table_name": "Settings",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "key_label",
+								"table_name": "Settings",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "user_visible",
+								"table_name": "Settings",
+								"data_type": "Boolean",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "hot_reloading",
+								"table_name": "Settings",
+								"data_type": "Boolean",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "category_sort",
+								"table_name": "Settings",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "user",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "user",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "accesscode",
+								"table_name": "user",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "password",
+								"table_name": "user",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "email",
+								"table_name": "user",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "emailVerified",
+								"table_name": "user",
+								"data_type": "Boolean",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "role",
+								"table_name": "user",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "account_status",
+								"table_name": "user",
+								"data_type": "Integer",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "Role",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "Role",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "name",
+								"table_name": "Role",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "created",
+								"table_name": "Role",
+								"data_type": "Date",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "modified",
+								"table_name": "Role",
+								"data_type": "Date",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					},
+					{
+						"table_name": "RoleMapping",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "RoleMapping",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "principalType",
+								"table_name": "RoleMapping",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "principalId",
+								"table_name": "RoleMapping",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "roleId",
+								"table_name": "RoleMapping",
+								"data_type": "ObjectId",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					}
+				]
+			},
+			"status": "ready",
+			"response_body": {
+				"validate_details": [
+					{
+						"stage_code": "validate-3000",
+						"show_msg": "Checking the ip port is available.",
+						"status": "passed",
+						"sort": 1,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3100",
+						"show_msg": "Checking username/password is correct.",
+						"status": "passed",
+						"sort": 2,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3400",
+						"show_msg": "Checking privileges.",
+						"status": "passed",
+						"sort": 3,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3200",
+						"show_msg": "Trying to load schema.",
+						"status": "passed",
+						"sort": 4,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					}
+				],
+				"retry": 0
+			}
+		}
+	},
+	{
+		"id": "5c02580053d257347d156469",
+		"datasource": "5c0257ca53d257347d156468",
+		"tablename": "orders",
+		"apiVersion": "v2",
+		"basePath": "orders",
+		"description": "",
+		"status": "active",
+		"paths": [
+			{
+				"path": "/api/v2/orders",
+				"method": "POST",
+				"description": "create a new record",
+				"name": "create",
+				"result": "Document",
+				"type": "preset"
+			},
+			{
+				"path": "/api/v2/orders/{id}",
+				"method": "GET",
+				"description": "get record by id",
+				"name": "findById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"defaultvalue": 1,
+						"description": "document id"
+					}
+				],
+				"result": "Document",
+				"type": "preset"
+			},
+			{
+				"path": "/api/v2/orders/{id}",
+				"method": "PATCH",
+				"name": "updateById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"defaultvalue": 1,
+						"description": "document id"
+					}
+				],
+				"description": "update record by id",
+				"result": "Document",
+				"type": "preset"
+			},
+			{
+				"path": "/api/v2/orders",
+				"method": "GET",
+				"name": "findPage",
+				"params": [
+					{
+						"name": "page",
+						"type": "int",
+						"defaultvalue": 1,
+						"description": "page number"
+					},
+					{
+						"name": "limit",
+						"type": "int",
+						"defaultvalue": 20,
+						"description": "max records per page"
+					},
+					{
+						"name": "sort",
+						"type": "object",
+						"description": "sort setting,Array ,format like [{'propertyName':'ASC'}]"
+					},
+					{
+						"name": "filter",
+						"type": "object",
+						"description": "search filter object,Array"
+					}
+				],
+				"description": "get record list by page and limit",
+				"result": "Page<Document>",
+				"type": "preset"
+			},
+			{
+				"method": "GET",
+				"condition": {
+					"values": [
+						{
+							"field": {
+								"name": "desc",
+								"type": "String"
+							},
+							"expression": {
+								"id": "like",
+								"text": "like",
+								"name": null
+							},
+							"value": "Phone",
+							"valuetype": "",
+							"right": 0,
+							"left": 0
+						}
+					]
+				},
+				"fields": [
+					{
+						"field_name": "_id",
+						"table_name": "orders",
+						"data_type": "ObjectId",
+						"primary_key_position": 1,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": "PRI",
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "order_number",
+						"table_name": "orders",
+						"data_type": "Double",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "customer_id",
+						"table_name": "orders",
+						"data_type": "Double",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					},
+					{
+						"field_name": "desc",
+						"table_name": "orders",
+						"data_type": "String",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null,
+						"visible": false
+					},
+					{
+						"field_name": "date",
+						"table_name": "orders",
+						"data_type": "Date",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null,
+						"visible": false
+					},
+					{
+						"field_name": "amount",
+						"table_name": "orders",
+						"data_type": "Double",
+						"primary_key_position": 0,
+						"foreign_key_table": null,
+						"foreign_key_column": null,
+						"key": null,
+						"precision": null,
+						"scale": null
+					}
+				],
+				"type": "custom",
+				"name": "myorders",
+				"filter": {
+					"column": "desc",
+					"value": "Phone",
+					"datatype": "string",
+					"relation": "&&"
+				},
+				"params": [
+					{
+						"name": "page",
+						"type": "int",
+						"defaultvalue": 1,
+						"description": "page number"
+					},
+					{
+						"name": "limit",
+						"type": "int",
+						"defaultvalue": 20,
+						"description": "max records per page"
+					},
+					{
+						"name": "sort",
+						"type": "object",
+						"description": "sort setting,Array ,format like [{'propertyName':'ASC'}]"
+					},
+					{
+						"name": "filter",
+						"type": "object",
+						"description": "search filter object,Array"
+					}
+				],
+				"path": "/api/v2/orders/cust/myorders",
+				"acl": ["role id 1", "role id 2", "role id 3"]
+			}
+		],
+		"user_id": "5c00d53e6443c7310e9e0ada",
+		"fields": [
+			{
+				"field_name": "_id",
+				"table_name": "orders",
+				"data_type": "ObjectId",
+				"primary_key_position": 1,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": "PRI",
+				"precision": null,
+				"scale": null
+			},
+			{
+				"field_name": "order_number",
+				"table_name": "orders",
+				"data_type": "Double",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
+			},
+			{
+				"field_name": "customer_id",
+				"table_name": "orders",
+				"data_type": "Double",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			},
 			{
 				"field_name": "desc",
-				"data_type": "string",
-				"description": "描述"
-			}
-		],
-		"paths" : [
-			{
-				"name" : "create",
-				"type" : "preset"
+				"table_name": "orders",
+				"data_type": "String",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			},
 			{
-				"name" : "findById",
-				"type" : "preset"
-			},
-			{
-				"name" : "updateById",
-				"type" : "preset"
-			},
-			{
-				"name" : "deleteById",
-				"type" : "preset"
-			},
-			{
-				"name" : "findPage",
-				"type" : "preset"
-			},
-			{
-				"path": "secondary",
-				"type": "custom",
-				"description" : "二级商户查询"
-			}
-		]
-	}, {
-		"dataSourceName": "mongodb_prod",
-		"tablename" : "trade",
-		"basePath" : "trade",
-		"description" : "交易信息",
-		"fields" : [
-			{
-				"field_name" : "_id",
-				"data_type" : "string",
-				"primary_key_position" : 1,
-				"description": "主键ID"
-			},
-			{
-				"field_name": "name",
-				"data_type": "string",
-				"required": true,
-				"description": "交易名称"
+				"field_name": "date",
+				"table_name": "orders",
+				"data_type": "Date",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			},
 			{
 				"field_name": "amount",
-				"data_type": "number",
-				"description": "交易金额"
-			},
-			{
-				"field_name": "type",
-				"data_type": "string",
-				"description": "交易类型"
-			},
-			{
-				"field_name": "desc",
-				"data_type": "string",
-				"description": "描述"
+				"table_name": "orders",
+				"data_type": "Double",
+				"primary_key_position": 0,
+				"foreign_key_table": null,
+				"foreign_key_column": null,
+				"key": null,
+				"precision": null,
+				"scale": null
 			}
 		],
-		"paths" : [
-			{
-				"path": "trade",
-				"type": "custom",
-				"description" : "交易查询"
-			}
-		]
-	} ]
-}
+		"connection": {
+			"_id": "5c0257ca53d257347d156468",
+			"name": "localmongo",
+			"connection_type": "source_and_target",
+			"database_type": "mongodb",
+			"database_host": "",
+			"database_username": "",
+			"database_port": 0,
+			"database_uri": "mongodb://localhost:27017/tjdb",
+			"database_name": "",
+			"database_password": "",
+			"retry": 0,
+			"nextRetry": null,
+			"user_id": "5c00d53e6443c7310e9e0ada",
+			"ssl": false,
+			"fill": "uri",
+			"plain_password": "",
+			"auth_db": "",
+			"schema": {
+				"tables": [
+					{
+						"table_name": "orders",
+						"fields": [
+							{
+								"field_name": "_id",
+								"table_name": "orders",
+								"data_type": "ObjectId",
+								"primary_key_position": 1,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": "PRI",
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "order_number",
+								"table_name": "orders",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "customer_id",
+								"table_name": "orders",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "desc",
+								"table_name": "orders",
+								"data_type": "String",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "date",
+								"table_name": "orders",
+								"data_type": "Date",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							},
+							{
+								"field_name": "amount",
+								"table_name": "orders",
+								"data_type": "Double",
+								"primary_key_position": 0,
+								"foreign_key_table": null,
+								"foreign_key_column": null,
+								"key": null,
+								"precision": null,
+								"scale": null
+							}
+						],
+						"cdc_enabled": null
+					}
+				]
+			},
+			"status": "ready",
+			"response_body": {
+				"validate_details": [
+					{
+						"stage_code": "validate-3000",
+						"show_msg": "Checking the ip port is available.",
+						"status": "passed",
+						"sort": 1,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3100",
+						"show_msg": "Checking username/password is correct.",
+						"status": "passed",
+						"sort": 2,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3400",
+						"show_msg": "Checking privileges.",
+						"status": "passed",
+						"sort": 3,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					},
+					{
+						"stage_code": "validate-3200",
+						"show_msg": "Trying to load schema.",
+						"status": "passed",
+						"sort": 4,
+						"error_code": null,
+						"fail_message": null,
+						"required": true
+					}
+				],
+				"retry": 0
+			},
+			"id": "5c0257ca53d257347d156468"
+		}
+	}
+]

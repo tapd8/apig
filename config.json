@@ -4,10 +4,12 @@
   "host": "0.0.0.0",
   "port": 3080,
   "tapDataServer": {
+    "url_mock": "http://127.0.0.1:3030/config.json",
     "url": "http://47.107.36.184:3030/api/apiModules"
   },
 
   "reportServer": {
+    "url_mock": "http://127.0.0.1:3030/api/Workers",
     "url": "http://47.107.36.184:3030/api/Workers"
   },
   "reportIntervals": 5000,
@@ -19,5 +21,7 @@
   },
 
   "cacheDir": "cache",
-  "logDir": "logs"
+  "logDir": "logs",
+
+  "jwtSecretKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
 }

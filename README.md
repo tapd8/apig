@@ -78,6 +78,9 @@ let config = {
 			{
 				"name": "create",			// 可选值："create", "findById", "updateById", "deleteById", "findPage"
 				"type": "preset", 			// 预设API
+				"roles": [					// 可以访问当前api的角色id列表
+					"role id 1", "role id 2"
+				]
 			},
 			{
 				"type": "custom",			// 自定义API
@@ -91,12 +94,26 @@ let config = {
 				},
 				"fields" : [				// 【针对查询接口有效】,如果提供，查询结果只包含指定的字段
 					"_id", "name", "parent"
+				],
+				"roles": [					// 可以访问当前api的角色id列表
+					"role id 1", "role id 2"
 				]
 			}
 		]
 	} ]
 }
 
+```
+
+#### JWT token payload 格式
+```javascript
+let payload = {
+	"expiredate": 156435432,                  // 必填,过期时间戳，与当前系统时间比较，小于系统时间时，认定为过期
+	"roles": ['role id 1', 'role id 2',],      // 必填,当前用户角色列表
+	"user_id": "1",								// 必填,用户id
+	"name":"Jack",								// 可空,用户名
+	"email": "jack@gmail.com"					// 可空,用户邮箱
+ }
 ```
 
 #### 如何测试？
