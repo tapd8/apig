@@ -29,7 +29,7 @@ export class <%= className %>Controller {
 
       <%_ if (val['name'] === 'create') { -%>
         @post('<%= val['path'] %>', {
-          summary: "新增接口",
+          summary: '<%= val['summary']%>',
           responses: {
             '200': {
               description: '<%= modelName %> model instance',
@@ -43,7 +43,7 @@ export class <%= className %>Controller {
       <%_ } else if (val['name'] === 'findPage') { %>
 
         @get('<%= val['path'] %>', {
-          summary: "分页查询接口",
+          summary: '<%= val['summary']%>',
           responses: {
             '200': {
               description: 'Object of page data, result.data is <%= modelName %> model instances, result.total is model count.',
@@ -61,8 +61,6 @@ export class <%= className %>Controller {
         async find(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
-          if( filter && !filter.limit )
-            filter.limit = 10;
           return {
             data: await this.<%= repositoryNameCamel %>.find(filter),
             total: await this.<%= repositoryNameCamel %>.count(filter ? filter['where'] : {})
@@ -71,7 +69,7 @@ export class <%= className %>Controller {
       <%_ } else if (val['name'] === 'findById') { %>
 
         @get('<%= val['path'] %>/{id}', {
-          summary: "根据ID查询记录接口",
+          summary: '<%= val['summary']%>',
           responses: {
             '200': {
               description: '<%= modelName %> model instance',
@@ -85,7 +83,7 @@ export class <%= className %>Controller {
       <%_ } else if (val['name'] === 'updateById') { %>
 
         @patch('<%= val['path'] %>/{id}', {
-          summary: "根据ID更新记录接口",
+          summary: '<%= val['summary']%>',
           responses: {
             '204': {
               description: '<%= modelName %> PATCH success',
@@ -101,7 +99,7 @@ export class <%= className %>Controller {
       <%_ } else if (val['name'] === 'deleteById') { %>
 
         @del('<%= val['path'] %>/{id}', {
-          summary: "根据ID删除记录接口",
+          summary: '<%= val['summary']%>',
           responses: {
             '204': {
               description: '<%= modelName %> DELETE success',
@@ -133,7 +131,7 @@ export class <%= className %>Controller {
       async <%= name %>(
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
-        filter = filter || {};
+          filter = filter || {};
         <%_ if (val['filter']) { -%>
           filter.where = filter.where || {};
           Object.assign(filter.where, <%- JSON.stringify(val['filter']) %>);
@@ -142,8 +140,6 @@ export class <%= className %>Controller {
           filter.fields = filter.fields || {};
           Object.assign(filter.fields, <%- JSON.stringify(val['fields']) %>);
         <%_ } -%>
-        if( !filter.limit )
-          filter.limit = 10;
         return {
           data: await this.<%= repositoryNameCamel %>.find(filter),
           total: await this.<%= repositoryNameCamel %>.count(filter['where'] || {})
