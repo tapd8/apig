@@ -10,12 +10,15 @@ const makeDir = require('make-dir');
  * 最后配置信息的 hashCode，用于比较配置文件是否更新
  * @type {null}
  */
-let lastHashCode = null;
+let lastHashCode = null,
+	timeoutId ;
 
 /**
  * 加载配置文件
  */
-const loadConfig = function() {
+const
+  __listeners = {},
+  loadConfig = function() {
 
 		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
 		request.get(appConfig.tapDataServer.url, function(err, response, body) {
@@ -46,10 +49,16 @@ const loadConfig = function() {
 						let config = JSON.parse(body);
 
 						// 通知配置文件更新了
-						process.send({
+						const msg = {
 							type: 'changed',
 							data: config
-						});
+						};
+						if ( __listeners['message']){
+							__listeners['message'].forEach((l) => {
+								if( typeof l === 'function' )
+									l(msg);
+							})
+						}
 
 
 					} catch (e) {
@@ -59,7 +68,7 @@ const loadConfig = function() {
 			}
 		});
 
-		setTimeout(loadConfig, appConfig.intervals);
+	  timeoutId = setTimeout(loadConfig, appConfig.intervals);
 	},
 
 	/**
@@ -87,6 +96,17 @@ const loadConfig = function() {
 		return path.resolve(`${appConfig.cacheDir}/tap_data_server_download_config.json`);
 	};
 
-__init(() => {
-	loadConfig();
-});
+exports.on = function(type, listener){
+	if( !__listeners[type] )
+		__listeners[type] = [];
+	__listeners[type].push(listener);
+};
+exports.start = function(){
+	__init(() => {
+		loadConfig();
+	});
+};
+exports.stop = function(){
+	if( timeoutId )
+		clearTimeout(timeoutId);
+}

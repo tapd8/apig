@@ -41,7 +41,7 @@ class Main{
 		}
 
 		if( this.configMonitor ){
-			this.configMonitor.kill();
+			this.configMonitor.stop();
 			log.info('configMonitor process exited.');
 		}
 	}
@@ -50,6 +50,9 @@ class Main{
 	 * 启动 app 进程
 	 */
 	startApp(){
+
+		if( this.appWorker )
+			this.appWorker.kill();
 
 		this.appWorker = fork(`${__dirname}/app.js`);
 
@@ -63,7 +66,7 @@ class Main{
 		 * 配置文件变化监听进程
 		 * @type {ChildProcess}
 		 */
-		this.configMonitor = fork(`${__dirname}/monitor.js`);
+		this.configMonitor = require('./monitor');
 
 		this.configMonitor.on('message', (event) => {
 			if( event && event.type === 'changed'){
@@ -76,6 +79,7 @@ class Main{
 				this.generator(config);
 			}
 		} );
+		this.configMonitor.start();
 	}
 
 	/**
@@ -90,9 +94,7 @@ class Main{
 				if( result ){
 					log.info('生成代码完成，重启应用');
 
-					this.appWorker.send({
-						type: 'restart'
-					});
+					this.startApp();
 
 				} else {
 					log.info('生成代码失败');
