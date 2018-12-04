@@ -86,7 +86,7 @@ let config = {
 				"filter" : {				// 【针对查询接口有效】如果提供，将会对这个API所有的数据库查询应用此查询条件，与用户查询条件 and 组合
 					"name": "aa",			// tapdata 根据用户设置，生成查询条件；主要目的是保留前端灵活性
 					"amount": {
-						"$gt": 20
+						"gt": 20			// 可用关键字列表：gt: '>', gte: '>=', ne: '!=', lt: '<', lte: '<=', like: 'LIKE', nlike: 'NOT LIKE', inq: 'IN', nin: 'NOT IN'
 					}
 				},
 				"fields" : [				// 【针对查询接口有效】,如果提供，查询结果只包含指定的字段
