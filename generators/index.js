@@ -4,7 +4,7 @@ const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
 const RepositoryGenerator = exports.RepositoryGenerator = require('./repository');
 const ControllerGenerator = exports.ControllerGenerator = require('./controller');
-const adapterTapDataConfig = require('./adapter');
+const adapterTapDataConfig = require('./tapDataConfigAdapter');
 
 const deleteTs = require('./delete-ts');
 
