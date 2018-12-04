@@ -124,7 +124,7 @@ queryPage = function(page, pageSize, cb){
 };
 
 
-create((order)=>{
+/*create((order)=>{
 
 	let id = order._id;
 	order.name = '飞利浦剃须刀';
@@ -146,4 +146,24 @@ create((order)=>{
 
 	});
 
+});*/
+
+request.get('http://127.0.0.1:3000/users?' + encodeURI(parameterSerialization('filter',
+  {
+	  "where": {
+		  "nickname": {
+			  "unlike": '%跑%'
+		  }
+	  },
+	  "fields": {},
+	  "offset": 0,
+	  "limit": 10,
+	  "skip": 0
+  }
+)), (err, resp, body) => {
+
+	if( err ){
+		console.error('查询失败', err);
+	}
+	console.log(resp.statusCode, body);
 });
