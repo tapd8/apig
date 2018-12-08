@@ -192,7 +192,7 @@ const test = (function(){
 		console.log(msg);
 	};
 
-	log('test convertCondition');
+	/*log('test convertCondition');
 	log(convertCondition({"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"}));
 	log(convertCondition({"column":"role","operation":2,"value":1,"datatype":"string","relation":"&&"}));
 	log(convertCondition({"column":"role","operation":3,"value":1,"datatype":"string","relation":"&&"}));
@@ -201,10 +201,45 @@ const test = (function(){
 	log(convertCondition({"column":"role","operation":6,"value":1,"datatype":"string","relation":"&&"}));
 	log(convertCondition({"column":"role","operation":7,"value":1,"datatype":"string","relation":"&&"}));
 	log(convertCondition({"column":"role","operation":8,"value":1,"datatype":"string","relation":"&&"}));
-
+*/
 	log();
 	log('test buildQuery');
+
 	log(buildQuery({"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"}));
+
+	log(buildQuery({
+		'items': [
+			{'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&'},
+			{
+				'column': 'qty',
+				'operation': 6,
+				'value': 61,
+				'datatype': 'string',
+				'relation': '||',
+			}],
+	}));
+	log(buildQuery({
+		'items': [
+			{'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&'},
+			{
+				items: [{
+					'column': 'qty',
+					'operation': 6,
+					'value': 61,
+					'datatype': 'string',
+					'relation': '&&',
+				}, {
+					'column': 'price',
+					'operation': 6,
+					'value': 12,
+					'datatype': 'string',
+					'relation': '&&',
+				}],
+				'relation': '||'
+			}
+			]
+	}));
+
 	log(buildQuery({
 		items: [
 			{
@@ -246,4 +281,5 @@ const test = (function(){
 		]
 	}));
 });
-//test();
+test();
+
