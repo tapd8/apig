@@ -28,14 +28,14 @@ const report = function(data) {
 		}, (err, resp, body) => {
 
 			if( err ){
-				log.error('心跳汇报失败', err);
+				log.error('report fail', err);
 			} else {
-				log.info(`心跳汇报完成:`, body);
+				log.info(`report complete:`, body);
 			}
 
 		});
 	} catch (e) {
-		log.error('心跳汇报失败', e);
+		log.error('report fail', e);
 	}
 };
 

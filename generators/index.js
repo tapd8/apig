@@ -33,17 +33,17 @@ const validateConfig = function(config){
 
 	// 检查数据源
 	if( !config.dataSource ){
-		log.error('缺少数据源配置（config.dataSource）');
+		log.error('Missing data source config.（config.dataSource）');
 		return null;
 	}
 	if( !Array.isArray(config.dataSource) ) {
-		log.error('数据源配置（config.dataSource）必须为数组');
+		log.error('Invalid data source config, must be array data type.（config.dataSource）');
 		return null;
 	} else {
 		for( let i = 0; i < config.dataSource.length; i++ ){
 			let ds = config.dataSource[i];
 			if( !ds.name ){
-				log.error(`缺少数据源名称配置（config.dataSource[${i}].name）`);
+				log.error(`Missing data source name.（config.dataSource[${i}].name）`);
 				return null;
 			}
 
@@ -60,7 +60,7 @@ const validateConfig = function(config){
 			 * [protocol] + '://' + [username|user] + ':' + [password] + '@' + [hostname|host] + ':' + [port] + '/' + [database|db]
 			 */
 			if( !ds.settings ){
-				log.error(`缺少数据源连接参数配置（config.dataSource[${i}].settings）`);
+				log.error(`Missing data source parameter config（config.dataSource[${i}].settings）`);
 				return null;
 			}
 
@@ -70,7 +70,7 @@ const validateConfig = function(config){
 
 	// 检查 model
 	if( !config.models ){
-		log.error('缺少数据实体配置（config.models）');
+		log.error('Missing model config（config.models）');
 		return null;
 	} else {
 		let models = Array.isArray(config.models) ? config.models : [config.models];
@@ -78,23 +78,23 @@ const validateConfig = function(config){
 		for( let i = 0; i < models.length; i++){
 			let model = models[i];
 			if( !model.tablename ){
-				log.error(`缺少数据实体名称配置（config.models[${i}].tablename）`);
+				log.error(`Missing model name config.（config.models[${i}].tablename）`);
 				return null;
 			}
 			if( !model.fields ){
-				log.error(`缺少数据实体字段属性配置（config.models[${i}].fields）`);
+				log.error(`Missing model field config.（config.models[${i}].fields）`);
 				return null;
 			}
 			if( !Array.isArray(model.fields) ){
-				log.error(`数据实体字段属性配置必须为数组（config.models[${i}].fields）`);
+				log.error(`Invalid model field config, must be array data type.（config.models[${i}].fields）`);
 				return null;
 			}
 			if( !model.dataSourceName ){
-				log.error(`数据实体缺少数据源配置（config.models[${i}].dataSourceName）`);
+				log.error(`Model lacks data source name config.（config.models[${i}].dataSourceName）`);
 				return null;
 			}
 			if( !result.dataSource[model.dataSourceName] ){
-				log.error(`数据实体配置的数据源名称不存在（config.models[${i}].dataSourceName）:${model.dataSourceName}`);
+				log.error(`Invalid model data source config, not found data source by name.（config.models[${i}].dataSourceName）:${model.dataSourceName}`);
 				return null;
 			}
 
@@ -121,14 +121,14 @@ const validateConfig = function(config){
 					type = 'number';
 
 				if( !typeChoices.includes(type) ){
-					log.error(`数据实体字段类型不合法（config.models[${i}].fields[${idx}].data_type）: ${type}`);
+					log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].data_type）: ${type}`);
 					return;
 				}
 				if( itemType ){
 					if( ['int', 'integer', 'long', 'double'].includes(itemType))
 						itemType = 'number';
 					if( !typeChoices.includes(itemType) ){
-						log.error(`数据实体字段类型不合法（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
+						log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
 						return;
 					}
 				}
@@ -151,7 +151,7 @@ const validateConfig = function(config){
 			});
 
 			if( !idProperty ){
-				log.error(`实体对象缺少唯一主键字段配置（config.models[${i}]）`);
+				log.error(`Model missing primary key.（config.models[${i}]）`);
 				return null;
 			}
 
@@ -177,7 +177,7 @@ const validateConfig = function(config){
 					name = `find_${idx}`;
 
 					if( !path || path.trim().length === 0){
-						log.error(`实体api配置缺少请求路径字段（config.models[${i}].paths[${idx}].path）`);
+						log.error(`Invalid model api config, missing path.（config.models[${i}].paths[${idx}].path）`);
 						return;
 					}
 				}

@@ -92,16 +92,16 @@ class Main{
 		try {
 			generator(config, (result) => {
 				if( result ){
-					log.info('生成代码完成，重启应用');
+					log.info('generator code successful, restart app server.');
 
 					this.startApp();
 
 				} else {
-					log.info('生成代码失败');
+					log.info('generator code fail.');
 				}
 			});
 		} catch (e) {
-			log.error('生成代码失败', e);
+			log.error('generator code fail.', e);
 		}
 	}
 
