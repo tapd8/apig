@@ -26,3 +26,4 @@ if (require.main === module) {
 		process.exit(1);
 	});
 }
+require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\r\n`);

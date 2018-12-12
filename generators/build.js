@@ -9,7 +9,7 @@ module.exports = function(cb){
 		cwd: path.dirname(__dirname)
 	};
 
-	let cleanResult = spawn.sync('npm', ['run', 'clean'], opts);
+	let cleanResult = spawn.sync('npm', ['run', 'clean:dist'], opts);
 	log.info('\n' + cleanResult.stdout);
 	if( cleanResult.status > 0)
 		log.error('\n' + cleanResult.stderr);

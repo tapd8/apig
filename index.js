@@ -117,3 +117,4 @@ const exitHandler = function(){
 };
 process.on('exit', exitHandler);
 //process.on('SIGKILL', exitHandler);
+require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\r\n`);

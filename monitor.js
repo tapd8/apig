@@ -89,11 +89,13 @@ const
 	 */
 	getCacheConfig = function(){
 
-		if (!fs.existsSync(appConfig.cacheDir)) {
-			makeDir.sync(appConfig.cacheDir);
+		const cacheDirPath = appConfig.cacheDir.startsWith('/') ? appConfig.cacheDir : path.join(__dirname, appConfig.cacheDir);
+		if (!fs.existsSync(cacheDirPath)) {
+			log.info(`create cache dir ${cacheDirPath}`);
+			makeDir.sync(cacheDirPath);
 		}
 
-		return path.resolve(`${appConfig.cacheDir}/tap_data_server_download_config.json`);
+		return path.resolve(`${cacheDirPath}/tap_data_server_download_config.json`);
 	};
 
 exports.on = function(type, listener){
