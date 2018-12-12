@@ -18,6 +18,10 @@
 3. 启动
 	```shell
 	npm start
+	
+	# 或者
+	
+	./start.sh
 	```
 
 4. 浏览器访问地址[http://127.0.0.1:3030/apig](http://127.0.0.1:3030/apig)
@@ -42,6 +46,16 @@
     }
 	```
 
+#### 如何打包
+```shell
+
+# 安装依赖
+npm install
+
+# 打包，版本号在 package.json 中配置
+./pkg.sh 
+
+```
 
 ####  Tap data Server 配置文件
 
