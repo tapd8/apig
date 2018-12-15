@@ -14,10 +14,7 @@
   },
   "reportIntervals": 5000,
   "reportData": {
-    "worker_ip": "127.0.0.1",
-    "process_id": "api-gateway@gmail.com",
-    "worker_type": "api-server",
-    "user_id": "user_id"
+    "worker_type": "api-server"
   },
 
   "cacheDir": "cache",
