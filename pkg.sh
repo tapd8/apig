@@ -31,10 +31,10 @@ rm -rf \
 	$TARGET/src/models/* \
 	$TARGET/src/repositories/*
 
-echo "package $TARGET"
-tar -zcf "$TARGET.tar.gz" $TARGET
+# echo "package $TARGET"
+# tar -zcf "$TARGET.tar.gz" $TARGET
 
-rm -rf $TARGET
+# rm -rf $TARGET
 
-du -h "$TARGET.tar.gz"
+# du -h "$TARGET.tar.gz"
 echo "done."
