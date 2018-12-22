@@ -1,6 +1,6 @@
 global.appConfig = require('./config');
 const application = require('./dist');
-const report = require('./report');
+// const report = require('./report');
 
 module.exports = application;
 
