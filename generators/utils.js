@@ -7,6 +7,12 @@ const camelCase = require('change-case').camelCase;
 exports.toClassName = function(name) {
 	if (name === '') return new Error('no input');
 	if (typeof name !== 'string' || name == null) return new Error('bad input');
+
+	name = name.replace(/[-,\/,\\,\$,\%,\s]/g, '_')
+
+	if( /^\d/.test(name))
+		name = `L_${name}`
+
 	return name.substring(0, 1).toUpperCase() + name.substring(1);
 };
 
