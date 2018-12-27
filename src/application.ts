@@ -26,6 +26,17 @@ export class ApiGatewayApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(MySequence);
 
+    // Set OpenAPI specification
+	this.api({
+		openapi: '3.0.0',
+		info: {
+			title: 'Api-Server',
+			version: '1.0.0',
+		},
+		paths: {},
+		servers: [{ url: '/' }],
+	});
+
     // Set up default home page
     this.static('/', path.join(__dirname, '../../public'));
 

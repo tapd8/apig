@@ -38,11 +38,11 @@ export class MySequence implements SequenceHandler {
 			log.app.info(`${reqId} client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}`);
 
 			// 认证
-			/*if( excludeAuthPath.includes(request.path)){
+			if( excludeAuthPath.includes(request.path)){
 				log.app.debug('exclude auth path ' + request.path);
 			} else {
 				await this.authenticateRequest(request);
-			}*/
+			}
 
 			const result = await this.invoke(route, args);
 			this.send(response, result);
