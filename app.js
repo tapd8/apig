@@ -17,7 +17,7 @@ if (require.main === module) {
 		},
 	};
 	application.main(config, (result) => {
-		if (result)
+		if (result && typeof process.send === 'function')
 			process.send({
 				type: 'started',
 			});

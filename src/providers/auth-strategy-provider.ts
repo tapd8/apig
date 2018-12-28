@@ -10,6 +10,8 @@ import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import * as appConfig from '../../config.json';
 import {log} from '../log';
 
+import {sign as jwtSign} from 'jsonwebtoken'
+
 export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
 	constructor(
@@ -26,9 +28,36 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
 		const name = this.metadata.strategy;
 		if (name === 'JwtStrategy') {
+			const
+				fromHeader = ExtractJwt.fromHeader('token'),
+				fromQuery = ExtractJwt.fromUrlQueryParameter('token'),
+				fromBody = ExtractJwt.fromBodyField('token');
 			return new JwtStrategy({
 				secretOrKey: appConfig.jwtSecretKey,
-				jwtFromRequest: ExtractJwt.fromHeader('token'),
+				jwtFromRequest: function(request){
+					let token = null;
+
+					token = fromHeader(request);
+					if( token )
+						return token;
+
+					token = fromBody(request);
+					if( token )
+						return token;
+
+					token = fromQuery(request);
+					if( token )
+						return token;
+
+					token = jwtSign({
+						expireDateTime: new Date().getTime() + 300000,
+						roles: ['$everyone'],
+						user_id: '1',
+						name: 'API Server Default User'
+					}, appConfig.jwtSecretKey);
+
+					return token;
+				},
 				passReqToCallback: true
 			}, this.verify.bind(this));
 		} else {
