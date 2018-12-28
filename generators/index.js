@@ -158,7 +158,7 @@ const validateConfig = function(config){
 			// 校验转化 API配置
 			const api = {},
 				paths = model.paths || [],
-				apiVersion = config.apiVersion || 'v1';
+				apiVersion = model.apiVersion || 'v1';
 
 			if( basePath.startsWith('/'))
 				basePath = basePath.slice(1);
