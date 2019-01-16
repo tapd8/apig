@@ -159,7 +159,7 @@ module.exports = function(models){
 		dataSource[model.connection.name] = {
 			name: model.connection.name,
 			settings: {
-				url: model.connection.database_uri,
+				url: decodeURI(model.connection.database_uri),
 				host: model.connection.database_host,
 				port: model.connection.database_port,
 				user: model.connection.database_username,
