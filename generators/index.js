@@ -64,6 +64,14 @@ const validateConfig = function(config){
 				return null;
 			}
 
+			if( ds.settings.hasOwnProperty('url') && ds.settings.url ){
+				delete ds.settings.user;
+				delete ds.settings.password;
+				delete ds.settings.host;
+				delete ds.settings.port;
+				delete ds.settings.database;
+			}
+
 			result.dataSource[ds.name] = config.dataSource[i];
 		}
 	}
