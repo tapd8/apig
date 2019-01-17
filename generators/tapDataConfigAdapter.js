@@ -136,7 +136,9 @@ module.exports = function(models){
 				if( customApi.fields && customApi.fields.length > 0){
 					apiConfig.fields = [];
 					customApi.fields.forEach((field) => {
-						apiConfig.fields.push(field.field_name);
+						if( field.visible === true || field.visible === 'true'){
+							apiConfig.fields.push(field.field_name);
+						}
 					});
 				}
 

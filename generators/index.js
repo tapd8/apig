@@ -205,10 +205,10 @@ const validateConfig = function(config){
 					summary: summary,
 					filter: filter,
 					params: params,
-					fields: fields,
+					//fields: fields,
 					roles: roles || []
 				};
-				if( Array.isArray(fields) ){
+				if( Array.isArray(fields) && fields.length > 0 ){
 					api[name].fields = {};
 					for(let i = 0; i < fields.length; i++)
 						api[name].fields[fields[i]] = 1;
