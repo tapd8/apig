@@ -18,10 +18,10 @@ let lastHashCode = null,
  */
 const
   __listeners = {},
-  loadConfig = function() {
+  loadConfig = function(token) {
 
 		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
-		request.get(appConfig.tapDataServer.url, function(err, response, body) {
+		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function(err, response, body) {
 			if( err ){
 				log.error('download config fail.', err);
 			} else {
@@ -68,7 +68,7 @@ const
 			}
 		});
 
-	  timeoutId = setTimeout(loadConfig, appConfig.intervals);
+	  timeoutId = setTimeout(() =>{ loadConfig(token); }, appConfig.intervals);
 	},
 
 	/**
@@ -96,6 +96,22 @@ const
 		}
 
 		return path.resolve(`${cacheDirPath}/tap_data_server_download_config.json`);
+	},
+
+	getToken = function(cb){
+		request.post({
+			url: appConfig.tapDataServer.tokenUrl,
+			form: {
+				accesscode: appConfig.tapDataServer.accessCode
+			}
+		}, (err, response, body) => {
+			if( response.statusCode === 200 ){
+				cb(JSON.parse(body).id)
+			} else {
+				log.error('Get access token error', err)
+				cb( false )
+			}
+		})
 	};
 
 exports.on = function(type, listener){
@@ -105,10 +121,10 @@ exports.on = function(type, listener){
 };
 exports.start = function(){
 	__init(() => {
-		loadConfig();
+		getToken( token => loadConfig(token));
 	});
 };
 exports.stop = function(){
 	if( timeoutId )
 		clearTimeout(timeoutId);
-}
+};
