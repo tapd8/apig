@@ -17,11 +17,16 @@
 
 3. 启动
 	```shell
-	npm start
+	
+	# 运行环境可以通过命令行参数指定，也可以通过环境变量指定
+	
+	# export API_SERVER_ENV=dev|test
+	
+	npm start [dev|test]
 	
 	# 或者
 	
-	./start.sh
+	./start.sh [dev|test]
 	```
 
 4. 浏览器访问地址[http://127.0.0.1:3030/apig](http://127.0.0.1:3030/apig)
@@ -30,20 +35,41 @@
 
 1. 配置文件
 	```shell
-	vim config.json
+	vim config.js
 	```
 
 2. 配置文件说明
 	```javascript
-	let config = {
-      "intervals": 30000,   //检查配置文件更新间隔时间，单位为毫秒
-      "host": "0.0.0.0",	// api gateway 监听地址
-      "port": 3030,			// api gateway 监听端口
-      "tapDataServer": {	// tapdataserver 配置
-        "url": "http://127.0.0.1/config.json?access_token=ABDcekfsldfseWedfAdfEwgfsdfalpOj"
-      },
-      "cacheDir": "cache"	// 本地缓存目录
-    }
+	const config = {
+    	dev: {		// 开发环境
+    		'welcome': 'Welcome to use API Server. Current run as dev mode.',
+    		'intervalsDesc': '检查配置文件更新间隔时间，单位为毫秒',
+    		'intervals': 5000,		// 检查配置文件更新间隔时间，单位为毫秒
+    		'host': '0.0.0.0',		// API Server 监听地址
+    		'port': 3080,			// API Server 监听端口
+    		'tapDataServer': {
+    			'url': 'http://127.0.0.1:3030/api/apiModules',				// 获取 API 配置的地址
+    			'tokenUrl': 'http://localhost:3030/api/users/generatetoken',// 根据 accessCode 获取访问 tapdata 的token
+    			'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
+    		},
+    
+    		'reportServer': {
+    			'url': 'http://127.0.0.1:3030/api/Workers',		// 心跳汇报地址
+    			'reportIntervals': 5000,						// 心跳汇报周期，单位为毫秒
+				'reportData': {									// 汇报数据
+					'worker_type': 'api-server',
+				},
+    		},
+    
+    		'cacheDir': 'cache',		// 缓存目录
+    		'logDir': 'logs',
+    
+    		'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',		// jwt secret key
+    	},
+    	test: {		// 测试环境
+    		// ...
+    	},
+    };
 	```
 
 #### 如何打包

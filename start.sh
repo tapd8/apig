@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export API_SERVER_ENV=$1
+
 APP_HOME="`pwd`"
 
 if [ -d "$APP_HOME/dist" ]; then

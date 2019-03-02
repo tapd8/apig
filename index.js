@@ -54,7 +54,7 @@ class Main{
 		if( this.appWorker )
 			this.appWorker.kill();
 
-		this.appWorker = fork(`${__dirname}/app.js`);
+		this.appWorker = fork(`${__dirname}/app.js`, process.argv.slice(2));
 
 	}
 
