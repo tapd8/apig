@@ -7,7 +7,7 @@ import {
 	UserProfile,
 } from '@loopback/authentication';
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
-const appConfig = require('../../config');
+const appConfig = require('../../../config');
 import {log} from '../log';
 
 import {sign as jwtSign} from 'jsonwebtoken'

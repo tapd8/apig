@@ -32,9 +32,9 @@ rm -rf \
 	$TARGET/src/repositories/*
 
 # echo "package $TARGET"
-# tar -zcf "$TARGET.tar.gz" $TARGET
+tar -zcf "$TARGET.tar.gz" $TARGET
 
-# rm -rf $TARGET
+rm -rf $TARGET
 
-# du -h "$TARGET.tar.gz"
+du -h "$TARGET.tar.gz"
 echo "done."
