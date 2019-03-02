@@ -9,7 +9,6 @@ const report = function(data) {
 	if( require.cache[configPath])
 		delete require.cache[configPath];
 
-	const appConfig = require('./config');
 	const reportServer = appConfig.reportServer;
 
 	if( !reportServer || !reportServer.url)
