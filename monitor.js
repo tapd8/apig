@@ -106,6 +106,7 @@ const
 			}
 		}, (err, response, body) => {
 			if( response.statusCode === 200 ){
+				log.info('Get access token success,', body)
 				cb(JSON.parse(body).id)
 			} else {
 				log.error('Get access token error', err)

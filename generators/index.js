@@ -15,7 +15,8 @@ const typeChoices = [
 	'boolean',
 	'array',
 	'date',
-	'buffer'
+	'buffer',
+	'object',
 ];
 const methods = ['POST', 'GET', 'PATCH', 'DELETE'];
 
@@ -122,7 +123,7 @@ const validateConfig = function(config){
 					type = field['data_type'] || '',
 					description = field['description'] || null,
 					required = field['required'],
-					itemType = type === 'array' ? field['itemType'] : null;
+					itemType = type === 'array' ? (field['itemType'] || 'object') : null;
 
 				type = type.toLowerCase();
 				if( ['int', 'integer', 'long', 'double'].includes(type))

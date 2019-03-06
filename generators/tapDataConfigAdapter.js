@@ -7,7 +7,9 @@ const dataTypeMapping = {
 	'Integer': 'number',
 	'Double': 'number',
 	'Float': 'number',
-	'Date': 'date'
+	'Date': 'date',
+	'Document': 'object',
+	'ArrayList': 'array'
 };
 
 const convertCondition = function(cond){

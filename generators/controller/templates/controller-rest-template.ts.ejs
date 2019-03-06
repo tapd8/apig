@@ -29,13 +29,14 @@ export class <%= className %>Controller {
     public <%= repositoryNameCamel %> : <%= repositoryName %>,
   ) {}
 
-  <%_ Object.entries(api).forEach(([name, val]) => { -%>
+  <%_ Object.entries(api).forEach(([path, val]) => { -%>
     <%_ if (val['type'] === 'preset') { -%>
 
       <%_ if (val['name'] === 'create') { -%>
         @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @post('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
           responses: {
             '200': {
               description: '<%= modelName %> model instance',
@@ -51,6 +52,7 @@ export class <%= className %>Controller {
         @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @get('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
           responses: {
             '200': {
               description: 'Object of page data, result.data is <%= modelName %> model instances, result.total is model count.',
@@ -78,6 +80,7 @@ export class <%= className %>Controller {
         @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @get('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
           responses: {
             '200': {
               description: '<%= modelName %> model instance',
@@ -93,6 +96,7 @@ export class <%= className %>Controller {
         @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @patch('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
           responses: {
             '204': {
               description: '<%= modelName %> PATCH success',
@@ -110,6 +114,7 @@ export class <%= className %>Controller {
         @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
         @del('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
           responses: {
             '204': {
               description: '<%= modelName %> DELETE success',
@@ -125,6 +130,7 @@ export class <%= className %>Controller {
       @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
       @get('<%= val['path'] %>', {
         summary: '<%= val['summary']%>',
+        tags:['<%= name %>'],
         responses: {
           '200': {
             description: 'Object of page data, result.data is <%= modelName %> model instances, result.total is model count.',
