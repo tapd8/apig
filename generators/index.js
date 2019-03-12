@@ -184,7 +184,7 @@ const validateConfig = function(config){
 					roles = item['roles'];
 
 				if( type === 'custom' ){
-					name = `find_${idx}`;
+					name = `findPage_${idx}`;
 
 					if( !path || path.trim().length === 0){
 						log.error(`Invalid model api config, missing path.（config.models[${i}].paths[${idx}].path）`);

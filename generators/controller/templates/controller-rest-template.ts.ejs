@@ -69,7 +69,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>"
         })
-        async find(
+        async findPage(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
           return {
@@ -151,7 +151,7 @@ export class <%= className %>Controller {
         },
         "x-table-name": "<%=tableName%>"
       })
-      async <%= name %>(
+      async <%= val['name'] %>(
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};

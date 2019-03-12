@@ -35,7 +35,7 @@ export class MySequence implements SequenceHandler {
 		try {
 			const route = this.findRoute(request);
 			const args = await this.parseParams(request, route);
-			log.app.info(`${reqId} client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}`);
+			log.app.debug(`${reqId} client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}`);
 
 			// 认证
 			if( excludeAuthPath.includes(request.path)){
@@ -44,11 +44,16 @@ export class MySequence implements SequenceHandler {
 				await this.authenticateRequest(request);
 			}
 
-			const result = await this.invoke(route, args);
+			let result = await this.invoke(route, args);
+			const filename = request.query.filename;
+			if( filename ){
+				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
+				result = new Buffer(JSON.stringify(result), 'UTF-8');
+			}
 			this.send(response, result);
 
 			const _end = new Date().getTime();
-			log.app.info(`${reqId} resp ${JSON.stringify(result)}, time ${_end - _start}ms`);
+			log.app.debug(`${reqId} resp ${JSON.stringify(result)}, time ${_end - _start}ms`);
 
 		} catch (err) {
 			this.reject(context, err);
