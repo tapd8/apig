@@ -122,7 +122,7 @@ module.exports = function(models){
 		model.fields.forEach((field)=>{
 			modelConf.fields.push({
 				field_name: field.field_name,
-				data_type: dataTypeMapping[field.data_type] || 'string',
+				data_type: dataTypeMapping[field.data_type] || 'any',
 				primary_key_position: field.primary_key_position
 			})
 		});

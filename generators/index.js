@@ -107,7 +107,8 @@ const validateConfig = function(config){
 				return null;
 			}
 
-			let name = model.tablename,
+			let name = model.basePath,
+				tableName = model.tablename,
 				fields = model.fields,
 				basePath = model.basePath || model.path || name,
 				dataSourceName = model.dataSourceName;
@@ -123,7 +124,7 @@ const validateConfig = function(config){
 					type = field['data_type'] || '',
 					description = field['description'] || null,
 					required = field['required'],
-					itemType = type === 'array' ? (field['itemType'] || 'object') : null;
+					itemType = type === 'array' ? (field['itemType'] || 'any') : null;
 
 				type = type.toLowerCase();
 				if( ['int', 'integer', 'long', 'double'].includes(type))
@@ -219,17 +220,20 @@ const validateConfig = function(config){
 
 			result.models.push({
 				name: name,
+				tableName: tableName,
 				properties: properties
 			});
 
 			result.repositories.push({
 				name: name,
+				tableName: tableName,
 				dataSourceName: dataSourceName,
 				idProperty: idProperty
 			});
 
 			result.controllers.push({
 				name: name,
+				tableName: tableName,
 				idType: idType,
 				api: api
 			});

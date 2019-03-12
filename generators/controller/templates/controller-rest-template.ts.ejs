@@ -43,6 +43,7 @@ export class <%= className %>Controller {
               content: {'application/json': {schema: {'x-ts-type': <%= modelName %>}}},
             },
           },
+          "x-table-name": "<%=tableName%>"
         })
         async create(@requestBody() <%= modelVariableName %>: <%= modelName %>): Promise<<%= modelName %>> {
           return await this.<%= repositoryNameCamel %>.create(<%= modelVariableName %>);
@@ -66,6 +67,7 @@ export class <%= className %>Controller {
               },
             },
           },
+          "x-table-name": "<%=tableName%>"
         })
         async find(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
@@ -87,6 +89,7 @@ export class <%= className %>Controller {
               content: {'application/json': {schema: {'x-ts-type': <%= modelName %>}}},
             },
           },
+          "x-table-name": "<%=tableName%>"
         })
         async findById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<<%= modelName %>> {
           return await this.<%= repositoryNameCamel %>.findById(id);
@@ -102,6 +105,7 @@ export class <%= className %>Controller {
               description: '<%= modelName %> PATCH success',
             },
           },
+          "x-table-name": "<%=tableName%>"
         })
         async updateById(
           @param.path.<%= idType %>('id') id: <%= idType %>,
@@ -120,6 +124,7 @@ export class <%= className %>Controller {
               description: '<%= modelName %> DELETE success',
             },
           },
+          "x-table-name": "<%=tableName%>"
         })
         async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
           await this.<%= repositoryNameCamel %>.deleteById(id);
@@ -144,6 +149,7 @@ export class <%= className %>Controller {
             },
           },
         },
+        "x-table-name": "<%=tableName%>"
       })
       async <%= name %>(
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,

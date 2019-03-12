@@ -37,6 +37,7 @@ class DataSourceGenerator extends Generator {
 		const ds = Object.assign({
 			"name": this.artifactInfo.name,
 			"connector": "mongodb",
+			"allowExtendedOperators": true,
 		}, this.artifactInfo.settings);
 
 		// Copy Templates

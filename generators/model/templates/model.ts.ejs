@@ -5,7 +5,7 @@ import {model, property} from '@loopback/repository';
 import {<%= modelBaseClass %>} from '.';
 <% } -%>
 
-@model({name: '<%= name %>'})
+@model({name: '<%= tableName || name %>'})
 export class <%= className %> extends <%= modelBaseClass %> {
 <% Object.entries(properties).forEach(([key, val]) => { -%>
   @property({
