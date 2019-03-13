@@ -129,6 +129,28 @@ export class <%= className %>Controller {
         async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
           await this.<%= repositoryNameCamel %>.deleteById(id);
         }
+      <%_ } else if (val['name'] === 'downloadById') { %>
+
+        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @get('<%= val['path'] %>/{id}', {
+          summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
+          responses: {
+            '200': {
+              description: 'file stream',
+              content: {'application/octet-stream ': {}},
+            },
+          },
+          "x-table-name": "<%=tableName%>"
+        })
+        async downloadById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<any> {
+          let file = await this.<%= repositoryNameCamel %>.findById(id);
+          let filename = file.filename ? file.filename.split('/') : ['file'];
+          return {
+            filename: filename[filename.length - 1],
+            stream: await this.<%= repositoryNameCamel %>.downloadById(id)
+          };
+        }
       <%_ }  %>
     <%_ } else {-%>
 

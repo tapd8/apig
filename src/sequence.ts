@@ -49,11 +49,14 @@ export class MySequence implements SequenceHandler {
 			if( filename ){
 				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
 				result = new Buffer(JSON.stringify(result), 'UTF-8');
+			} else if( result.filename && result.stream ){
+				response.setHeader('Content-Disposition', 'attachment; filename="' + result.filename + '"');
+				result = result.stream;
 			}
 			this.send(response, result);
 
 			const _end = new Date().getTime();
-			log.app.debug(`${reqId} resp ${JSON.stringify(result)}, time ${_end - _start}ms`);
+			log.app.debug(`${reqId} resp ${result.toString()}, time ${_end - _start}ms`);
 
 		} catch (err) {
 			this.reject(context, err);

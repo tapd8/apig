@@ -127,7 +127,7 @@ const validateConfig = function(config){
 					itemType = type === 'array' ? (field['itemType'] || 'any') : null;
 
 				type = type.toLowerCase();
-				if( ['int', 'integer', 'long', 'double'].includes(type))
+				if( ['int', 'integer', 'long', 'double', 'any'].includes(type))
 					type = 'number';
 
 				if( !typeChoices.includes(type) ){
@@ -135,7 +135,7 @@ const validateConfig = function(config){
 					return;
 				}
 				if( itemType ){
-					if( ['int', 'integer', 'long', 'double'].includes(itemType))
+					if( ['int', 'integer', 'long', 'double', 'any'].includes(itemType))
 						itemType = 'number';
 					if( !typeChoices.includes(itemType) ){
 						log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
@@ -218,24 +218,49 @@ const validateConfig = function(config){
 
 			});
 
+			const downloadByIdApi = tableName.endsWith('.files');
+			let bucketName = 'fs';
+			if( downloadByIdApi ){
+				let reqPath = `/api/${apiVersion}/${basePath}/download`;
+				let roles = api['findPage'].roles;
+				api['downloadById'] = {
+					type: 'preset',
+					name: 'downloadById',
+					path: reqPath,
+					summary: 'download file by id',
+					//filter: filter,
+					//params: params,
+					//fields: fields,
+					roles: roles || []
+				};
+				bucketName = tableName.substring(0, tableName.indexOf('.files'));
+				console.log(tableName)
+			}
+
 			result.models.push({
 				name: name,
 				tableName: tableName,
-				properties: properties
+				properties: properties,
+				downloadByIdApi: downloadByIdApi,
+				bucketName: bucketName
 			});
 
 			result.repositories.push({
 				name: name,
 				tableName: tableName,
 				dataSourceName: dataSourceName,
-				idProperty: idProperty
+				idProperty: idProperty,
+				downloadByIdApi: downloadByIdApi,
+				bucketName: bucketName
 			});
 
 			result.controllers.push({
 				name: name,
 				tableName: tableName,
 				idType: idType,
-				api: api
+				api: api,
+				downloadByIdApi: downloadByIdApi,
+				bucketName: bucketName
 			});
 		}
 

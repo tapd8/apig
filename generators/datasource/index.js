@@ -38,6 +38,7 @@ class DataSourceGenerator extends Generator {
 			"name": this.artifactInfo.name,
 			"connector": "mongodb",
 			"allowExtendedOperators": true,
+			"useNewUrlParser": true,
 		}, this.artifactInfo.settings);
 
 		// Copy Templates
