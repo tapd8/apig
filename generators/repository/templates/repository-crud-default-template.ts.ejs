@@ -14,7 +14,7 @@ export class <%= className %>Repository extends <%= repositoryTypeClass %><
     super(<%= modelName %>, dataSource);
   }
 
-  <%_ if( downloadByIdApi ) {%>
+  <%_ if( downloadApi ) {%>
 
   async downloadById(id: string){
     await this.dataSource.connect();

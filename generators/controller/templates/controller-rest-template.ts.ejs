@@ -151,6 +151,40 @@ export class <%= className %>Controller {
             stream: await this.<%= repositoryNameCamel %>.downloadById(id)
           };
         }
+
+      <%_ } else if (val['name'] === 'download') { %>
+
+        @authenticate('JwtStrategy', {roles: ["5b9a0a383fcba02649524bf1"]})
+        @get('<%= val['path'] %>', {
+          summary: '<%= val['summary']%>',
+          tags:['<%= name %>'],
+            responses: {
+              '200': {
+              description: 'file stream',
+              content: {'application/octet-stream ': {}},
+            },
+          },
+          "x-table-name": "<%=tableName%>"
+        })
+        async download(
+          @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
+        ): Promise<any> {
+          let files = await this.<%= repositoryNameCamel %>.find(filter);
+          let file = files && files.length > 0 ? files[0] : null;
+          if( file ){
+            let filename = file.filename ? file.filename.split('/') : ['file'];
+            return {
+              filename: filename[filename.length - 1],
+              stream: await this.<%= repositoryNameCamel %>.downloadById(file._id || '')
+            };
+          } else {
+            return {
+              data: [],
+              total: 0
+            }
+          }
+        }
+
       <%_ }  %>
     <%_ } else {-%>
 

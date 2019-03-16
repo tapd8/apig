@@ -218,9 +218,9 @@ const validateConfig = function(config){
 
 			});
 
-			const downloadByIdApi = tableName.endsWith('.files');
+			const downloadApi = tableName.endsWith('.files');
 			let bucketName = 'fs';
-			if( downloadByIdApi ){
+			if( downloadApi ){
 				let reqPath = `/api/${apiVersion}/${basePath}/download`;
 				let roles = api['findPage'].roles;
 				api['downloadById'] = {
@@ -233,15 +233,25 @@ const validateConfig = function(config){
 					//fields: fields,
 					roles: roles || []
 				};
+				api['download'] = {
+					type: 'preset',
+					name: 'download',
+					path: reqPath,
+					summary: 'download file by filter, only return first file if find multi file',
+					//filter: filter,
+					//params: params,
+					//fields: fields,
+					roles: roles || []
+				};
 				bucketName = tableName.substring(0, tableName.indexOf('.files'));
-				console.log(tableName)
+
 			}
 
 			result.models.push({
 				name: name,
 				tableName: tableName,
 				properties: properties,
-				downloadByIdApi: downloadByIdApi,
+				downloadApi: downloadApi,
 				bucketName: bucketName
 			});
 
@@ -250,7 +260,7 @@ const validateConfig = function(config){
 				tableName: tableName,
 				dataSourceName: dataSourceName,
 				idProperty: idProperty,
-				downloadByIdApi: downloadByIdApi,
+				downloadApi: downloadApi,
 				bucketName: bucketName
 			});
 
@@ -259,7 +269,7 @@ const validateConfig = function(config){
 				tableName: tableName,
 				idType: idType,
 				api: api,
-				downloadByIdApi: downloadByIdApi,
+				downloadApi: downloadApi,
 				bucketName: bucketName
 			});
 		}
