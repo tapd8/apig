@@ -49,7 +49,7 @@ export class MySequence implements SequenceHandler {
 			if( filename ){
 				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
 				result = new Buffer(JSON.stringify(result), 'UTF-8');
-			} else if( result.filename && result.stream ){
+			} else if( result && result.filename && result.stream ){
 				response.setHeader('Content-Disposition', 'attachment; filename="' + result.filename + '"');
 				result = result.stream;
 			}
