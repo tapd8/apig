@@ -11,7 +11,8 @@ const makeDir = require('make-dir');
  * @type {null}
  */
 let lastHashCode = null,
-	timeoutId ;
+	timeoutId ,
+	token ;
 
 /**
  * 加载配置文件
@@ -67,8 +68,6 @@ const
 				}
 			}
 		});
-
-	  timeoutId = setTimeout(() =>{ loadConfig(token); }, appConfig.intervals);
 	},
 
 	/**
@@ -99,20 +98,33 @@ const
 	},
 
 	getToken = function(cb){
-		request.post({
-			url: appConfig.tapDataServer.tokenUrl,
-			form: {
-				accesscode: appConfig.tapDataServer.accessCode
-			}
-		}, (err, response, body) => {
-			if( response.statusCode === 200 ){
-				log.info('Get access token success,', body)
-				cb(JSON.parse(body).id)
-			} else {
-				log.error('Get access token error', err)
-				cb( false )
-			}
-		})
+		if( token ){
+			cb(token);
+		} else {
+			request.post({
+				url: appConfig.tapDataServer.tokenUrl,
+				form: {
+					accesscode: appConfig.tapDataServer.accessCode
+				}
+			}, (err, response, body) => {
+				if( err ){
+					log.error('Get access token error', err);
+					cb(false);
+				} else if( response.statusCode === 200 ){
+					log.info('Get access token success,', body);
+					let result = JSON.parse(body);
+					token = result.id;
+					cb(token);
+					if( result.ttl)
+						setTimeout(()=>{
+							token = null;
+						}, result.ttl - 3600) // 提前一小时获取token
+				} else {
+					log.error('Get access token error,', body);
+					cb( false )
+				}
+			})
+		}
 	};
 
 exports.on = function(type, listener){
@@ -122,10 +134,17 @@ exports.on = function(type, listener){
 };
 exports.start = function(){
 	__init(() => {
-		getToken( token => loadConfig(token));
+		timeoutId = setInterval(() =>{
+			getToken( token => {
+				if( token ) {
+					loadConfig(token);
+				}
+			})
+
+		}, appConfig.intervals);
 	});
 };
 exports.stop = function(){
 	if( timeoutId )
-		clearTimeout(timeoutId);
+		setInterval(timeoutId);
 };
