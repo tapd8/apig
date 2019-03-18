@@ -107,11 +107,12 @@ const validateConfig = function(config){
 				return null;
 			}
 
-			let name = model.basePath,
+			let name = model.basePath + '_' + (model.apiVersion || 'v1'),
 				tableName = model.tablename,
 				fields = model.fields,
 				basePath = model.basePath || model.path || name,
-				dataSourceName = model.dataSourceName;
+				dataSourceName = model.dataSourceName,
+				apiVersion = model.apiVersion || 'v1';
 			let idProperty = null,
 				idType = '',
 				properties = {};
@@ -167,8 +168,7 @@ const validateConfig = function(config){
 
 			// 校验转化 API配置
 			const api = {},
-				paths = model.paths || [],
-				apiVersion = model.apiVersion || 'v1';
+				paths = model.paths || [];
 
 			if( basePath.startsWith('/'))
 				basePath = basePath.slice(1);
