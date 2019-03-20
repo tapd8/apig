@@ -56,7 +56,7 @@ export class MySequence implements SequenceHandler {
 			this.send(response, result);
 
 			const _end = new Date().getTime();
-			log.app.debug(`${reqId} resp ${result.toString()}, time ${_end - _start}ms`);
+			log.app.debug(`${reqId} resp, time ${_end - _start}ms`);
 
 		} catch (err) {
 			this.reject(context, err);
