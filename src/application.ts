@@ -31,7 +31,7 @@ export class ApiGatewayApplication extends BootMixin(
 		openapi: '3.0.0',
 		info: {
 			title: 'Api-Server',
-			version: '1.0.1-20190313224947',
+			version: '1.0.12-20190322',
 		},
 		paths: {},
 		servers: [{ url: '/' }],

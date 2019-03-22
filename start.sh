@@ -2,12 +2,28 @@
 
 export API_SERVER_ENV=$1
 
-APP_HOME="`pwd`"
+WORK_DIR="`pwd`"
+APP_HOME="$(cd `dirname $0`; pwd)"
+
+echo "APP_HOME: $APP_HOME"
+echo "WORK_DIR: $WORK_DIR"
+
+if [ -f "$APP_HOME/app.pid" ]; then
+	kill -9 `cat $APP_HOME/app.pid`
+fi
+
+if [ -f "$APP_HOME/server.pid" ]; then
+	kill -9 `cat $APP_HOME/server.pid`
+fi
 
 if [ -d "$APP_HOME/dist" ]; then
-	exec node . > /dev/null 2>&1 &
+	node $APP_HOME/index.js > /dev/null 2>&1 &
+	echo "API Server process id is $1"
 else
+	cd $APP_HOME
 	npm run build
-	exec node . > /dev/null 2>&1 &
+	cd $WORK_DIR
+	node $APP_HOME/index.js > /dev/null 2>&1 &
+	echo "API Server process id is $1"
 fi
 
