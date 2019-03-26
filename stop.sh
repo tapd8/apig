@@ -11,11 +11,17 @@ echo "WORK_DIR: $WORK_DIR"
 # 	kill -9 `cat $pid`
 # done
 
-echo "Server main process id is `cat $APP_HOME/server.pid`, web server process id is `cat $APP_HOME/app.pid`"
 
-kill -9 `cat $APP_HOME/app.pid`
-kill -9 `cat $APP_HOME/server.pid`
+if [ -f "$APP_HOME/app.pid" ]; then
+	echo "Server main process id is `cat $APP_HOME/app.pid`"
+	kill -9 `cat $APP_HOME/app.pid` > /dev/null 2>&1
+	rm $APP_HOME/app.pid
+fi
 
-rm $APP_HOME/*.pid
+if [ -f "$APP_HOME/server.pid" ]; then
+	echo "API Web server process id is `cat $APP_HOME/server.pid`"
+	kill -9 `cat $APP_HOME/server.pid` > /dev/null 2>&1
+	rm $APP_HOME/server.pid
+fi
 
-echo "Current running node process id's is `pidof node`"
+echo "Stop API Server successful."
