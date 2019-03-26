@@ -144,10 +144,17 @@ export class <%= className %>Controller {
           "x-table-name": "<%=tableName%>"
         })
         async downloadById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<any> {
-          let file = await this.<%= repositoryNameCamel %>.findById(id);
+          let file : any = await this.<%= repositoryNameCamel %>.findById(id);
           let filename = file.filename ? file.filename.split('/') : ['file'];
+          filename = filename[filename.length - 1]
+          if( file.metadata && file.metadata.file_name){
+            filename = file.metadata.file_name
+          }
+          if( file.metadata && file.metadata.file_extension){
+            filename = `${filename}.${file.metadata.file_extension}`
+          }
           return {
-            filename: filename[filename.length - 1],
+            filename: encodeURIComponent(filename),
             stream: await this.<%= repositoryNameCamel %>.downloadById(id)
           };
         }
@@ -170,11 +177,18 @@ export class <%= className %>Controller {
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
         ): Promise<any> {
           let files = await this.<%= repositoryNameCamel %>.find(filter);
-          let file = files && files.length > 0 ? files[0] : null;
+          let file : any = files && files.length > 0 ? files[0] : null;
           if( file ){
             let filename = file.filename ? file.filename.split('/') : ['file'];
+            filename = filename[filename.length - 1]
+            if( file.metadata && file.metadata.file_name){
+              filename = file.metadata.file_name
+            }
+            if( file.metadata && file.metadata.file_extension){
+              filename = `${filename}.${file.metadata.file_extension}`
+            }
             return {
-              filename: filename[filename.length - 1],
+              filename: encodeURIComponent(filename),
               stream: await this.<%= repositoryNameCamel %>.downloadById(file._id || '')
             };
           } else {
