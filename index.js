@@ -1,6 +1,7 @@
 const fork = require('child_process').fork;
 const log = require('./dist').log.default ;
 const generator = require('./generators').generator;
+const report = require('./report')
 
 class Main{
 	constructor(props) {
@@ -16,12 +17,29 @@ class Main{
 		 * @type {ChildProcess}
 		 */
 		this.configMonitor = null;
+
+		this.workerStatus = {
+			worker_process_id: null,
+			worker_process_start_time: null,
+			worker_process_end_time: null,
+			status: 'exit',
+			exit_code: null
+		}
 	}
 
 	/**
 	 * 启动
 	 */
 	start(){
+
+		Object.assign(this.workerStatus, {
+			worker_process_id: '',
+			worker_process_start_time: new Date().getTime(),
+			status: 'starting'
+		});
+		report.setStatus({
+			worker_status: this.workerStatus
+		});
 
 		// 启动 app 工作进程
 		this.startApp();
@@ -56,6 +74,32 @@ class Main{
 
 		this.appWorker = fork(`${__dirname}/app.js`, process.argv.slice(2));
 
+		this.appWorker.on('exit', (code) => {
+			Object.assign(this.workerStatus, {
+				worker_process_id: '',
+				worker_process_start_time: new Date().getTime(),
+				worker_process_end_time: new Date().getTime(),
+				status: 'exit',
+				exit_code: code
+			});
+			report.setStatus({
+				worker_status: this.workerStatus
+			});
+		});
+
+		this.appWorker.on('message', (msg) => {
+			if( msg.type === 'status') {
+				Object.assign(this.workerStatus, {
+					worker_process_id: this.appWorker.pid,
+					worker_process_end_time: null,
+					status: msg.data,
+					exit_code: null
+				});
+				report.setStatus({
+					worker_status: this.workerStatus
+				});
+			}
+		})
 	}
 
 	/**
@@ -93,15 +137,28 @@ class Main{
 			generator(config, (result) => {
 				if( result ){
 					log.info('generator code successful, restart app server.');
-
+					this.workerStatus.status = 'restart';
 					this.startApp();
-
 				} else {
 					log.info('generator code fail.');
+					this.workerStatus.status = 'deploy_fail';
 				}
+
+				report.setStatus({
+					worker_status: this.workerStatus
+				});
+			});
+
+			this.workerStatus.status = 'deploying';
+			report.setStatus({
+				worker_status: this.workerStatus
 			});
 		} catch (e) {
 			log.error('generator code fail.', e);
+			this.workerStatus.status = 'deploy_fail';
+			report.setStatus({
+				worker_status: this.workerStatus
+			});
 		}
 	}
 

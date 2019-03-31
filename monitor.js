@@ -5,14 +5,14 @@ const hashCode = require('hashcode').hashCode;
 const path = require('path');
 const fs = require('fs');
 const makeDir = require('make-dir');
+const getToken = require('./tapdata').getToken;
 
 /**
  * 最后配置信息的 hashCode，用于比较配置文件是否更新
  * @type {null}
  */
 let lastHashCode = null,
-	timeoutId ,
-	token ;
+	timeoutId ;
 
 /**
  * 加载配置文件
@@ -36,7 +36,7 @@ const
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
-				log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
+				// log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
 
 				if( newHashCode !== lastHashCode ){
 					lastHashCode = newHashCode;
@@ -95,36 +95,6 @@ const
 		}
 
 		return path.resolve(`${cacheDirPath}/tap_data_server_download_config.json`);
-	},
-
-	getToken = function(cb){
-		if( token ){
-			cb(token);
-		} else {
-			request.post({
-				url: appConfig.tapDataServer.tokenUrl,
-				form: {
-					accesscode: appConfig.tapDataServer.accessCode
-				}
-			}, (err, response, body) => {
-				if( err ){
-					log.error('Get access token error', err);
-					cb(false);
-				} else if( response.statusCode === 200 ){
-					log.info('Get access token success,', body);
-					let result = JSON.parse(body);
-					token = result.id;
-					cb(token);
-					if( result.ttl)
-						setTimeout(()=>{
-							token = null;
-						}, result.ttl - 3600) // 提前一小时获取token
-				} else {
-					log.error('Get access token error,', body);
-					cb( false )
-				}
-			})
-		}
 	};
 
 exports.on = function(type, listener){

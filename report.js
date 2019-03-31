@@ -2,26 +2,37 @@ const log = require('./dist').log.app;
 const request = require('request');
 const path = require('path');
 const appConfig = require('./config');
+const getToken = require('./tapdata').getToken;
 
+const hostname = require('os').hostname();
 const startTime = new Date().getTime();
-const report = function(data) {
+const apiServerStatus = {
+	worker_status: {}
+};
+
+const report = function(data, token) {
 	const configPath = path.join(__dirname, 'config.json');
-	if( require.cache[configPath])
-		delete require.cache[configPath];
 
-	const reportServer = appConfig.reportServer;
+	const reportServerUrl = appConfig.tapDataServer.reportUrl + '?access_token=' + token;
 
-	if( !reportServer || !reportServer.url)
+	if( !reportServerUrl || !reportServerUrl)
 		return;
 
 	data = Object.assign(data || {}, appConfig.reportData );
 
 	data['start_time'] = startTime;
 	data['ping_time'] = new Date().getTime();
+	data['process_id'] = process.pid;
+	data['worker_ip'] = hostname;
+	data['total_thread'] = 2;
+	data['running_thread'] = apiServerStatus.worker_status.status === 'running' ? 2 : 1;
+
+	Object.assign(data, apiServerStatus);
 
 	try {
+		log.debug('report data', data);
 		request.post({
-			url: reportServer.url,
+			url: reportServerUrl,
 			json: true,
 			body: data
 		}, (err, resp, body) => {
@@ -29,7 +40,7 @@ const report = function(data) {
 			if( err ){
 				log.error('report fail', err);
 			} else {
-				log.info(`report complete:`, body);
+				log.debug(`report complete:`, body);
 			}
 
 		});
@@ -38,6 +49,13 @@ const report = function(data) {
 	}
 };
 
-setInterval(report, appConfig.reportIntervals || 5000);
+setInterval(() => {
+	getToken(token => {
+		if( token )
+			report(null, token)
+	})
+}, appConfig.reportIntervals || 1000);
 
-module.exports = report;
+exports.setStatus = function(status){
+	Object.assign(apiServerStatus, status);
+};

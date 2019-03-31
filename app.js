@@ -1,6 +1,5 @@
 global.appConfig = require('./config');
 const application = require('./dist');
-// const report = require('./report');
 
 module.exports = application;
 
@@ -19,7 +18,8 @@ if (require.main === module) {
 	application.main(config, (result) => {
 		if (result && typeof process.send === 'function')
 			process.send({
-				type: 'started',
+				type: 'status',
+				data: 'running'
 			});
 	}).catch(err => {
 		console.error('Cannot start the application.', err);

@@ -1,0 +1,40 @@
+/**
+ * @author lg<lirufei0808@gmail.com>
+ * @date 3/31/19
+ * @description
+ */
+const request = require('request');
+const appConfig = require('./config');
+const log = require('./dist').log.app;
+
+let token = null;
+
+exports.getToken = getToken = function(cb){
+	if( token ){
+		cb(token);
+	} else {
+		request.post({
+			url: appConfig.tapDataServer.tokenUrl,
+			form: {
+				accesscode: appConfig.tapDataServer.accessCode
+			}
+		}, (err, response, body) => {
+			if( err ){
+				log.error('Get access token error', err);
+				cb(false);
+			} else if( response.statusCode === 200 ){
+				log.info('Get access token success,', body);
+				let result = JSON.parse(body);
+				token = result.id;
+				cb(token);
+				if( result.ttl)
+					setTimeout(()=>{
+						token = null;
+					}, result.ttl - 3600) // 提前一小时获取token
+			} else {
+				log.error('Get access token error,', body);
+				cb( false )
+			}
+		})
+	}
+};

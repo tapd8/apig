@@ -13,7 +13,7 @@ configure({
 			backups: 5,
 			compress: true
 		},
-		monitor: {
+		/*monitor: {
 			type: 'file',
 			filename: logPath + '/monitor.log',
 			maxLogSize: 500 * 1024 * 1024,
@@ -26,20 +26,20 @@ configure({
 			maxLogSize: 500 * 1024 * 1024,
 			backups: 5,
 			compress: true
-		},
+		},*/
 		out: {
 			type: 'stdout'
 		},
 	},
 	categories: {
 		default: {
-			appenders: ['monitor', 'out'],
+			appenders: ['app', 'out'],
 			level: 'info'
 		},
 		app: {
 			appenders: ['app', 'out'],
-			level: 'debug'
-		},
+			level: 'info'
+		}/*,
 		monitor: {
 			appenders: ['monitor', 'out'],
 			level: 'info'
@@ -47,13 +47,13 @@ configure({
 		generator: {
 			appenders: ['generator', 'out'],
 			level: 'info'
-		}
+		}*/
 	},
 });
 
 export const log = {
 	default: getLogger(),
 	app: getLogger('app'),
-	monitor: getLogger('monitor'),
-	generator: getLogger('generator')
+	monitor: getLogger('app'),
+	generator: getLogger('app')
 };
