@@ -22,7 +22,6 @@ const report = function(data, token) {
 
 	data['start_time'] = startTime;
 	data['ping_time'] = new Date().getTime();
-	data['process_id'] = process.pid;
 	data['worker_ip'] = hostname;
 	data['total_thread'] = 2;
 	data['running_thread'] = apiServerStatus.worker_status.status === 'running' ? 2 : 1;
@@ -32,7 +31,7 @@ const report = function(data, token) {
 	try {
 		log.debug('report data', data);
 		request.post({
-			url: reportServerUrl,
+			url: reportServerUrl + encodeURI(`&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}` ),
 			json: true,
 			body: data
 		}, (err, resp, body) => {

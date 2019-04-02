@@ -22,7 +22,7 @@ class Main{
 			worker_process_id: null,
 			worker_process_start_time: null,
 			worker_process_end_time: null,
-			status: 'exit',
+			status: 'stop',
 			exit_code: null
 		}
 	}
@@ -79,7 +79,7 @@ class Main{
 				worker_process_id: '',
 				worker_process_start_time: new Date().getTime(),
 				worker_process_end_time: new Date().getTime(),
-				status: 'exit',
+				status: 'stop',
 				exit_code: code
 			});
 			report.setStatus({
