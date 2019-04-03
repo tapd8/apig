@@ -77,7 +77,6 @@ class Main{
 		this.appWorker.on('exit', (code) => {
 			Object.assign(this.workerStatus, {
 				worker_process_id: '',
-				worker_process_start_time: new Date().getTime(),
 				worker_process_end_time: new Date().getTime(),
 				status: 'stop',
 				exit_code: code
@@ -92,6 +91,7 @@ class Main{
 				Object.assign(this.workerStatus, {
 					worker_process_id: this.appWorker.pid,
 					worker_process_end_time: null,
+					worker_process_start_time: new Date().getTime(),
 					status: msg.data,
 					exit_code: null
 				});

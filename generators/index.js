@@ -128,16 +128,20 @@ const validateConfig = function(config){
 					itemType = type === 'array' ? (field['itemType'] || 'any') : null;
 
 				type = type.toLowerCase();
-				if( ['int', 'integer', 'long', 'double', 'any'].includes(type))
+				if( ['int', 'integer', 'long', 'double'].includes(type))
 					type = 'number';
+				else if( itemType === 'any')
+					itemType = 'object';
 
 				if( !typeChoices.includes(type) ){
 					log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].data_type）: ${type}`);
 					return;
 				}
 				if( itemType ){
-					if( ['int', 'integer', 'long', 'double', 'any'].includes(itemType))
+					if( ['int', 'integer', 'long', 'double'].includes(itemType))
 						itemType = 'number';
+					else if( itemType === 'any')
+						itemType = 'object';
 					if( !typeChoices.includes(itemType) ){
 						log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
 						return;
