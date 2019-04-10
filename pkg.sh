@@ -1,8 +1,11 @@
 #!/bin/sh
 
-APP_HOME="`pwd`"
+WORK_DIR="`pwd`"
+APP_HOME="$(cd `dirname $0`; pwd)"
 
-VERSION=`grep "version" $APP_HOME/package.json | awk -F: '{ print $2 }' | awk -F \" '{ print $2 }'`
+cd $APP_HOME
+# VERSION=`grep "version" $APP_HOME/package.json | awk -F: '{ print $2 }' | awk -F \" '{ print $2 }'`
+VERSION=`git describe --long HEAD`
 TARGET="apig-$VERSION"
 DIST_DIR="$APP_HOME/$TARGET"
 
@@ -31,10 +34,11 @@ rm -rf \
 	$TARGET/src/models/* \
 	$TARGET/src/repositories/*
 
-# echo "package $TARGET"
+echo "package $TARGET"
 tar -zcf "$TARGET.tar.gz" $TARGET
 
 rm -rf $TARGET
 
 du -h "$TARGET.tar.gz"
 echo "done."
+#cd $WORK_DIR

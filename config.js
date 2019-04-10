@@ -1,4 +1,5 @@
 const config = {
+	'version': 'v1.0.0-0-gd48b0c9',
 	'intervalsDesc': '检查配置文件更新间隔时间，单位为毫秒',
 	'intervals': 5000,
 	'host': '0.0.0.0',

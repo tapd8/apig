@@ -5,6 +5,7 @@ import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import {MySequence} from './sequence';
 import * as path from 'path';
+const appConfig = require('../../config');
 
 import {
 	AuthenticationComponent,
@@ -26,12 +27,14 @@ export class ApiGatewayApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(MySequence);
 
+    const startTime = new Date();
+
     // Set OpenAPI specification
 	this.api({
 		openapi: '3.0.0',
 		info: {
-			title: 'Api-Server',
-			version: '1.0.12-20190322',
+			title: 'API Server',
+			version: appConfig.version + `(${startTime.getFullYear()}/${startTime.getMonth()+1}/${startTime.getDate()} ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()})`,
 		},
 		paths: {},
 		servers: [{ url: '/' }],
