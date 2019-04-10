@@ -16,6 +16,7 @@ fi
 mkdir $TARGET
 
 echo "copy files"
+echo ";config.version = '$VERSION';" >> "$APP_HOME/config.js"
 cp -r \
 	*.js \
 	*.json \
@@ -27,6 +28,8 @@ cp -r \
 	public \
 	src \
 	$TARGET
+
+sed -i '$d' "$APP_HOME/config.js"
 
 rm -rf \
 	$TARGET/src/controllers/* \
