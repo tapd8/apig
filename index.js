@@ -2,6 +2,9 @@ const fork = require('child_process').fork;
 const log = require('./dist').log.default ;
 const generator = require('./generators').generator;
 const report = require('./report')
+const appConfig = require('./config')
+
+log.info('Current config is: ', appConfig);
 
 class Main{
 	constructor(props) {

@@ -31,7 +31,7 @@ const report = function(data, token) {
 	try {
 		log.debug('report data', data);
 		request.post({
-			url: reportServerUrl + encodeURI(`&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}` ),
+			url: reportServerUrl + encodeURI(`&[where][worker_ip]=${hostname}&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}` ),
 			json: true,
 			body: data
 		}, (err, resp, body) => {

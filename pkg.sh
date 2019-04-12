@@ -3,6 +3,7 @@
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
 
+echo "cd $APP_HOME"
 cd $APP_HOME
 # VERSION=`grep "version" $APP_HOME/package.json | awk -F: '{ print $2 }' | awk -F \" '{ print $2 }'`
 VERSION=`git describe --long HEAD`
