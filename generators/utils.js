@@ -8,7 +8,7 @@ exports.toClassName = function(name) {
 	if (name === '') return new Error('no input');
 	if (typeof name !== 'string' || name == null) return new Error('bad input');
 
-	name = name.replace(/[-,\/,\\,\$,\%,\s,:]/g, '_')
+	name = name.replace(/[^a-zA-Z0-9_]/g, '_')
 
 	if( /^\d/.test(name))
 		name = `L_${name}`
