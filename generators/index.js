@@ -357,6 +357,7 @@ exports.generator = function(config, cb){
 							cb(true);
 						} else {
 							log.error('generator api source code fail, cancel updated.');
+							cb(false);
 						}
 					});
 				} else {
