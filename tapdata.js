@@ -30,7 +30,7 @@ exports.getToken = getToken = function(cb){
 				if( result.ttl)
 					setTimeout(()=>{
 						token = null;
-					}, result.ttl - 3600) // 提前一小时获取token
+					}, (result.ttl - 3600) * 1000) // 提前一小时获取token
 			} else {
 				log.error('Get access token error,', body);
 				cb( false )
