@@ -4,6 +4,11 @@
 
 #### 如何运行?
 
+##### 运行环境：
+1. 暂不支持Windows OS。请使用Linux，如debian，ubuntu。
+2. node 10 LTS+
+
+##### 运行步骤：
 1. 检出代码
 	```shell
 	git clone git@github.com:tapd8/apig.git
