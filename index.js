@@ -1,9 +1,8 @@
 const fork = require('child_process').fork;
-const log = require('./dist').log.default ;
+const appConfig = require('./config');
 const generator = require('./generators').generator;
-const report = require('./report')
-const appConfig = require('./config')
-
+const report = require('./report');
+const log = require('./dist').log.app;
 log.info('Current config is: ', appConfig);
 
 class Main{

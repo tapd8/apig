@@ -5,11 +5,11 @@
  */
 const request = require('request');
 const appConfig = require('./config');
-const log = require('./dist').log.app;
 
 let token = null;
 
 exports.getToken = getToken = function(cb){
+	cb = cb || function(){};
 	if( token ){
 		cb(token);
 	} else {
@@ -20,19 +20,19 @@ exports.getToken = getToken = function(cb){
 			}
 		}, (err, response, body) => {
 			if( err ){
-				log.error('Get access token error', err);
+				console.error('Get access token error', err);
 				cb(false);
 			} else if( response.statusCode === 200 ){
-				log.info('Get access token success,', body);
 				let result = JSON.parse(body);
 				token = result.id;
 				cb(token);
+				console.log('Get access token success,', body);
 				if( result.ttl)
 					setTimeout(()=>{
 						token = null;
 					}, (result.ttl - 3600) * 1000) // 提前一小时获取token
 			} else {
-				log.error('Get access token error,', body);
+				console.error('Get access token error,', body);
 				cb( false )
 			}
 		})

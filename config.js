@@ -8,6 +8,7 @@ const config = {
 		'url': 'http://127.0.0.1:3030/api/apiModules',
 		'tokenUrl': 'http://127.0.0.1:3030/api/users/generatetoken',
 		'reportUrl': 'http://127.0.0.1:3030/api/Workers/upsertWithWhere',
+		'logUrl': 'http://127.0.0.1:3030/api/Logs',
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
@@ -24,16 +25,16 @@ const config = {
 };
 
 const api_server_port = process.env['API_SERVER_PORT'];
-config.port = api_server_port || 3080;
-
 const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
 const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
 const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
 const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
 
+config.port = api_server_port || 3080;
 config.tapDataServer.url = `${tapdata_origin}/api/apiModules`;
 config.tapDataServer.tokenUrl = `${tapdata_origin}/api/users/generatetoken`;
 config.tapDataServer.reportUrl =  `${tapdata_origin}/api/Workers/upsertWithWhere`;
+config.tapDataServer.logUrl =  `${tapdata_origin}/api/Logs`;
 config.reportData.process_id = process_id;
 
 module.exports = config;
