@@ -1,6 +1,6 @@
 # Api Gateway
 
-基于 LoopBack 实现的 API 应用网关，网关可以自动检测 tap data 配置文件的变化，并自动生成并发布REST API接口。 
+基于 LoopBack 实现的 API 应用网关，网关可以自动检测 tapdata 配置文件的变化，并自动生成并发布RESTful API接口。 
 
 #### 如何运行?
 
@@ -19,13 +19,11 @@
 	cd apig
 	npm install
 	```
-
-3. 启动
+3. 设置参数：config.js
+4. 启动
 	```shell
 	
-	# 运行环境可以通过命令行参数指定，也可以通过环境变量指定
-	
-	# export API_SERVER_ENV=dev|test
+	# 运行环境可以通过命令行参数指定
 	
 	npm start [dev|test]
 	
@@ -34,48 +32,7 @@
 	./start.sh [dev|test]
 	```
 
-4. 浏览器访问地址[http://127.0.0.1:3030/apig](http://127.0.0.1:3030/apig)
-
-#### 如何配置？
-
-1. 配置文件
-	```shell
-	vim config.js
-	```
-
-2. 配置文件说明
-	```javascript
-	const config = {
-    	dev: {		// 开发环境
-    		'welcome': 'Welcome to use API Server. Current run as dev mode.',
-    		'intervalsDesc': '检查配置文件更新间隔时间，单位为毫秒',
-    		'intervals': 5000,		// 检查配置文件更新间隔时间，单位为毫秒
-    		'host': '0.0.0.0',		// API Server 监听地址
-    		'port': 3080,			// API Server 监听端口
-    		'tapDataServer': {
-    			'url': 'http://127.0.0.1:3030/api/apiModules',				// 获取 API 配置的地址
-    			'tokenUrl': 'http://localhost:3030/api/users/generatetoken',// 根据 accessCode 获取访问 tapdata 的token
-    			'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
-    		},
-    
-    		'reportServer': {
-    			'url': 'http://127.0.0.1:3030/api/Workers',		// 心跳汇报地址
-    			'reportIntervals': 5000,						// 心跳汇报周期，单位为毫秒
-				'reportData': {									// 汇报数据
-					'worker_type': 'api-server',
-				},
-    		},
-    
-    		'cacheDir': 'cache',		// 缓存目录
-    		'logDir': 'logs',
-    
-    		'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',		// jwt secret key
-    	},
-    	test: {		// 测试环境
-    		// ...
-    	},
-    };
-	```
+5. 浏览器访问地址[http://127.0.0.1:3030/apig](http://127.0.0.1:3030/apig)
 
 #### 如何打包及部署
 ```shell
@@ -86,7 +43,7 @@ npm install
 # 打包，版本号在 package.json 中配置
 ./pkg.sh 
 
-# 在部署目标机器上，解包：
+# 将打包生成的文件apig-v*.tar.gz拷贝或下载到需要部署的目标机器，在目标机器上解包：
 tar -xf apig-v*.tar.gz
 cd apig-v*/
 
@@ -113,10 +70,11 @@ sh start.sh
 # 停止服务
 sh stop.sh
 
+# 升级部署时，先停止服务，然后删除旧版本目录，如上步骤部署新版本。
 
 ```
 
-####  Tap data Server 配置文件
+####  Tapdata Server 配置文件
 
 ```javascript
 let config = {
@@ -192,5 +150,5 @@ let payload = {
 #### 如何测试？
 
 1. 运行 API Gateway
-2. 指定 tab data server 配置为 test/config.json
+2. 指定 tapdata server 配置为 test/config.json
 3. 运行测试用例 test/testApi.js

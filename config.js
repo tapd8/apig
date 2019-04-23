@@ -12,31 +12,31 @@ const config = {
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
-	'reportIntervals': 1000,
-	'reportData': {
+	'reportIntervals': 1000, // 心跳汇报周期，单位为毫秒
+	'reportData': {  	// 汇报数据
 		'worker_type': 'api-server',
 		'process_id': 'd2f1cc40-552a-11e9-8ff4-059b83989412'
 	},
 
-	'cacheDir': 'cache',
+	'cacheDir': 'cache', // 缓存目录
 	'logDir': 'logs',
 
 	'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
 };
 
 //<请在这里配置参数>
-const api_server_port = process.env['API_SERVER_PORT'] || '3080';
-const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
-const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
+const api_server_port = process.env['API_SERVER_PORT'] || '3080'; //本服务器监听端口
+const tapdata_port = process.env['TAPDATA_PORT'] || '3030';  //tapdata服务器监听端口
+const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';  //tapdata服务器监听IP地址
 const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
 const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
 //</请在这里配置参数>
 
 config.port = api_server_port;
-config.tapDataServer.url = `${tapdata_origin}/api/apiModules`;
-config.tapDataServer.tokenUrl = `${tapdata_origin}/api/users/generatetoken`;
-config.tapDataServer.reportUrl =  `${tapdata_origin}/api/Workers/upsertWithWhere`;
-config.tapDataServer.logUrl =  `${tapdata_origin}/api/Logs`;
+config.tapDataServer.url = `${tapdata_origin}/api/apiModules`; // 获取 API 定义的地址
+config.tapDataServer.tokenUrl = `${tapdata_origin}/api/users/generatetoken`; // 根据 accessCode 获取访问 tapdata 的token
+config.tapDataServer.reportUrl =  `${tapdata_origin}/api/Workers/upsertWithWhere`; // 心跳汇报地址
+config.tapDataServer.logUrl =  `${tapdata_origin}/api/Logs`; // 本服务器日志汇报地址
 config.reportData.process_id = process_id;
 
 module.exports = config;
