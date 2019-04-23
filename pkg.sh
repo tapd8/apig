@@ -16,8 +16,11 @@ fi
 
 mkdir $TARGET
 
-echo "copy files"
-echo ";config.version = '$VERSION';" >> "$APP_HOME/config.js"
+echo "Untaring Node Development Kit..."
+tar -xJf NDK/*.tar.xz -C $TARGET
+mv $TARGET/node-v*/ $TARGET/nodeDK/
+
+echo "Copying files..."
 cp -r \
 	*.js \
 	*.json \
@@ -30,19 +33,22 @@ cp -r \
 	src \
 	$TARGET
 
-sed -i '$d' "$APP_HOME/config.js"
+echo ";config.version = '$VERSION';" >> "$TARGET/config.js"
+#sed -i '$d' "$APP_HOME/config.js"
 
+echo "Removing some files..."
 rm -rf \
 	$TARGET/src/controllers/* \
 	$TARGET/src/datasources/* \
 	$TARGET/src/models/* \
 	$TARGET/src/repositories/*
 
-echo "package $TARGET"
+echo "Packaging $TARGET"
 tar -zcf "$TARGET.tar.gz" $TARGET
 
+echo "Cleaning..."
 rm -rf $TARGET
 
 du -h "$TARGET.tar.gz"
-echo "done."
+echo "Done!"
 #cd $WORK_DIR

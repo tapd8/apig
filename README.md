@@ -77,7 +77,7 @@
     };
 	```
 
-#### 如何打包
+#### 如何打包及部署
 ```shell
 
 # 安装依赖
@@ -85,6 +85,34 @@ npm install
 
 # 打包，版本号在 package.json 中配置
 ./pkg.sh 
+
+# 在部署目标机器上，解包：
+tar -xf apig-v*.tar.gz
+cd apig-v*/
+
+# 两种参数设置方法：
+# （1）修改配置文件config.js
+nano config.js
+
+//<请在这里配置参数>
+const api_server_port = process.env['API_SERVER_PORT'] || '3080';
+const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
+const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
+const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
+const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
+//</请在这里配置参数>
+
+# （2）设置环境变量
+export TAPDATA_HOST=192.168.0.30
+export TAPDATA_PORT=3030
+....
+
+# 启动服务
+sh start.sh
+
+# 停止服务
+sh stop.sh
+
 
 ```
 

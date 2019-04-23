@@ -1,9 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-export API_SERVER_ENV=$1
+#export API_SERVER_ENV=$1
 
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
+
+export PATH=$APP_HOME/nodeDK/bin:$PATH
+echo $PATH
+
+echo "Path of node: `which node`"
+echo "Version of node: `node -v`"
+echo "Version of npm: "
+npm version
+echo "Version of npx: `npx -v`"
 
 echo "Start API Server..."
 echo "APP_HOME: $APP_HOME"
