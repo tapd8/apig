@@ -5,8 +5,8 @@
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
 
-export PATH=$APP_HOME/nodeDK/bin:$PATH
-echo $PATH
+export PATH=$APP_HOME/NDK/node/bin:$PATH
+echo "Shell PATH: "$PATH
 
 echo "Path of node: `which node`"
 echo "Version of node: `node -v`"
@@ -17,6 +17,10 @@ echo "Version of npx: `npx -v`"
 echo "Start API Server..."
 echo "APP_HOME: $APP_HOME"
 echo "WORK_DIR: $WORK_DIR"
+echo "Watch logs with:"
+echo "tail -f $APP_HOME/logs/app.log"
+echo "Stop API server with:"
+echo "$APP_HOME/stop.sh"
 
 if [ -f "$APP_HOME/app.pid" ]; then
 	echo "API Web server pid is `cat $APP_HOME/app.pid`, kill it."

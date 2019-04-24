@@ -7,18 +7,18 @@ echo "cd $APP_HOME"
 cd $APP_HOME
 # VERSION=`grep "version" $APP_HOME/package.json | awk -F: '{ print $2 }' | awk -F \" '{ print $2 }'`
 VERSION=`git describe --long HEAD`
-TARGET="apig-$VERSION"
-DIST_DIR="$APP_HOME/$TARGET"
+TARGET_NAME=apig-$VERSION
+TARGET_PATH="$APP_HOME/deploy/$TARGET_NAME"
 
-if [ -d $TARGET ]; then
-	rm -rf $TARGET
+if [ -d $TARGET_PATH ]; then
+	rm -rf $TARGET_PATH
 fi
 
-mkdir $TARGET
+mkdir -p $TARGET_PATH/NDK/
 
 echo "Untaring Node Development Kit..."
-tar -xJf NDK/*.tar.xz -C $TARGET
-mv $TARGET/node-v*/ $TARGET/nodeDK/
+tar -xJf NDK/*.tar.xz -C $TARGET_PATH/NDK/
+mv $TARGET_PATH/NDK/node-v*/ $TARGET_PATH/NDK/node/
 
 echo "Copying files..."
 cp -r \
@@ -31,24 +31,29 @@ cp -r \
 	node_modules \
 	public \
 	src \
-	$TARGET
+	$TARGET_PATH
 
-echo ";config.version = '$VERSION';" >> "$TARGET/config.js"
+echo ";config.version = '$VERSION';" >> "$TARGET_PATH/config.js"
 #sed -i '$d' "$APP_HOME/config.js"
 
 echo "Removing some files..."
 rm -rf \
-	$TARGET/src/controllers/* \
-	$TARGET/src/datasources/* \
-	$TARGET/src/models/* \
-	$TARGET/src/repositories/*
+	$TARGET_PATH/src/controllers/* \
+	$TARGET_PATH/src/datasources/* \
+	$TARGET_PATH/src/models/* \
+	$TARGET_PATH/src/repositories/*
 
-echo "Packaging $TARGET"
-tar -zcf "$TARGET.tar.gz" $TARGET
+echo "Packaging $TARGET_PATH"
+cd deploy
+tar -zcf "$TARGET_NAME.tar.gz" $TARGET_NAME
+cp howtoRunTpl.md $TARGET_NAME"-HowtoRunReadme.md.txt"
 
 echo "Cleaning..."
-rm -rf $TARGET
+rm -rf $TARGET_PATH
 
-du -h "$TARGET.tar.gz"
+echo "Look here: "
+echo "ls -lh $TARGET_PATH*"
+#du -h "$TARGET_PATH.tar.gz"
+ls -lh $TARGET_PATH*
 echo "Done!"
 #cd $WORK_DIR
