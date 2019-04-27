@@ -49,7 +49,42 @@ sh start.sh
 sh stop.sh
 ```
 
-### 4、如何升级部署
+### 4、配置反向代理或者转发
+
+如果本服务与TAPDATA服务不在同一台机器上，按照目前（2019年4月27日）的实现机制，在TAPDATA服务器上需要配置反向代理或者转发，否则TAPDATA管理界面上API预览以及API文档功能不可用。正式部署时应采用nginx反向代理的方式，开发部署调试可以使用ssh配置转发。
+
+假设：
+192.168.0.30：TAPDATA 服务器IP
+192.168.0.11：本服务所在服务器IP
+
+#### 4.1、反向代理
+
+请参考nginx，文档
+
+```shell
+...
+listen 3080 default_server;
+...
+location / {
+	 proxy_set_header Host $host;
+         proxy_set_header X-Real-IP $remote_addr;
+	 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+         proxy_pass http://192.168.0.11:3080/
+}
+...
+	
+```
+
+#### 4.2、转发
+
+```shell
+
+ssh -Nf -L 192.168.0.30:3080:127.0.0.1:3080 andy@192.168.0.11
+
+```
+
+
+### 5、如何升级部署
 
 先停止服务，然后删除旧版本目录，如上步骤部署新版本。
 
