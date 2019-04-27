@@ -7,20 +7,27 @@ APP_HOME="$(cd `dirname $0`; pwd)"
 
 export PATH=$APP_HOME/NDK/node/bin:$PATH
 echo "Shell PATH: "$PATH
-
+echo
 echo "Path of node: `which node`"
 echo "Version of node: `node -v`"
-echo "Version of npm: "
-npm version
-echo "Version of npx: `npx -v`"
-
+# echo "Version of npm: "
+# npm version
+# echo "Version of npx: `npx -v`"
+echo
 echo "Start API Server..."
+echo
 echo "APP_HOME: $APP_HOME"
 echo "WORK_DIR: $WORK_DIR"
+echo
 echo "Watch logs with:"
 echo "tail -f $APP_HOME/logs/app.log"
+echo
+echo "Config file at:"
+echo "$APP_HOME/config.js"
+echo
 echo "Stop API server with:"
 echo "$APP_HOME/stop.sh"
+echo
 
 if [ -f "$APP_HOME/app.pid" ]; then
 	echo "API Web server pid is `cat $APP_HOME/app.pid`, kill it."

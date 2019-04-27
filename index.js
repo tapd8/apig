@@ -3,7 +3,9 @@ const appConfig = require('./config');
 const generator = require('./generators').generator;
 const report = require('./report');
 const log = require('./dist').log.app;
-log.info('Current config is: ', appConfig);
+
+log.info('Config file at: ', process.argv[1] + '/config.js');
+log.info('Current active config is: \n', appConfig);
 
 class Main{
 	constructor(props) {
