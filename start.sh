@@ -6,6 +6,9 @@ WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
 
 export PATH=$APP_HOME/NDK/node/bin:$PATH
+
+echo
+echo
 echo "Shell PATH: "$PATH
 echo
 echo "Path of node: `which node`"
