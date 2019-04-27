@@ -1,42 +1,36 @@
+//<Config at here>
+const api_server_port = process.env['API_SERVER_PORT'] || '3080'; //this api-server port
+const tapdata_port = process.env['TAPDATA_PORT'] || '3030';  //tapdata server port
+const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';  //tapdata server ip
+const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
+const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
+//</Config at here>
+
+
 const config = {
 	'version': 'v1.0.0-0-gd48b0c9',
-	'intervalsDesc': '检查配置文件更新间隔时间，单位为毫秒',
+	'intervalsDesc': 'The intervals to check the api definition, unit is milliseconds.',
 	'intervals': 5000,
 	'host': '0.0.0.0',
-	'port': '3080',
+	'port': api_server_port,
 	'tapDataServer': {
-		'url': 'http://127.0.0.1:3030/api/apiModules',
-		'tokenUrl': 'http://127.0.0.1:3030/api/users/generatetoken',
-		'reportUrl': 'http://127.0.0.1:3030/api/Workers/upsertWithWhere',
-		'logUrl': 'http://127.0.0.1:3030/api/Logs',
+		'url': `${tapdata_origin}/api/apiModules`, 
+		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode 
+		'reportUrl':  `${tapdata_origin}/api/Workers/upsertWithWhere`, 
+		'logUrl': `${tapdata_origin}/api/Logs` , 
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
-	'reportIntervals': 1000, // 心跳汇报周期，单位为毫秒
-	'reportData': {  	// 汇报数据
+	'reportIntervals': 1000, // milliseconds
+	'reportData': {  
 		'worker_type': 'api-server',
-		'process_id': 'd2f1cc40-552a-11e9-8ff4-059b83989412'
+		'process_id':  process_id
 	},
 
-	'cacheDir': 'cache', // 缓存目录
+	'cacheDir': 'cache', 
 	'logDir': 'logs',
 
 	'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
 };
-
-//<请在这里配置参数>
-const api_server_port = process.env['API_SERVER_PORT'] || '3080'; //本服务器监听端口
-const tapdata_port = process.env['TAPDATA_PORT'] || '3030';  //tapdata服务器监听端口
-const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';  //tapdata服务器监听IP地址
-const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
-const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
-//</请在这里配置参数>
-
-config.port = api_server_port;
-config.tapDataServer.url = `${tapdata_origin}/api/apiModules`; // 获取 API 定义的地址
-config.tapDataServer.tokenUrl = `${tapdata_origin}/api/users/generatetoken`; // 根据 accessCode 获取访问 tapdata 的token
-config.tapDataServer.reportUrl =  `${tapdata_origin}/api/Workers/upsertWithWhere`; // 心跳汇报地址
-config.tapDataServer.logUrl =  `${tapdata_origin}/api/Logs`; // 本服务器日志汇报地址
-config.reportData.process_id = process_id;
 
 module.exports = config;
