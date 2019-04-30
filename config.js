@@ -14,20 +14,20 @@ const config = {
 	'host': '0.0.0.0',
 	'port': api_server_port,
 	'tapDataServer': {
-		'url': `${tapdata_origin}/api/apiModules`, 
-		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode 
-		'reportUrl':  `${tapdata_origin}/api/Workers/upsertWithWhere`, 
-		'logUrl': `${tapdata_origin}/api/Logs` , 
+		'url': `${tapdata_origin}/api/apiModules`,
+		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode
+		'reportUrl':  `${tapdata_origin}/api/Workers/upsertWithWhere`,
+		'logUrl': `${tapdata_origin}/api/Logs` ,
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
-	'reportIntervals': 1000, // milliseconds
-	'reportData': {  
+	'reportIntervals': 5000, // milliseconds
+	'reportData': {
 		'worker_type': 'api-server',
 		'process_id':  process_id
 	},
 
-	'cacheDir': 'cache', 
+	'cacheDir': 'cache',
 	'logDir': 'logs',
 
 	'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
