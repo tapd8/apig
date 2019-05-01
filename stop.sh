@@ -14,13 +14,13 @@ echo
 
 
 if [ -f "$APP_HOME/app.pid" ]; then
-	echo "Server main process id is `cat $APP_HOME/app.pid`"
+	echo "API Web server process id is `cat $APP_HOME/app.pid`"
 	kill -9 `cat $APP_HOME/app.pid` > /dev/null 2>&1
 	rm $APP_HOME/app.pid
 fi
 
 if [ -f "$APP_HOME/server.pid" ]; then
-	echo "API Web server process id is `cat $APP_HOME/server.pid`"
+	echo "Server main process id is `cat $APP_HOME/server.pid`"
 	kill -9 `cat $APP_HOME/server.pid` > /dev/null 2>&1
 	rm $APP_HOME/server.pid
 fi
