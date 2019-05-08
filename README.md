@@ -38,11 +38,11 @@
 
 ```shell
 
-# 安装依赖
+# 1. 安装依赖
 npm install
 
-# 打包，版本号在 package.json 中配置
-./pkg.sh 
+# 2. 打包
+./pkg.sh
 
 ```
 
