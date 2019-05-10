@@ -22,7 +22,7 @@ const report = function(data, token) {
 
 	data['start_time'] = startTime;
 //	data['ping_time'] = new Date().getTime();
-	data['worker_ip'] = hostname;
+	//data['worker_ip'] = hostname;
 	data['hostname'] = hostname;
 	data['port'] = appConfig.port;
 	data['total_thread'] = 2;
