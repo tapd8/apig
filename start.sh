@@ -43,13 +43,15 @@ if [ -f "$APP_HOME/server.pid" ]; then
 fi
 
 if [ -d "$APP_HOME/dist" ]; then
-	node $APP_HOME/index.js > /dev/null 2>&1 &
+	# node $APP_HOME/index.js > /dev/null 2>&1 &
+	node $APP_HOME/index.js > /dev/null &
 	echo "API Server started."
 else
 	cd $APP_HOME
 	npm run build
 	cd $WORK_DIR
-	node $APP_HOME/index.js > /dev/null 2>&1 &
+	# node $APP_HOME/index.js > /dev/null 2>&1 &
+	node $APP_HOME/index.js > /dev/null &
 	echo "API Server started."
 fi
 
