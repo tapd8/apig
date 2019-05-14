@@ -12,18 +12,9 @@ echo
 # 	kill -9 `cat $pid`
 # done
 
+kill `ps x | grep "$APP_HOME/app.js" | grep -v grep | awk '{print $1}'` > /dev/null 2>&1
+kill `ps x | grep "$APP_HOME/index.js" | grep -v grep | awk '{print $1}'` > /dev/null 2>&1
 
-if [ -f "$APP_HOME/app.pid" ]; then
-	echo "API Web server process id is `cat $APP_HOME/app.pid`"
-	kill -9 `cat $APP_HOME/app.pid` > /dev/null 2>&1
-	rm $APP_HOME/app.pid
-fi
-
-if [ -f "$APP_HOME/server.pid" ]; then
-	echo "Server main process id is `cat $APP_HOME/server.pid`"
-	kill -9 `cat $APP_HOME/server.pid` > /dev/null 2>&1
-	rm $APP_HOME/server.pid
-fi
 echo
 echo "Stop API Server successful."
 echo
