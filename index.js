@@ -3,7 +3,7 @@ const appConfig = require('./config');
 const generator = require('./generators').generator;
 const report = require('./report');
 const log = require('./dist').log.app;
-
+const datasource = require('./datasource');
 
 
 log.info('Config file at: ', `${__dirname}/config.js`);

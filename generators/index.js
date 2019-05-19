@@ -35,11 +35,11 @@ const validateConfig = function(config){
 	// 检查数据源
 	if( !config.dataSource ){
 		log.error('Missing data source config.（config.dataSource）');
-		return null;
+		return result;
 	}
 	if( !Array.isArray(config.dataSource) ) {
 		log.error('Invalid data source config, must be array data type.（config.dataSource）');
-		return null;
+		return result;
 	} else {
 		for( let i = 0; i < config.dataSource.length; i++ ){
 			let ds = config.dataSource[i];
@@ -80,7 +80,7 @@ const validateConfig = function(config){
 	// 检查 model
 	if( !config.models ){
 		log.error('Missing model config（config.models）');
-		return null;
+		return result;
 	} else {
 		let models = Array.isArray(config.models) ? config.models : [config.models];
 
@@ -303,6 +303,11 @@ const _generator = function(classConfig, cb){
 			cb(true);
 		}
 	};
+	if(Object.entries(classConfig.dataSource).length === 0){
+		padding++;
+		finish();
+		return;
+	}
 	Object.entries(classConfig.dataSource).forEach(([dataSourceName, dataSourceConfig]) => {
 		padding++;
 		new DataSourceGenerator(dataSourceConfig).on('done', finish);

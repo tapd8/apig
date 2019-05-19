@@ -25,7 +25,7 @@ const
 		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
-			} else {
+			} else if(response.statusCode === 200){
 				log.debug('download config success.');
 
 				body = body.trim();
@@ -66,6 +66,8 @@ const
 						log.error('parse config error: \n', e);
 					}
 				}
+			} else {
+				log.error('get config error: \n', body);
 			}
 		});
 	},

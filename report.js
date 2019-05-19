@@ -41,8 +41,10 @@ const report = function(data, token) {
 
 			if( err ){
 				log.error('report fail', err);
-			} else {
+			} else if(resp.statusCode === 200){
 				log.debug(`report complete:`, body);
+			} else {
+				log.error('report fail', body);
 			}
 
 		});

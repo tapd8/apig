@@ -3,7 +3,9 @@ const api_server_port = process.env['API_SERVER_PORT'] || '3080'; //this api-ser
 const tapdata_port = process.env['TAPDATA_PORT'] || '3030';  //tapdata server port
 const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';  //tapdata server ip
 const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
-const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
+const process_id = process.env['API_SERVER_ID'] || '40a8d2c392f810289820ee574bdb345a-52c41659202060d7d76eee3bf8f5f28f';
+const accessCode = process.env['TAPDATA_ACCESS_CODE'] || 'ee40d4146e4f3bb3ec85ae4cda484199';
+const jwtSecretKey = process.env['JWT_SECRET_KEY'] || '9b6ccfd8a27507d217684a581c0644e9';
 //</Config at here>
 
 
@@ -18,7 +20,8 @@ const config = {
 		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode
 		'reportUrl':  `${tapdata_origin}/api/Workers/upsertWithWhere`,
 		'logUrl': `${tapdata_origin}/api/Logs` ,
-		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
+		'connectionUrl': `${tapdata_origin}/api/Connections` ,
+		'accessCode': accessCode,
 	},
 
 	'reportIntervals': 5000, // milliseconds
@@ -30,7 +33,7 @@ const config = {
 	'cacheDir': 'cache',
 	'logDir': 'logs',
 
-	'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+	'jwtSecretKey': jwtSecretKey,
 };
 
 module.exports = config;

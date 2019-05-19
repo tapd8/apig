@@ -29,20 +29,20 @@ configure({
 		},*/
 		out: {
 			type: 'stdout'
-		},
+		}/*,
 		http: {
 			type: path.join(__dirname, '../../log4js-http'),
 			application: 'api-server',
 			url: appConfig.tapDataServer.logUrl
-		}
+		}*/
 	},
 	categories: {
 		default: {
-			appenders: ['app', 'out', 'http'],
+			appenders: ['app', 'out'/*, 'http'*/],
 			level: 'info'
 		},
 		app: {
-			appenders: ['app', 'out', 'http'],
+			appenders: ['app', 'out'/*, 'http'*/],
 			level: 'info'
 		}/*,
 		monitor: {

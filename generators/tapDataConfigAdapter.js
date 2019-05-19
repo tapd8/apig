@@ -2,6 +2,7 @@ const log = require('../dist').log.generator;
 
 const dataTypeMapping = {
 	'ObjectId': 'string',
+	'ObjectID': 'string',
 	'String': 'string',
 	'Boolean': 'boolean',
 	'Integer': 'number',
@@ -9,7 +10,8 @@ const dataTypeMapping = {
 	'Float': 'number',
 	'Date': 'date',
 	'Document': 'object',
-	'ArrayList': 'array'
+	'ArrayList': 'array',
+	'Array': 'array',
 };
 
 const convertCondition = function(cond){
