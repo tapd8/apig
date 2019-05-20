@@ -69,20 +69,18 @@ npm start
 ## 3.6 配置发布 API
 
 ### 3.6.1 创建 MongoDB Atlas 数据源
-### 3.6.2 创建/设计API
 
  - 打开【连接】
- - 创建API/创建自定义API
- 
-### 3.6.3 创建/设计API
+
+### 3.6.2 创建/设计API
 
  - 打开【数据发布】
- - 创建 标准增删查改 API / 创建 自定义查询 API
+ - 点击【新建】按钮，创建标准增删查改 API 和 创建 自定义查询 API
  
-### 3.6.4
+### 3.6.3 发布 API
 
  - 打开【数据发布】
- - 点击【发布】
+ - 点击【发布】按钮
 
 ## 3.7 浏览查询数据
 
@@ -92,7 +90,7 @@ npm start
 ## 3.8 调用 OpenAPI 接口，完成业务开发
 
 ### 3.8.1 调用 Moa OAuth 认证接口获取 JWT Token
- - POST(x-www-form-urlencoded) 方法请求 http://openapi.mongodb.expert/oauth/token，提交参数如下：
+ - POST(x-www-form-urlencoded) 方法请求 [http://openapi.mongodb.expert/oauth/token](http://openapi.mongodb.expert/oauth/token) ，提交参数如下：
 ```
 grant_type: client_credentials					// 固定值
 client_id: b5fd01c5996a634320ebf53cbab5fadf			// API Server ID
@@ -144,5 +142,5 @@ username: lirufei0808@gmail.com					// 用户登录邮箱
 ## 3.9 查看 OpenAPI 接口文档
 
  - 打开 【数据浏览】
- - 选择 【API Server】，指定要查看那个 API Server 的文档
+ - 选择 【API Server】，指定要查看 API Server
  - 点击 【API 文档】 打开 API 文档页面
