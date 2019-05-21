@@ -25,7 +25,7 @@ Moa 由API云端设计器、API Server、MongoDB Atlas三部分组成：
  - API Server ：用户本地环境运行的开源组件，用于执行API发布，提供 RESTful API 接口
  - MongoDB Atlas ：存储配置数据、作为 API Server 的数据源
     
-![架构](architect.png "架构")
+![架构](img/architect.png "架构")
 
 # 3. 如何使用 Moa
 
@@ -56,6 +56,11 @@ npm install
  	- JWT 密钥：客户端请求发布API接口时使用的的密钥
  	- 创建完成后，下载配置文件： config.js
 
+![API Server](img/api_server_list.png)
+
+![API Server](img/api_server_create.png)
+
+
 ## 3.5 配置启动 API Server
 
  - 将下载的 config.js 复制到 API Server 工程的根目录，替换默认 config.js
@@ -72,20 +77,32 @@ npm start
 
  - 打开【连接】
 
+![Connection List](img/connection_list.png)
+
+
 ### 3.6.2 创建/设计API
 
  - 打开【数据发布】
  - 点击【新建】按钮，创建标准增删查改 API 和 创建 自定义查询 API
+ 
+![Create API](img/api_create.png)
+![Create Custom API](img/api_custom.png)
+ 
  
 ### 3.6.3 发布 API
 
  - 打开【数据发布】
  - 点击【发布】按钮
 
+![Publish Data](img/publish_api.png)
+
 ## 3.7 浏览查询数据
 
  - 打开【数据浏览】
  - 选择已经发布的 API 查看数据
+
+![Explorer Data](img/data_explorer.png)
+![Explorer Data](img/data_explorer_query.png)
 
 ## 3.8 调用 OpenAPI 接口，完成业务开发
 
@@ -144,3 +161,6 @@ username: lirufei0808@gmail.com					// 用户登录邮箱
  - 打开 【数据浏览】
  - 选择 【API Server】，指定要查看 API Server
  - 点击 【API 文档】 打开 API 文档页面
+
+![View API Document](img/view_api.png)
+![API Explorer](img/api_explorer.png)

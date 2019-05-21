@@ -47,11 +47,8 @@ testConnection = function(connection){
 			//const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true";
 			const uri = connection.database_uri;
 			const client = new MongoClient(uri, {
-				useNewUrlParser: true,
-				server: {
-					auto_reconnect: true,
-					poolSize: 10
-				}});
+				useNewUrlParser: true
+			});
 			const validate_details = [];
 			client.connect(err => {
 
@@ -68,9 +65,12 @@ testConnection = function(connection){
 				if(err){
 					log.error('connect to mongodb error\n', err);
 					updateConnection(connection.id, {
+						status: 'invalid',
 						response_body: {
 							validate_details: validate_details
 						}
+					}, function(err, data){
+						client.close();
 					});
 				} else {
 					const db = client.db();
@@ -109,6 +109,7 @@ testConnection = function(connection){
 									} else {
 										log.info('test mongodb connection done.');
 									}
+									client.close();
 								});
 							}
 						};
