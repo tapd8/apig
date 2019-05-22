@@ -15,7 +15,7 @@ export class <%= className %> extends <%= modelBaseClass %> {
     <%_ } -%>
   <%_ }) -%>
   })
-  <%= key %><%if (!val.required) {%>?<% } %>: <%= val.tsType %>;
+  '<%= key %>'<%if (!val.required) {%>?<% } %>: <%= val.tsType %>;
 
 <% }) -%>
   constructor(data?: Partial<<%= className %>>) {
