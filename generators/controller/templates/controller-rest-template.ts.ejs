@@ -33,7 +33,15 @@ export class <%= className %>Controller {
     <%_ if (val['type'] === 'preset') { -%>
 
       <%_ if (val['name'] === 'create') { -%>
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @post('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -50,7 +58,15 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'findPage') { %>
 
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @get('<%= val['path'] %>', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -79,7 +95,15 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'findById') { %>
 
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @get('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -96,7 +120,15 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'updateById') { %>
 
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @patch('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -115,7 +147,15 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'deleteById') { %>
 
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @del('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -131,7 +171,15 @@ export class <%= className %>Controller {
         }
       <%_ } else if (val['name'] === 'downloadById') { %>
 
-        @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+          })
         @get('<%= val['path'] %>/{id}', {
           summary: '<%= val['summary']%>',
           tags:['<%= name %>'],
@@ -202,7 +250,15 @@ export class <%= className %>Controller {
       <%_ }  %>
     <%_ } else {-%>
 
-      @authenticate('JwtStrategy', {roles: <%- JSON.stringify(val['roles'])%>})
+      @authenticate('JwtStrategy', {
+          allPathId:'<%= val['allPathId'] %>',
+          rawName:'<%= val['rawName'] %>',
+          result:'<%= val['result'] %>',
+          description:'<%= val['description'] %>',
+          type:'<%= val['type'] %>',
+          pathTpl:'<%= val['pathTpl'] %>',
+          roles: <%- JSON.stringify(val['roles'])%>
+        })
       @get('<%= val['path'] %>', {
         summary: '<%= val['summary']%>',
         tags:['<%= name %>'],

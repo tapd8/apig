@@ -21,12 +21,12 @@ const
 	__listeners = {},
 	loadConfig = function (token) {
 
-		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
+		// log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
 		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
 			} else {
-				log.debug('download config success.');
+				// log.debug('download config success.');
 
 				body = body.trim();
 				/*if( ! (/^\{.*\}$/.test(body) || /^\[.*\]$/.test(body)) ){

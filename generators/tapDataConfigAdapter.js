@@ -12,22 +12,22 @@ const dataTypeMapping = {
 	'ArrayList': 'array'
 };
 
-const convertCondition = function(cond){
+const convertCondition = function (cond) {
 
 	// JugglingDB
 	// and: '并列条件',  or: '可选条件', gt: '>', gte: '>=', ne: '!=', lt: '<', lte: '<=', like: 'LIKE', nlike: 'NOT LIKE', inq: 'IN', nin: 'NOT IN'
 
 	const
-	  operation = cond['operation'],	// 1:<=   2:<   3:>=   4:>   5:!=   6:==   7:like   8:not like
-	  fieldName = cond['column'],
-	  value = cond['value'];
+		operation = cond['operation'],	// 1:<=   2:<   3:>=   4:>   5:!=   6:==   7:like   8:not like
+		fieldName = cond['column'],
+		value = cond['value'];
 
-	if( !fieldName || !value || !operation)
+	if (!fieldName || !value || !operation)
 		return {};
 
 	let result = {};
 	let spec = null;
-	switch ( operation ) {
+	switch (operation) {
 		case 1:
 			spec = 'let';
 			break;
@@ -55,7 +55,7 @@ const convertCondition = function(cond){
 			};
 			return result;
 	}
-	if( spec ){
+	if (spec) {
 		result[fieldName] = {};
 		result[fieldName][spec] = value;
 		return result;
@@ -64,38 +64,38 @@ const convertCondition = function(cond){
 		return result;
 	}
 },
-  buildQuery = function(filter){
-	let query = {};
-	if( Array.isArray(filter.items) ){
-		if( filter.relation ){
+	buildQuery = function (filter) {
+		let query = {};
+		if (Array.isArray(filter.items)) {
+			if (filter.relation) {
 
-			let relationName = filter.relation === '&&' ? 'and' : 'or';
-			query[relationName] = [];
-			filter.items.forEach((f) => {
-				query[relationName].push(buildQuery(f));
-			});
+				let relationName = filter.relation === '&&' ? 'and' : 'or';
+				query[relationName] = [];
+				filter.items.forEach((f) => {
+					query[relationName].push(buildQuery(f));
+				});
 
-		} else {
-			filter.items.forEach((f) => {
-				Object.assign(query, buildQuery(f));
-			});
+			} else {
+				filter.items.forEach((f) => {
+					Object.assign(query, buildQuery(f));
+				});
+			}
+		} else if (filter.column && filter.value && filter.operation) {
+			Object.assign(query, convertCondition(filter));
 		}
-	} else if(filter.column && filter.value && filter.operation){
-		Object.assign(query, convertCondition(filter));
-	}
-	return query;
-  };
+		return query;
+	};
 
 /**
  * 将 tab data server 配置转化为 config
  * @param models
  */
-module.exports = function(models){
+module.exports = function (models) {
 
-	if( !models )
+	if (!models)
 		return null;
 
-	if( !Array.isArray(models) ){
+	if (!Array.isArray(models)) {
 		log.error('配置文件不是预期的数据');
 		return null;
 	}
@@ -119,7 +119,7 @@ module.exports = function(models){
 			paths: []
 		};
 
-		model.fields.forEach((field)=>{
+		model.fields.forEach((field) => {
 			modelConf.fields.push({
 				field_name: field.field_name,
 				data_type: dataTypeMapping[field.data_type] || 'object',
@@ -127,29 +127,36 @@ module.exports = function(models){
 			})
 		});
 		model.paths.forEach((customApi) => {
+			log.debug("generators/tapDataConfigAdapter.js:130:", customApi);
+
 			let apiConfig = {
+				allPathId: model.id,
+				pathTpl: customApi.path,
+				method: customApi.method,
+				rawName: customApi.name,
+				result: customApi.result,
 				type: customApi.type,
 				description: customApi.description || '',
 				roles: customApi['acl'] || []
 			};
-			if( apiConfig.type === 'preset' ){
+			if (apiConfig.type === 'preset') {
 				apiConfig.name = customApi.name;
 			} else {
-				if( customApi.fields && customApi.fields.length > 0){
+				if (customApi.fields && customApi.fields.length > 0) {
 					apiConfig.fields = [];
 					customApi.fields.forEach((field) => {
-						if( field.visible === true || field.visible === 'true'){
+						if (field.visible === true || field.visible === 'true') {
 							apiConfig.fields.push(field.field_name);
 						}
 					});
 				}
 
 				// 预设过滤条件
-				if( customApi.filter ){
+				if (customApi.filter) {
 
 					let query = buildQuery(customApi.filter);
 
-					if( Object.keys(query).length > 0 )
+					if (Object.keys(query).length > 0)
 						apiConfig.filter = query;
 				}
 
@@ -174,7 +181,7 @@ module.exports = function(models){
 
 	});
 
-	Object.entries(dataSource).forEach(([dataSourceName, dbConf])=> {
+	Object.entries(dataSource).forEach(([dataSourceName, dbConf]) => {
 		result.dataSource.push(dbConf);
 	});
 
@@ -186,12 +193,12 @@ module.exports = function(models){
 /**
  * 测试
  */
-const test = (function(){
+const test = (function () {
 
-	const log = function(msg, format){
+	const log = function (msg, format) {
 		msg = msg || '';
 
-		if( typeof msg === 'object')
+		if (typeof msg === 'object')
 			msg = format ? JSON.stringify(msg, '', '\t') : JSON.stringify(msg);
 		console.log(msg);
 	};
@@ -209,11 +216,11 @@ const test = (function(){
 	log();
 	log('test buildQuery');
 
-	log(buildQuery({"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"}));
+	log(buildQuery({ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "&&" }));
 
 	log(buildQuery({
 		'items': [
-			{'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&'},
+			{ 'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&' },
 			{
 				'column': 'qty',
 				'operation': 6,
@@ -224,7 +231,7 @@ const test = (function(){
 	}));
 	log(buildQuery({
 		'items': [
-			{'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&'},
+			{ 'column': 'sku', 'operation': 6, 'value': '862', 'datatype': 'string', 'relation': '&&' },
 			{
 				items: [{
 					'column': 'qty',
@@ -241,24 +248,24 @@ const test = (function(){
 				}],
 				'relation': '||'
 			}
-			]
+		]
 	}));
 
 	log(buildQuery({
 		items: [
 			{
 				items: [
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"},
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"||"}
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "&&" },
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "||" }
 				],
-				relation:"&&"
+				relation: "&&"
 			},
 			{
 				items: [
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"},
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"||"}
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "&&" },
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "||" }
 				],
-				relation:"||"
+				relation: "||"
 			}
 		]
 	}));
@@ -266,22 +273,22 @@ const test = (function(){
 		items: [
 			{
 				items: [
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"},
-					{"column":"name","operation":1,"value":1,"datatype":"string","relation":"||"}
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "&&" },
+					{ "column": "name", "operation": 1, "value": 1, "datatype": "string", "relation": "||" }
 				]
 			},
-			{"column":"age","operation":1,"value":2,"datatype":"string","relation":"||"}
+			{ "column": "age", "operation": 1, "value": 2, "datatype": "string", "relation": "||" }
 		]
 	}));
 	log(buildQuery({
 		items: [
 			{
 				items: [
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"&&"},
-					{"column":"role","operation":1,"value":1,"datatype":"string","relation":"||"}
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "&&" },
+					{ "column": "role", "operation": 1, "value": 1, "datatype": "string", "relation": "||" }
 				]
 			},
-			{"column":"role","operation":1,"value":2,"datatype":"string","relation":"||"}
+			{ "column": "role", "operation": 1, "value": 2, "datatype": "string", "relation": "||" }
 		]
 	}));
 });

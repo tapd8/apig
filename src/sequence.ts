@@ -1,4 +1,4 @@
-import {inject} from '@loopback/context';
+import { inject } from '@loopback/context';
 import {
 	FindRoute,
 	InvokeMethod,
@@ -7,10 +7,13 @@ import {
 	RequestContext,
 	RestBindings,
 	Send,
-	SequenceHandler,
+	SequenceHandler
 } from '@loopback/rest';
-import {AuthenticationBindings, AuthenticateFn} from '@loopback/authentication';
-import {log} from './log';
+import { AuthenticationBindings, AuthenticateFn } from '@loopback/authentication';
+import { log } from './log';
+const appConfig = require('../../config');
+const getToken = require('../../tapdata').getToken;
+const requestOfcalls = require('request');
 
 const SequenceActions = RestBindings.SequenceActions;
 const excludeAuthPath = ['/', '/explorer', '/openapi.json'];
@@ -26,37 +29,191 @@ export class MySequence implements SequenceHandler {
 	) {
 	}
 
+
+
 	async handle(context: RequestContext) {
 
-		const {request, response} = context;
+		// log.app.debug(context);
+
+		let apiAuditLog = {
+			"call_id": "",
+			"allPathId": "xxxxxxxxxxxxxxx",
+			"method": "XXXX",
+			"api_path": "xxxxxxxxxxxxxx",
+			"api_name": "xxxxxxxxxxxxxx",
+			"req_path": "xxxxxxxxxxxxxxxxxx",
+			"req_params": "xxxxxxxxxxxxxxxxxx",
+			"req_headers": {},
+			"req_time": 0, //timestamp
+			"res_time": 0, //timestamp
+			"latency": 0, //ms,delta time
+			"req_bytes": 0,
+			"res_bytes": 0,
+			"res_rows": 0,
+			"user_ip": "xxxxxxxxxx",
+			"user_port": "xxxx",
+			"api_worker_uuid": "xxxxxxxxxxxxxxxxxxxxxx",
+			"api_worker_ip": "xxxxxxxxxxxxxx",
+			"api_worker_port": 0,
+			"api_gateway_uuid": "xxxxxxxxxxxxxxxxxxxxx",
+			"api_gateway_ip": "xxxxxxxxxxxx",
+			"api_gateway_port": 0,
+			"code": 0,
+			"codeMsg": "xxxxxxxxxxx",
+			"user_id": "xxxxxxxxxxxxxxx"
+		};
+
+
+		const { request, response } = context;
+
+		let resEndHandler = (err: Error) => {
+
+			const _end = new Date().getTime();
+			apiAuditLog.latency = _end - _start;
+			apiAuditLog.req_time = _start;
+			apiAuditLog.res_time = _end;
+
+			// log.app.debug(`${reqId} resp, time ${_end - _start} ms`);
+
+			if (err) {
+				log.app.error(err);
+			}
+
+			//@ts-ignore
+			apiAuditLog.api_meta = request["api_meta"];
+			//@ts-ignore
+			apiAuditLog["user_info"] = request["user_info"];
+			//@ts-ignore
+			apiAuditLog.user_id = request["user_info"].user_id;
+			//@ts-ignore
+			apiAuditLog.allPathId = request["api_meta"].options.allPathId;
+			//@ts-ignore
+			apiAuditLog.api_path = request["api_meta"].options.pathTpl;
+			//@ts-ignore
+			apiAuditLog.api_name = request["api_meta"].options.rawName;
+
+			apiAuditLog.call_id = reqId;
+			apiAuditLog.user_ip = `${ip}`;
+			//@ts-ignore
+			apiAuditLog.user_ips = request.ips;
+			apiAuditLog.user_port = `${port}`;
+			apiAuditLog.req_path = request.path;
+			apiAuditLog.method = request.method;
+
+			apiAuditLog.api_gateway_ip = request.connection.localAddress;
+			apiAuditLog.api_gateway_port = request.connection.localPort;
+
+			apiAuditLog.api_worker_ip = request.connection.localAddress;
+			apiAuditLog.api_worker_port = request.connection.localPort;
+
+			// https://stackoverflow.com/questions/38423930/how-to-retrieve-client-and-server-ip-address-and-port-number-in-node-js
+
+			// log.app.debug(
+			// 	// appConfig,
+			// 	// request.headers,
+			// 	request.socket.bytesRead,
+			// 	// https://stackoverflow.com/questions/32295689/how-to-get-byte-size-of-request
+			// 	request.connection.remoteAddress,
+			// 	request.connection.remotePort,
+			// 	request.connection.localAddress,
+			// 	request.connection.localPort
+			// );
+
+			apiAuditLog.api_worker_uuid = appConfig.reportData.process_id;
+			apiAuditLog.api_gateway_uuid = appConfig.reportData.process_id;
+			apiAuditLog.req_headers = request.headers;
+			apiAuditLog.req_bytes = request.socket.bytesRead;
+
+			apiAuditLog.code = response.statusCode;
+			apiAuditLog.codeMsg = response.statusMessage;
+
+			// log.app.debug(response.connection);
+
+			// log.app.debug(request.socket.server);
+			apiAuditLog.req_bytes = request.socket.bytesRead;
+			apiAuditLog.res_bytes = request.socket.bytesWritten;
+
+			// request.
+			// apiAuditLog.res_bytes = response._contentLength;
+
+			log.app.debug("apiAuditLog@resEndHandler@src/sequence.ts:141\n", apiAuditLog);
+
+			// send to server
+			getToken(function (token: string) {
+
+				let url = appConfig.tapDataServer.apiCallsUrl + '?access_token=' + token;
+
+				requestOfcalls.post({
+					url: url,
+					json: true,
+					body: apiAuditLog
+				}, (err: any, resp: any, body: any) => {
+					if (err) {
+						console.error('report fail', err);
+					}
+				});
+			});
+
+		};
+
+		// let requestStats = require('request-stats');
+		// let stats = requestStats(request, response);
+		// stats.on('complete', (s: any) => {
+		// 	apiAuditLog.latency = s.time;
+		// 	// log.app.debug(s);
+		// });
+
+		response.on("finish", resEndHandler);
+		response.on("error", resEndHandler);
+
+
 		const ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
+		const port = request.headers['x-forwarded-port'] || request.connection.remotePort;
 		const _start = new Date().getTime();
 		const reqId = `reqId_${_start}_${(Math.random() + '').slice(2)}`;
 		try {
 			const route = this.findRoute(request);
+			// log.app.debug("route:", route);
 			const args = await this.parseParams(request, route);
 			log.app.debug(`${reqId} client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}`);
 
+			apiAuditLog.req_params = `${JSON.stringify(args)}`;
+
 			// 认证
-			if( excludeAuthPath.includes(request.path)){
+			if (excludeAuthPath.includes(request.path)) {
 				log.app.debug('exclude auth path ' + request.path);
 			} else {
-				await this.authenticateRequest(request);
+				let rt = await this.authenticateRequest(request);
+				// log.app.debug(rt);
+				// if (rt) {
+				// 	apiAuditLog.user_id = rt.id;
+				// }
+				// else {
+				// 	log.app.error("authenticateRequest return null or undefine: ", rt);
+				// }
+
 			}
 
 			let result = await this.invoke(route, args);
+
+			log.app.debug("result@src/sequence.ts:180\n", result);
+			if (result) {
+				if (result.total) {
+					apiAuditLog.res_rows = result.total.count;
+				} else {
+					apiAuditLog.res_rows = 1;
+				}
+			}
+
 			const filename = request.query.filename;
-			if( filename ){
+			if (filename) {
 				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
 				result = new Buffer(JSON.stringify(result), 'UTF-8');
-			} else if( result && result.filename && result.stream ){
+			} else if (result && result.filename && result.stream) {
 				response.setHeader('Content-Disposition', 'attachment; filename="' + result.filename + '"');
 				result = result.stream;
 			}
 			this.send(response, result);
-
-			const _end = new Date().getTime();
-			log.app.debug(`${reqId} resp, time ${_end - _start}ms`);
 
 		} catch (err) {
 			this.reject(context, err);

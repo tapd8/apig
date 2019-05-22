@@ -16,15 +16,16 @@ const config = {
 	'tapDataServer': {
 		'url': `${tapdata_origin}/api/apiModules`,
 		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode
-		'reportUrl':  `${tapdata_origin}/api/Workers/upsertWithWhere`,
-		'logUrl': `${tapdata_origin}/api/Logs` ,
+		'reportUrl': `${tapdata_origin}/api/Workers/upsertWithWhere`,
+		'logUrl': `${tapdata_origin}/api/Logs`,
+		'apiCallsUrl': `${tapdata_origin}/api/ApiCalls`,
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
 	'reportIntervals': 5000, // milliseconds
 	'reportData': {
 		'worker_type': 'api-server',
-		'process_id':  process_id
+		'process_id': process_id
 	},
 
 	'cacheDir': 'cache',
