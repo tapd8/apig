@@ -39,7 +39,7 @@ Moa 由API云端设计器、API Server、MongoDB Atlas三部分组成：
 ## 3.3 下载 API Server (分支 hackathon)
 ```bash
 # 检出分支 hackathon 的代码
-git clone --single-branch --branch=hackathon git@github.com:tapd8/apig.git
+git clone --single-branch --branch=hackathon https://github.com/tapd8/apig.git
 
 # 安装依赖
 cd apig
