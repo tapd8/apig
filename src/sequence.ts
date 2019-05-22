@@ -7,7 +7,7 @@ import {
 	RequestContext,
 	RestBindings,
 	Send,
-	SequenceHandler
+	SequenceHandler,
 } from '@loopback/rest';
 import { AuthenticationBindings, AuthenticateFn } from '@loopback/authentication';
 import { log } from './log';
@@ -25,7 +25,7 @@ export class MySequence implements SequenceHandler {
 		@inject(SequenceActions.INVOKE_METHOD) protected invoke: InvokeMethod,
 		@inject(SequenceActions.SEND) public send: Send,
 		@inject(SequenceActions.REJECT) public reject: Reject,
-		@inject(AuthenticationBindings.AUTH_ACTION) protected authenticateRequest: AuthenticateFn
+		@inject(AuthenticationBindings.AUTH_ACTION) protected authenticateRequest: AuthenticateFn,
 	) {
 	}
 
@@ -36,31 +36,31 @@ export class MySequence implements SequenceHandler {
 		// log.app.debug(context);
 
 		let apiAuditLog = {
-			"call_id": "",
-			"allPathId": "xxxxxxxxxxxxxxx",
-			"method": "XXXX",
-			"api_path": "xxxxxxxxxxxxxx",
-			"api_name": "xxxxxxxxxxxxxx",
-			"req_path": "xxxxxxxxxxxxxxxxxx",
-			"req_params": "xxxxxxxxxxxxxxxxxx",
-			"req_headers": {},
-			"req_time": 0, //timestamp
-			"res_time": 0, //timestamp
-			"latency": 0, //ms,delta time
-			"req_bytes": 0,
-			"res_bytes": 0,
-			"res_rows": 0,
-			"user_ip": "xxxxxxxxxx",
-			"user_port": "xxxx",
-			"api_worker_uuid": "xxxxxxxxxxxxxxxxxxxxxx",
-			"api_worker_ip": "xxxxxxxxxxxxxx",
-			"api_worker_port": 0,
-			"api_gateway_uuid": "xxxxxxxxxxxxxxxxxxxxx",
-			"api_gateway_ip": "xxxxxxxxxxxx",
-			"api_gateway_port": 0,
-			"code": 0,
-			"codeMsg": "xxxxxxxxxxx",
-			"user_id": "xxxxxxxxxxxxxxx"
+			'call_id': '',
+			'allPathId': 'xxxxxxxxxxxxxxx',
+			'method': 'XXXX',
+			'api_path': 'xxxxxxxxxxxxxx',
+			'api_name': 'xxxxxxxxxxxxxx',
+			'req_path': 'xxxxxxxxxxxxxxxxxx',
+			'req_params': 'xxxxxxxxxxxxxxxxxx',
+			'req_headers': {},
+			'req_time': 0, //timestamp
+			'res_time': 0, //timestamp
+			'latency': 0, //ms,delta time
+			'req_bytes': 0,
+			'res_bytes': 0,
+			'res_rows': 0,
+			'user_ip': 'xxxxxxxxxx',
+			'user_port': 'xxxx',
+			'api_worker_uuid': 'xxxxxxxxxxxxxxxxxxxxxx',
+			'api_worker_ip': 'xxxxxxxxxxxxxx',
+			'api_worker_port': 0,
+			'api_gateway_uuid': 'xxxxxxxxxxxxxxxxxxxxx',
+			'api_gateway_ip': 'xxxxxxxxxxxx',
+			'api_gateway_port': 0,
+			'code': 0,
+			'codeMsg': 'xxxxxxxxxxx',
+			'user_id': 'xxxxxxxxxxxxxxx',
 		};
 
 
@@ -80,17 +80,21 @@ export class MySequence implements SequenceHandler {
 			}
 
 			//@ts-ignore
-			apiAuditLog.api_meta = request["api_meta"];
+			let user_info: object = request['user_info'] || {};
 			//@ts-ignore
-			apiAuditLog["user_info"] = request["user_info"];
+			let api_meta: object = request['api_meta'] || { options: {} };
 			//@ts-ignore
-			apiAuditLog.user_id = request["user_info"].user_id;
+			apiAuditLog.api_meta = api_meta;
 			//@ts-ignore
-			apiAuditLog.allPathId = request["api_meta"].options.allPathId;
+			apiAuditLog['user_info'] = user_info;
 			//@ts-ignore
-			apiAuditLog.api_path = request["api_meta"].options.pathTpl;
+			apiAuditLog.user_id = user_info.user_id;
 			//@ts-ignore
-			apiAuditLog.api_name = request["api_meta"].options.rawName;
+			apiAuditLog.allPathId = api_meta.options.allPathId;
+			//@ts-ignore
+			apiAuditLog.api_path = api_meta.options.pathTpl;
+			//@ts-ignore
+			apiAuditLog.api_name = api_meta.options.rawName;
 
 			apiAuditLog.call_id = reqId;
 			apiAuditLog.user_ip = `${ip}`;
@@ -136,7 +140,7 @@ export class MySequence implements SequenceHandler {
 			// request.
 			// apiAuditLog.res_bytes = response._contentLength;
 
-			log.app.debug("apiAuditLog@resEndHandler@src/sequence.ts:141\n", apiAuditLog);
+			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
 			// send to server
 			getToken(function (token: string) {
@@ -146,7 +150,7 @@ export class MySequence implements SequenceHandler {
 				requestOfcalls.post({
 					url: url,
 					json: true,
-					body: apiAuditLog
+					body: apiAuditLog,
 				}, (err: any, resp: any, body: any) => {
 					if (err) {
 						console.error('report fail', err);
@@ -163,8 +167,8 @@ export class MySequence implements SequenceHandler {
 		// 	// log.app.debug(s);
 		// });
 
-		response.on("finish", resEndHandler);
-		response.on("error", resEndHandler);
+		response.on('finish', resEndHandler);
+		response.on('error', resEndHandler);
 
 
 		const ip = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
@@ -196,7 +200,7 @@ export class MySequence implements SequenceHandler {
 
 			let result = await this.invoke(route, args);
 
-			log.app.debug("result@src/sequence.ts:180\n", result);
+			log.app.debug('result@src/sequence.ts:180\n', result);
 			if (result) {
 				if (result.total) {
 					apiAuditLog.res_rows = result.total.count;
@@ -206,9 +210,10 @@ export class MySequence implements SequenceHandler {
 			}
 
 			const filename = request.query.filename;
+			const type = request.query.type || 'json';
 			if (filename) {
 				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
-				result = new Buffer(JSON.stringify(result), 'UTF-8');
+				result = this.convertToBuffer(type, result);
 			} else if (result && result.filename && result.stream) {
 				response.setHeader('Content-Disposition', 'attachment; filename="' + result.filename + '"');
 				result = result.stream;
@@ -218,6 +223,36 @@ export class MySequence implements SequenceHandler {
 		} catch (err) {
 			this.reject(context, err);
 			log.app.error(`${reqId} process request error`, err);
+		}
+	}
+
+	convertToBuffer(type: String, data: object){
+		type = type ? type.toLowerCase() : 'json';
+		if( type === 'json'){
+			return Buffer.from(JSON.stringify(data), 'utf8');
+		} else if( type === 'csv') {
+			let separatedBy = '|';
+			let delimiter = '"';
+			data = data || {};
+			// @ts-ignore
+			let records = Array.isArray(data['data']) ? data['data'] : [data['data']];
+			if( records.length > 0){
+				let fields = Object.keys(records[0]);
+				let contents: string[] = [];
+				let row: string[] = [];
+				fields.forEach(v => row.push(`${delimiter}${v}${delimiter}`));
+				contents.push(row.join(separatedBy));
+				records.forEach((record: object) => {
+					let row: string[] = [];
+					// @ts-ignore
+					fields.forEach(v => row.push(`${delimiter}${typeof record[v] === 'object' ? JSON.stringify(record[v]) : (record[v] || '')}${delimiter}`));
+					contents.push(row.join(separatedBy));
+				});
+				let content = contents.join("\n");
+				return Buffer.from(content, 'utf8');
+			}
+		} else {
+			return Buffer.alloc(0);
 		}
 	}
 }
