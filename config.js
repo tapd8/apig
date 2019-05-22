@@ -1,9 +1,11 @@
 //<Config at here>
-const api_server_port = process.env['API_SERVER_PORT'] || '3080'; //this api-server port
-const tapdata_port = process.env['TAPDATA_PORT'] || '3030';  //moa server port
-const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';  //moa server ip
-const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
-const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
+const api_server_port = process.env['API_SERVER_PORT'] || '3080';            // this is api-server port
+const tapdata_port = process.env['TAPDATA_PORT'] || '';                      // this is moa server port
+const tapdata_host = process.env['TAPDATA_HOST'] || 'openapi.mongodb.expert';// this is moa server ip
+const tapdata_origin = process.env['TAPDATA_ORIGIN'] || 'http://openapi.mongodb.expert';
+const process_id = process.env['API_SERVER_ID'] || 'd145d3b72b33a1db7515e647d5818600';  // this is api-server unique id
+const accessCode = process.env['TAPDATA_ACCESS_CODE'] || 'ee40d4146e4f3bb3ec85ae4cda484199';    // this is access to moa code
+const jwtSecretKey = process.env['JWT_SECRET_KEY'] || 'de428370350427d6f9102b12a36c8c45';       // this is jwt secret key
 //</Config at here>
 
 
@@ -18,20 +20,20 @@ const config = {
 		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode
 		'reportUrl': `${tapdata_origin}/api/Workers/upsertWithWhere`,
 		'logUrl': `${tapdata_origin}/api/Logs`,
-		'apiCallsUrl': `${tapdata_origin}/api/ApiCalls`,
-		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
+		'connectionUrl': `${tapdata_origin}/api/Connections`,
+		'accessCode': accessCode,
 	},
 
 	'reportIntervals': 5000, // milliseconds
 	'reportData': {
 		'worker_type': 'api-server',
-		'process_id': process_id
+		'process_id': process_id,
 	},
 
 	'cacheDir': 'cache',
 	'logDir': 'logs',
 
-	'jwtSecretKey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+	'jwtSecretKey': jwtSecretKey,
 };
 
 module.exports = config;
