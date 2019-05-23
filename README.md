@@ -169,7 +169,7 @@ username: lirufei0808@gmail.com					// 用户登录邮箱
 | 任务 | 认领 | 预计完成时间 |
 | ---- | ---- | ----|
 | 1. 指定 API Server 实例发布API | 李汝飞 | 2019-05-26 |
-| 2. 支持 npm 安装 API Server | 李汝飞 | 2019-05-27 |
+| 2. 支持 npm 安装 API Server | 李汝飞 | 2019-05-24 |
 | 3. 发布 API 到 MongoDB Stitch |  |  |
 | 4. API Server 支持 Oracle 数据源 |  |  |
 | 5. API Server 支持 MySql 数据源 |  |  |
