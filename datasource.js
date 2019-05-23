@@ -221,6 +221,19 @@ getCollectionSchema = function(collection, cb){
 						});
 					});
 				}
+				if( result.fields.length === 0){
+					result.fields.push({
+						"field_name" : "_id",
+						"table_name" : collectionName,
+						"data_type" : 'ObjectId',
+						"primary_key_position" : 1,
+						"foreign_key_table" : null,
+						"foreign_key_column" : null,
+						"key" : "PRI",
+						"precision" : null,
+						"scale" : null
+					})
+				}
 				cb(null, result);
 			}
 		});

@@ -160,6 +160,14 @@ module.exports = function(models){
 			modelConf.paths.push(apiConfig);
 		});
 
+		if( modelConf.fields.length === 0){
+			modelConf.fields.push({
+				field_name: '_id',
+				data_type: 'string',
+				primary_key_position: 1
+			})
+		}
+
 		result.models.push(modelConf);
 
 		dataSource[model.connection.name] = {
