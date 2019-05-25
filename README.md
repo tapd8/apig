@@ -36,10 +36,10 @@ Moa 由API云端设计器、API Server、MongoDB Atlas三部分组成：
 ## 3.2 注册 Moa 账号
 注册地址： http://openapi.mongodb.expert
 
-## 3.3 下载 API Server (分支 hackathon)
+## 3.3 下载 API Server (分支 moa)
 ```bash
-# 检出分支 hackathon 的代码
-git clone --single-branch --branch=hackathon https://github.com/tapd8/apig.git
+# 检出分支 moa 的代码
+git clone --single-branch --branch=moa https://github.com/tapd8/apig.git
 
 # 安装依赖
 cd apig
