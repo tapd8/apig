@@ -44,3 +44,4 @@ class RepositoryGenerator extends Generator {
 
 }
 module.exports = RepositoryGenerator ;
+

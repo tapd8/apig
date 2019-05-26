@@ -7,3 +7,4 @@ command-line of your application's root directory.
 
 For more information, please visit
 [Controller generator](http://loopback.io/doc/en/lb4/Controller-generator.html).
+

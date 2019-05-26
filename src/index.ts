@@ -20,3 +20,4 @@ export async function main(options: ApplicationConfig = {}, cb ?: (result : bool
 }
 
 export * from './log';
+

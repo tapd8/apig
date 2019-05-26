@@ -63,3 +63,4 @@ setInterval(() => {
 exports.setStatus = function(status){
 	Object.assign(apiServerStatus, status);
 };
+

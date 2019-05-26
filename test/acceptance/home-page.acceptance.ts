@@ -26,3 +26,4 @@ describe('HomePage', () => {
       .expect('Content-Type', /text\/html/);
   });
 });
+

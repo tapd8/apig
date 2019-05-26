@@ -69,3 +69,4 @@ function configure(config) {
 }
 
 module.exports.configure = configure;
+

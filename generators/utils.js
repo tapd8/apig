@@ -62,3 +62,4 @@ exports.servicesDir = 'services';
 exports.modelsDir = 'models';
 exports.sourceRootDir = 'generators';
 exports.destinationRootDir = 'src';
+

@@ -43,3 +43,4 @@ class ControllerGenerator extends Generator {
 }
 
 module.exports = ControllerGenerator;
+

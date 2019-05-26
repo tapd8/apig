@@ -19,3 +19,4 @@ describe('PingController', () => {
     expect(res.body).to.containEql({greeting: 'Hello from LoopBack'});
   });
 });
+

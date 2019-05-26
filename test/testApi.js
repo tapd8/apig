@@ -271,3 +271,4 @@ let flatCondition = flat({
 });
 console.log(JSON.stringify(flatCondition , '', '\t'));
 console.log(JSON.stringify(parameterSerialization('filter', {where: flatCondition}).split('&'), '', '\t'));
+

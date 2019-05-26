@@ -51,3 +51,4 @@ class DataSourceGenerator extends Generator {
 }
 
 module.exports = DataSourceGenerator;
+

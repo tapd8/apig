@@ -200,3 +200,4 @@ class Generator extends EventEmitter{
 }
 
 module.exports = Generator;
+
