@@ -98,3 +98,4 @@ class ModelGenerator extends Generator {
 
 }
 module.exports = ModelGenerator;
+

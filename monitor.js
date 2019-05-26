@@ -118,3 +118,4 @@ exports.stop = function () {
 	if (intervalId)
 		clearInterval(intervalId);
 };
+

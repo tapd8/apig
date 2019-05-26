@@ -27,3 +27,4 @@ module.exports = async function(dir, file) {
     await appendFile(indexFile, content);
   }
 };
+

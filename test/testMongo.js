@@ -15,3 +15,4 @@ new mongodb.MongoClient('mongodb://johndoe:my_password@beidou.mongoing.com:27040
 	client.close();
 
 });
+

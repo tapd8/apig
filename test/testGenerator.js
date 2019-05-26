@@ -57,3 +57,4 @@ new ControllerGenerator({
 }).on('done', ()=>{
 	console.log('生成完成');
 });
+

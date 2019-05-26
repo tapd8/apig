@@ -23,3 +23,4 @@ try {
 let decoded = jwt.decode(token, {complete: true});
 
 console.log(decoded);
+

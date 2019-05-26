@@ -34,3 +34,4 @@ module.exports = function(cb){
 	}).setRecursive(true)
 		.scan(dir)
 };
+

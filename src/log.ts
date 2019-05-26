@@ -63,3 +63,4 @@ export const log = {
 	monitor: getLogger('app'),
 	generator: getLogger('app')
 };
+

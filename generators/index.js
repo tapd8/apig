@@ -386,3 +386,4 @@ exports.generator = function (config, cb) {
 	});
 
 };
+

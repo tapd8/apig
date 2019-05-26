@@ -27,3 +27,4 @@ if (require.main === module) {
 	});
 }
 require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
+

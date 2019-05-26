@@ -22,3 +22,4 @@ export interface AppWithClient {
   app: ApiGatewayApplication;
   client: Client;
 }
+
