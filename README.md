@@ -165,19 +165,3 @@ username: lirufei0808@gmail.com					// 用户登录邮箱
 ![View API Document](img/view_api.png)
 ![API Explorer](img/api_explorer.png)
 
-# Development Plan
-| 任务 | 认领 | 预计完成时间 |
-| ---- | ---- | ----|
-| 1. 指定 API Server 实例发布API | 李汝飞 | 2019-05-26 |
-| 2. 支持 npm 安装 API Server | 李汝飞 | 2019-05-24 |
-| 3. 发布 API 到 MongoDB Stitch |  |  |
-| 4. API Server 支持 Oracle 数据源 |  |  |
-| 5. API Server 支持 MySql 数据源 |  |  |
-
-# Change Log
-1. [2019-05-23] 修复 MongoDB Connect URL 缺失 Database Name 引发错误
-2. [2019-05-23] 优化 API 发布流程
-3. [2019-05-23] 增加版本
-4. [2019-05-23] 修复数据浏览中多API Server 实例时运行状态混淆错误
-5. [2019-05-23] 修复发布空数据集时引发的错误
-6. [2019-05-23] 修复其他已知BUG，优化性能
