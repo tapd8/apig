@@ -61,6 +61,7 @@ export class MySequence implements SequenceHandler {
 			'code': 0,
 			'codeMsg': 'xxxxxxxxxxx',
 			'user_id': 'xxxxxxxxxxxxxxx',
+			"report_time": 0 //timestamp,该监控日志的上报时间
 		};
 
 
@@ -137,8 +138,7 @@ export class MySequence implements SequenceHandler {
 			apiAuditLog.req_bytes = request.socket.bytesRead;
 			apiAuditLog.res_bytes = request.socket.bytesWritten;
 
-			// request.
-			// apiAuditLog.res_bytes = response._contentLength;
+			apiAuditLog.report_time = new Date().getTime();
 
 			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
