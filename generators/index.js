@@ -24,7 +24,6 @@ const methods = ['POST', 'GET', 'PATCH', 'DELETE'];
  * 检验配置合法
  */
 const validateConfig = function (config) {
-	log.debug("generators/index.js:27@config.models[0].paths:", config.models[0].paths);
 	config = config || {};
 	const result = {
 		dataSource: {},
@@ -296,8 +295,6 @@ const validateConfig = function (config) {
  */
 const _generator = function (classConfig, cb) {
 
-	log.debug("generators/index.js:299:", classConfig.controllers[0].api);
-
 	// 生成 data source
 	// 生成 model
 	// 生成 repository
@@ -307,7 +304,6 @@ const _generator = function (classConfig, cb) {
 
 	let finish = function () {
 		padding--;
-		log.debug('padding write file ' + padding);
 		if (padding === 0 && typeof cb === 'function') {
 			cb(true);
 		}
@@ -326,7 +322,6 @@ const _generator = function (classConfig, cb) {
 	});
 	classConfig.controllers.forEach((controller) => {
 		padding++;
-		log.debug("controller@generators/index.js:329:new ControllerGenerator(controller).on('done', finish);:\n", controller);
 		new ControllerGenerator(controller).on('done', finish);
 	});
 
@@ -339,18 +334,14 @@ const build = require('./build');
  * @param config
  */
 exports.generator = function (config, cb) {
-	log.debug("generators/index.js:342: exports.generator = function (config, cb), raw config:\n", config);
 
 	/**
 	 * 适配接口返回数据
 	 */
 	config = adapterTapDataConfig(config);
-	log.debug("generators/index.js:346: config = adapterTapDataConfig(config);:\n", config);
-
 
 	// 检查配置文件正确性
 	const classConfig = validateConfig(config);
-	log.debug("generators/index.js:351: const classConfig = validateConfig(config);:\n", classConfig);
 
 	if (!classConfig) {
 		// 校验未通过
