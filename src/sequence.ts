@@ -61,6 +61,7 @@ export class MySequence implements SequenceHandler {
 			'code': 0,
 			'codeMsg': 'xxxxxxxxxxx',
 			'user_id': 'xxxxxxxxxxxxxxx',
+			"report_time": 0 //timestamp,该监控日志的上报时间
 		};
 
 
@@ -137,8 +138,7 @@ export class MySequence implements SequenceHandler {
 			apiAuditLog.req_bytes = request.socket.bytesRead;
 			apiAuditLog.res_bytes = request.socket.bytesWritten;
 
-			// request.
-			// apiAuditLog.res_bytes = response._contentLength;
+			apiAuditLog.report_time = new Date().getTime();
 
 			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
@@ -202,8 +202,8 @@ export class MySequence implements SequenceHandler {
 
 			log.app.debug('result@src/sequence.ts:180\n', result);
 			if (result) {
-				if (result.total) {
-					apiAuditLog.res_rows = result.total.count;
+				if (result.data) {
+					apiAuditLog.res_rows = result.data.length ? result.data.length : 0;
 				} else {
 					apiAuditLog.res_rows = 1;
 				}
@@ -226,17 +226,17 @@ export class MySequence implements SequenceHandler {
 		}
 	}
 
-	convertToBuffer(type: String, data: object){
+	convertToBuffer(type: String, data: object) {
 		type = type ? type.toLowerCase() : 'json';
-		if( type === 'json'){
+		if (type === 'json') {
 			return Buffer.from(JSON.stringify(data), 'utf8');
-		} else if( type === 'csv') {
+		} else if (type === 'csv') {
 			let separatedBy = '|';
 			let delimiter = '"';
 			data = data || {};
 			// @ts-ignore
 			let records = Array.isArray(data['data']) ? data['data'] : [data['data']];
-			if( records.length > 0){
+			if (records.length > 0) {
 				let fields = Object.keys(records[0]);
 				let contents: string[] = [];
 				let row: string[] = [];
