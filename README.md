@@ -106,7 +106,10 @@ npm start
 
 ## 3.8 调用 OpenAPI 接口，完成业务开发
 
-### 3.8.1 调用 Moa OAuth 认证接口获取 JWT Token
+客户端应用调用 Moa 发布的 API 需使用 [OAuth 2.0](https://oauth.net/2/) 授权访问 API Server， 流程如下：
+![OAuth](img/OAuth.png)
+
+### 3.8.1 调用 Moa OAuth 认证接口获取 JWT Token （ Client Credentials grant type）
  - POST(x-www-form-urlencoded) 方法请求 [http://openapi.mongodb.expert/oauth/token](http://openapi.mongodb.expert/oauth/token) ，提交参数如下：
 ```
 grant_type: client_credentials					// 固定值
@@ -127,7 +130,32 @@ username: lirufei0808@gmail.com					// 用户登录邮箱
 }
 ```
  
-### 3.8.2 调用 API 接口获取数据 
+### 3.8.2 调用 Moa OAuth 认证接口获取 JWT Token （Password grant type）
+ - 浏览器请求
+ 
+ http://openapi.mongodb.expert/oauth/authorize?client_id=6f68ca8e9f53f4e6f994bceb7c4a7f4d&response_type=token&grant_type=password&scope=api-server&redirect_uri=http://47.75.94.238:3080
+
+参数说明
+```
+ client_id: 6f68ca8e9f53f4e6f994bceb7c4a7f4d			// API Server ID
+ response_type: token									// 固定值
+ grant_type： password									// 固定值
+ scope: api-server										// 固定值
+ redirect_uri: http://47.75.94.238:3080					// 授权后的跳转地址
+```
+ - 用户输入用户密码授权后跳转地址如下：
+ 
+ http://47.75.94.238:3080/#access_token=eyJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6IjZmNjhjYThlOWY1M2Y0ZTZmOTk0YmNlYjdjNGE3ZjRkIiwidXNlcl9pZCI6IjVjZTNhNjRjODQ5MjMwMDMwOWMyMWEyMSIsImNyZWF0ZWRBdCI6MTU1OTE4NDk1MjY5Miwicm9sZXMiOlsiNWNlM2E2NGM4NDkyMzAwMzA5YzIxYTIxIl0sImV4cGlyZWRhdGUiOjE1NTkxODY3NTI2OTJ9.O6l-LQTH4ohGgxuLMQhND_H7-YZVG244tnQybtZY2Wo&expires_in=1209600&scope=api-server&token_type=Bearer
+
+响应参数
+```
+access_token: eyJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6IjZmNjhjYThlOWY1M2Y0ZTZmOTk0YmNlYjdjNGE3ZjRkIiwidXNlcl9pZCI6IjVjZTNhNjRjODQ5MjMwMDMwOWMyMWEyMSIsImNyZWF0ZWRBdCI6MTU1OTE4NDk1MjY5Miwicm9sZXMiOlsiNWNlM2E2NGM4NDkyMzAwMzA5YzIxYTIxIl0sImV4cGlyZWRhdGUiOjE1NTkxODY3NTI2OTJ9.O6l-LQTH4ohGgxuLMQhND_H7-YZVG244tnQybtZY2Wo
+expires_in: 1209600
+scope: api-server
+token_type: Bearer
+```
+ 
+### 3.8.3 调用 API 接口获取数据 
  - 查询分页
  	```
 	
