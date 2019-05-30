@@ -14,6 +14,7 @@ import {
   patch,
   del,
   requestBody,
+  HttpErrors
 } from '@loopback/rest';
 import {<%= modelName %>} from '../models';
 import {<%= repositoryName %>} from '../repositories';
@@ -70,7 +71,7 @@ export class <%= className %>Controller {
           "x-table-name": "<%=tableName%>"
         })
         async findPage(
-          @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
+          @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
           return {
             data: await this.<%= repositoryNameCamel %>.find(filter),
@@ -140,11 +141,17 @@ export class <%= className %>Controller {
               description: 'file stream',
               content: {'application/octet-stream ': {}},
             },
+            '404': {
+                description: 'file not found'
+            },
           },
           "x-table-name": "<%=tableName%>"
         })
         async downloadById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<any> {
           let file : any = await this.<%= repositoryNameCamel %>.findById(id);
+          if(!file){
+            throw new HttpErrors.NotFound("File not found");
+          }
           let filename = file.filename ? file.filename.split('/') : ['file'];
           filename = filename[filename.length - 1]
           if( file.metadata && file.metadata.file_name){
@@ -167,14 +174,17 @@ export class <%= className %>Controller {
           tags:['<%= name %>'],
             responses: {
               '200': {
-              description: 'file stream',
-              content: {'application/octet-stream ': {}},
-            },
+                  description: 'file stream',
+                  content: {'application/octet-stream ': {}},
+                },
+                '404': {
+                    description: 'file not found'
+                },
           },
           "x-table-name": "<%=tableName%>"
         })
         async download(
-          @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
+          @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
         ): Promise<any> {
           let files = await this.<%= repositoryNameCamel %>.find(filter);
           let file : any = files && files.length > 0 ? files[0] : null;
@@ -192,10 +202,7 @@ export class <%= className %>Controller {
               stream: await this.<%= repositoryNameCamel %>.downloadById(file._id || '')
             };
           } else {
-            return {
-              data: [],
-              total: 0
-            }
+            throw new HttpErrors.NotFound("File not found");
           }
         }
 
@@ -222,7 +229,7 @@ export class <%= className %>Controller {
         "x-table-name": "<%=tableName%>"
       })
       async <%= val['name'] %>(
-        @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter,
+        @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
         <%_ if (val['filter']) { -%>
