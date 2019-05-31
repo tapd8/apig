@@ -1,4 +1,4 @@
-
+const mongodb = require('mongodb');
 const log = require('../dist').log.generator;
 const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
@@ -262,7 +262,8 @@ const validateConfig = function (config) {
 				tableName: tableName,
 				properties: properties,
 				downloadApi: downloadApi,
-				bucketName: bucketName
+				bucketName: bucketName,
+				dataSourceName: dataSourceName
 			});
 
 			result.repositories.push({
@@ -280,7 +281,8 @@ const validateConfig = function (config) {
 				idType: idType,
 				api: api,
 				downloadApi: downloadApi,
-				bucketName: bucketName
+				bucketName: bucketName,
+				dataSourceName: dataSourceName
 			});
 		}
 
@@ -327,6 +329,72 @@ const _generator = function (classConfig, cb) {
 
 };
 
+/**
+ * 测试连接是否可用
+ * @param config
+ * @param cb
+ */
+const testConnection = function(config, cb){
+
+	if( config && config.dataSource ){
+		const dsNames = Object.keys(config.dataSource);
+		let padding = 0;
+		const finish = function(dataSourceName, result){
+
+			// connection unavailable, remove dataSource and api
+			if( !result){
+				delete config.dataSource[dataSourceName];
+				for ( let i = 0; i < config.models.length; i++){
+					if( config.models[i].dataSourceName === dataSourceName){
+						config.models.splice(i, 1);
+						i--;
+					}
+				}
+				for ( let i = 0; i < config.controllers.length; i++){
+					if( config.controllers[i].dataSourceName === dataSourceName){
+						config.controllers.splice(i, 1);
+						i--;
+					}
+				}
+				for ( let i = 0; i < config.repositories.length; i++){
+					if( config.repositories[i].dataSourceName === dataSourceName){
+						config.repositories.splice(i, 1);
+						i--;
+					}
+				}
+			}
+
+			padding--;
+			if( padding === 0 ){
+				cb(config);
+			}
+		};
+		dsNames.forEach(dataSourceName => {
+			padding++;
+
+			let ds = config.dataSource[dataSourceName];
+			let url = ds.settings.url || '';
+
+			if( url ){
+				new mongodb.MongoClient(url, { useNewUrlParser: true }).connect((err, client) => {
+					if( err ){
+						log.error("DataSource connection is unavailable " + url, err);
+						finish(dataSourceName, false);
+					} else {
+						log.info("Connect DataSource successful");
+						finish(dataSourceName, true);
+					}
+				})
+			} else {
+				finish(dataSourceName, false);
+			}
+
+		});
+	} else {
+		cb(config);
+	}
+};
+
 const build = require('./build');
 
 /**
@@ -349,31 +417,34 @@ exports.generator = function (config, cb) {
 		return;
 	}
 
-	// 删除当前ts文件
-	deleteTs((result) => {
-		if (result) {
-			log.info('delete old api source code.');
-			_generator(classConfig, (result) => {
-				if (result) {
-					log.info('generator api source code done.');
-					build((result) => {
-						if (result) {
-							log.info('complied.');
-							cb(true);
-						} else {
-							log.error('generator api source code fail, cancel updated.');
-							cb(false);
-						}
-					});
-				} else {
-					log.error('generator api source code fail, cancel update.');
-					cb(false);
-				}
-			});
-		} else {
-			log.error('delete old api source code fail, cancel update.');
-			cb(false);
-		}
+	// test connection and remove unavailable connect
+	testConnection(classConfig, (classConfig) => {
+		// 删除当前ts文件
+		deleteTs((result) => {
+			if (result) {
+				log.info('delete old api source code.');
+				_generator(classConfig, (result) => {
+					if (result) {
+						log.info('generator api source code done.');
+						build((result) => {
+							if (result) {
+								log.info('complied.');
+								cb(true);
+							} else {
+								log.error('generator api source code fail, cancel updated.');
+								cb(false);
+							}
+						});
+					} else {
+						log.error('generator api source code fail, cancel update.');
+						cb(false);
+					}
+				});
+			} else {
+				log.error('delete old api source code fail, cancel update.');
+				cb(false);
+			}
+		});
 	});
 
 };

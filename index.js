@@ -138,7 +138,7 @@ class Main{
 	 * @private
 	 */
 	generator(config){
-		log.info('开始生成代码');
+		log.info('publish new api');
 		try {
 			generator(config, (result) => {
 				if( result ){
