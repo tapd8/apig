@@ -1,4 +1,4 @@
-
+const mongodb = require('mongodb');
 const log = require('../dist').log.generator;
 const ModelGenerator = exports.ModelGenerator = require('./model');
 const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource');
@@ -23,27 +23,27 @@ const methods = ['POST', 'GET', 'PATCH', 'DELETE'];
 /**
  * 检验配置合法
  */
-const validateConfig = function(config){
+const validateConfig = function (config) {
 	config = config || {};
 	const result = {
 		dataSource: {},
-		controllers:[],
+		controllers: [],
 		models: [],
 		repositories: []
 	};
 
 	// 检查数据源
-	if( !config.dataSource ){
+	if (!config.dataSource) {
 		log.error('Missing data source config.（config.dataSource）');
-		return result;
+		return null;
 	}
-	if( !Array.isArray(config.dataSource) ) {
+	if (!Array.isArray(config.dataSource)) {
 		log.error('Invalid data source config, must be array data type.（config.dataSource）');
-		return result;
+		return null;
 	} else {
-		for( let i = 0; i < config.dataSource.length; i++ ){
+		for (let i = 0; i < config.dataSource.length; i++) {
 			let ds = config.dataSource[i];
-			if( !ds.name ){
+			if (!ds.name) {
 				log.error(`Missing data source name.（config.dataSource[${i}].name）`);
 				return null;
 			}
@@ -60,12 +60,12 @@ const validateConfig = function(config){
 			 * 优先使用url，如果url为空按如下格式拼接连接串
 			 * [protocol] + '://' + [username|user] + ':' + [password] + '@' + [hostname|host] + ':' + [port] + '/' + [database|db]
 			 */
-			if( !ds.settings ){
+			if (!ds.settings) {
 				log.error(`Missing data source parameter config（config.dataSource[${i}].settings）`);
 				return null;
 			}
 
-			if( ds.settings.hasOwnProperty('url') && ds.settings.url ){
+			if (ds.settings.hasOwnProperty('url') && ds.settings.url) {
 				delete ds.settings.user;
 				delete ds.settings.password;
 				delete ds.settings.host;
@@ -78,31 +78,31 @@ const validateConfig = function(config){
 	}
 
 	// 检查 model
-	if( !config.models ){
+	if (!config.models) {
 		log.error('Missing model config（config.models）');
-		return result;
+		return null;
 	} else {
 		let models = Array.isArray(config.models) ? config.models : [config.models];
 
-		for( let i = 0; i < models.length; i++){
+		for (let i = 0; i < models.length; i++) {
 			let model = models[i];
-			if( !model.tablename ){
+			if (!model.tablename) {
 				log.error(`Missing model name config.（config.models[${i}].tablename）`);
 				return null;
 			}
-			if( !model.fields ){
+			if (!model.fields) {
 				log.error(`Missing model field config.（config.models[${i}].fields）`);
 				return null;
 			}
-			if( !Array.isArray(model.fields) ){
+			if (!Array.isArray(model.fields)) {
 				log.error(`Invalid model field config, must be array data type.（config.models[${i}].fields）`);
 				return null;
 			}
-			if( !model.dataSourceName ){
+			if (!model.dataSourceName) {
 				log.error(`Model lacks data source name config.（config.models[${i}].dataSourceName）`);
 				return null;
 			}
-			if( !result.dataSource[model.dataSourceName] ){
+			if (!result.dataSource[model.dataSourceName]) {
 				log.error(`Invalid model data source config, not found data source by name.（config.models[${i}].dataSourceName）:${model.dataSourceName}`);
 				return null;
 			}
@@ -121,28 +121,28 @@ const validateConfig = function(config){
 			fields.forEach((field, idx) => {
 
 				let name = field['field_name'],
-					isId = field['primary_key_position']=== 1,
+					isId = field['primary_key_position'] === 1,
 					type = field['data_type'] || '',
 					description = field['description'] || null,
 					required = field['required'],
 					itemType = type === 'array' ? (field['itemType'] || 'any') : null;
 
 				type = type.toLowerCase();
-				if( ['int', 'integer', 'long', 'double'].includes(type))
+				if (['int', 'integer', 'long', 'double'].includes(type))
 					type = 'number';
-				else if( itemType === 'any')
+				else if (itemType === 'any')
 					itemType = 'object';
 
-				if( !typeChoices.includes(type) ){
+				if (!typeChoices.includes(type)) {
 					log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].data_type）: ${type}`);
 					return;
 				}
-				if( itemType ){
-					if( ['int', 'integer', 'long', 'double'].includes(itemType))
+				if (itemType) {
+					if (['int', 'integer', 'long', 'double'].includes(itemType))
 						itemType = 'number';
-					else if( itemType === 'any')
+					else if (itemType === 'any')
 						itemType = 'object';
-					if( !typeChoices.includes(itemType) ){
+					if (!typeChoices.includes(itemType)) {
 						log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
 						return;
 					}
@@ -154,18 +154,18 @@ const validateConfig = function(config){
 					required: required === true || required === 'true',
 				};
 
-				if( type === 'array')
+				if (type === 'array')
 					properties[name]['itemType'] = itemType;
-				if( description )
+				if (description)
 					properties[name]['description'] = `'${description}'`;
 
-				if( idProperty === null && isId ){
+				if (idProperty === null && isId) {
 					idProperty = name;
 					idType = type;
 				}
 			});
 
-			if( !idProperty ){
+			if (!idProperty) {
 				log.error(`Model missing primary key.（config.models[${i}]）`);
 				return null;
 			}
@@ -174,7 +174,7 @@ const validateConfig = function(config){
 			const api = {},
 				paths = model.paths || [];
 
-			if( basePath.startsWith('/'))
+			if (basePath.startsWith('/'))
 				basePath = basePath.slice(1);
 
 			paths.forEach((item, idx) => {
@@ -187,18 +187,18 @@ const validateConfig = function(config){
 					fields = item['fields'],
 					roles = item['roles'];
 
-				if( type === 'custom' ){
+				if (type === 'custom') {
 					name = `findPage_${idx}`;
 
-					if( !path || path.trim().length === 0){
+					if (!path || path.trim().length === 0) {
 						log.error(`Invalid model api config, missing path.（config.models[${i}].paths[${idx}].path）`);
 						return;
 					}
 				}
 
 				let reqPath = `/api/${apiVersion}/${basePath}`;
-				if( path ){
-					if( path.startsWith('/'))
+				if (path) {
+					if (path.startsWith('/'))
 						reqPath = path;
 					else
 						reqPath += '/' + path;
@@ -214,9 +214,9 @@ const validateConfig = function(config){
 					//fields: fields,
 					roles: roles || []
 				};
-				if( Array.isArray(fields) && fields.length > 0 ){
+				if (Array.isArray(fields) && fields.length > 0) {
 					api[name].fields = {};
-					for(let i = 0; i < fields.length; i++)
+					for (let i = 0; i < fields.length; i++)
 						api[name].fields[fields[i]] = 1;
 				}
 
@@ -224,7 +224,7 @@ const validateConfig = function(config){
 
 			const downloadApi = tableName.endsWith('.files');
 			let bucketName = 'fs';
-			if( downloadApi ){
+			if (downloadApi) {
 				let reqPath = `/api/${apiVersion}/${basePath}/download`;
 				let roles = api['findPage'].roles;
 				api['downloadById'] = {
@@ -256,7 +256,8 @@ const validateConfig = function(config){
 				tableName: tableName,
 				properties: properties,
 				downloadApi: downloadApi,
-				bucketName: bucketName
+				bucketName: bucketName,
+				dataSourceName: dataSourceName
 			});
 
 			result.repositories.push({
@@ -274,7 +275,8 @@ const validateConfig = function(config){
 				idType: idType,
 				api: api,
 				downloadApi: downloadApi,
-				bucketName: bucketName
+				bucketName: bucketName,
+				dataSourceName: dataSourceName
 			});
 		}
 
@@ -287,7 +289,7 @@ const validateConfig = function(config){
  * 生成代码
  * @private
  */
-const _generator = function(classConfig, cb){
+const _generator = function (classConfig, cb) {
 
 	// 生成 data source
 	// 生成 model
@@ -296,7 +298,7 @@ const _generator = function(classConfig, cb){
 
 	let padding = 0;
 
-	let finish = function(){
+	let finish = function () {
 		padding--;
 		log.debug('padding write file ' + padding);
 		if( padding === 0 && typeof cb === 'function'){
@@ -327,13 +329,79 @@ const _generator = function(classConfig, cb){
 
 };
 
+/**
+ * 测试连接是否可用
+ * @param config
+ * @param cb
+ */
+const testConnection = function(config, cb){
+
+	if( config && config.dataSource ){
+		const dsNames = Object.keys(config.dataSource);
+		let padding = 0;
+		const finish = function(dataSourceName, result){
+
+			// connection unavailable, remove dataSource and api
+			if( !result){
+				delete config.dataSource[dataSourceName];
+				for ( let i = 0; i < config.models.length; i++){
+					if( config.models[i].dataSourceName === dataSourceName){
+						config.models.splice(i, 1);
+						i--;
+					}
+				}
+				for ( let i = 0; i < config.controllers.length; i++){
+					if( config.controllers[i].dataSourceName === dataSourceName){
+						config.controllers.splice(i, 1);
+						i--;
+					}
+				}
+				for ( let i = 0; i < config.repositories.length; i++){
+					if( config.repositories[i].dataSourceName === dataSourceName){
+						config.repositories.splice(i, 1);
+						i--;
+					}
+				}
+			}
+
+			padding--;
+			if( padding === 0 ){
+				cb(config);
+			}
+		};
+		dsNames.forEach(dataSourceName => {
+			padding++;
+
+			let ds = config.dataSource[dataSourceName];
+			let url = ds.settings.url || '';
+
+			if( url ){
+				new mongodb.MongoClient(url, { useNewUrlParser: true }).connect((err, client) => {
+					if( err ){
+						log.error("DataSource connection is unavailable " + url, err);
+						finish(dataSourceName, false);
+					} else {
+						log.info("Connect DataSource successful");
+						finish(dataSourceName, true);
+					}
+				})
+			} else {
+				finish(dataSourceName, false);
+			}
+
+		});
+	} else {
+		cb(config);
+	}
+};
+
 const build = require('./build');
 
 /**
  * 根据配置生成代码
  * @param config
  */
-exports.generator = function(config, cb){
+exports.generator = function (config, cb) {
 
 	/**
 	 * 适配接口返回数据
@@ -343,37 +411,40 @@ exports.generator = function(config, cb){
 	// 检查配置文件正确性
 	const classConfig = validateConfig(config);
 
-	if( !classConfig ){
+	if (!classConfig) {
 		// 校验未通过
 		cb(false);
 		return;
 	}
 
-	// 删除当前ts文件
-	deleteTs((result) => {
-		if( result ){
-			log.info('delete old api source code.');
-			_generator(classConfig, (result) => {
-				if( result ){
-					log.info('generator api source code done.');
-					build((result) => {
-						if( result ){
-							log.info('complied.');
-							cb(true);
-						} else {
-							log.error('generator api source code fail, cancel updated.');
-							cb(false);
-						}
-					});
-				} else {
-					log.error('generator api source code fail, cancel update.');
-					cb(false);
-				}
-			});
-		} else{
-			log.error('delete old api source code fail, cancel update.');
-			cb(false);
-		}
+	// test connection and remove unavailable connect
+	testConnection(classConfig, (classConfig) => {
+		// 删除当前ts文件
+		deleteTs((result) => {
+			if (result) {
+				log.info('delete old api source code.');
+				_generator(classConfig, (result) => {
+					if (result) {
+						log.info('generator api source code done.');
+						build((result) => {
+							if (result) {
+								log.info('complied.');
+								cb(true);
+							} else {
+								log.error('generator api source code fail, cancel updated.');
+								cb(false);
+							}
+						});
+					} else {
+						log.error('generator api source code fail, cancel update.');
+						cb(false);
+					}
+				});
+			} else {
+				log.error('delete old api source code fail, cancel update.');
+				cb(false);
+			}
+		});
 	});
 
 };
