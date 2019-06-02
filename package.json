@@ -1,11 +1,11 @@
 {
-  "name": "apig",
-  "version": "1.0.0",
-  "description": "Api Gateway",
+  "name": "@jackinhuang/moa",
+  "version": "1.0.1",
+  "description": "Open API",
   "keywords": [
     "API Server"
   ],
-  "main": "index.js",
+  "main": "bin/start.js",
   "engines": {
     "node": ">=8.9"
   },
@@ -15,16 +15,12 @@
     "build:watch": "lb-tsc --watch",
     "clean:dist": "lb-clean dist",
     "clean": "lb-clean dist && lb-clean logs && lb-clean *.pid && lb-clean cache",
-    "lint": "npm run prettier:check && npm run tslint",
     "lint:fix": "npm run tslint:fix && npm run prettier:fix",
-    "prettier:cli": "lb-prettier \"**/*.ts\" \"**/*.js\"",
-    "prettier:check": "npm run prettier:cli -- -l",
     "prettier:fix": "npm run prettier:cli -- --write",
     "tslint": "lb-tslint",
     "tslint:fix": "npm run tslint -- --fix",
     "pretest": "npm run clean && npm run build",
-    "test": "lb-mocha --allow-console-logs \"dist/test\"",
-    "posttest": "npm run lint",
+    "test": "echo \"no test specified.\"",
     "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js && npm run posttest",
     "prestart": "npm run build",
     "start": "node $NODE_DEBUG_OPTION .",
@@ -56,6 +52,7 @@
     "@types/mongodb": "^3.1.22",
     "change-case": "^3.0.2",
     "cross-spawn": "^6.0.5",
+    "download-file": "^0.1.5",
     "hashcode": "^1.0.3",
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
@@ -68,6 +65,7 @@
     "mongodb-schema": "^8.2.4",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "prompts": "^2.1.0",
     "request": "^2.88.0",
     "scan-fs": "0.0.5",
     "through2": "^3.0.0"
