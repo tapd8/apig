@@ -1,36 +1,689 @@
 [{
-  "apiVersion": "v1",
-  "connection": {
-    "name": "dataSourceName",
-    "database_uri": "mongodb://127.0.0.1/test"
-  },
-  "tablename": "order",
-  "basePath": "my_order",
-  "description": "trade order",
-  "fields": [{
-    "field_name": "id",
-    "data_type": "ObjectId|String|Boolean|Integer|Double|Float|Decimal128|Date|Document|ArrayList|Array",
-    "primary_key_position": 1
-  }, {
-    "field_name": "orderNo",
-    "data_type": "ObjectId|String|Boolean|Integer|Double|Float|Decimal128|Date|Document|ArrayList|Array",
-    "primary_key_position": 0
-  }],
-  "paths": [{
-    "name": "create|findPage|findById|updateById|deleteById",
-    "type": "preset",
-    "description": "API method description",
-    "roles": []
-  }, {
-    "type": "custom",
-    "description": "API method description",
-    "roles": [],
-    "path": "orderNos",
-    "fields": [{
-      "visible": true,
-      "field_name": "orderNo",
-      "description": "include field in return data records"
-    }],
-    "filter": []
-  }]
+  "tablename" : "listingsAndReviews",
+  "apiVersion" : "v1",
+  "basePath" : "listingsAndReviews",
+  "description" : "",
+  "paths" : [
+    {
+      "path" : "/api/v1/listingsAndReviews",
+      "method" : "POST",
+      "description" : "create a new record",
+      "name" : "create",
+      "result" : "Document",
+      "type" : "preset",
+      "acl" : [
+        "5cee3896b283b711a7015651"
+      ]
+    },
+    {
+      "path" : "/api/v1/listingsAndReviews/{id}",
+      "method" : "GET",
+      "description" : "get record by id",
+      "name" : "findById",
+      "params" : [
+        {
+          "name" : "id",
+          "type" : "string",
+          "defaultvalue" : 1,
+          "description" : "document id"
+        }
+      ],
+      "result" : "Document",
+      "type" : "preset",
+      "acl" : [
+        "5cee3896b283b711a7015651"
+      ]
+    },
+    {
+      "path" : "/api/v1/listingsAndReviews/{id}",
+      "method" : "PATCH",
+      "name" : "updateById",
+      "params" : [
+        {
+          "name" : "id",
+          "type" : "string",
+          "defaultvalue" : 1,
+          "description" : "document id"
+        }
+      ],
+      "description" : "update record by id",
+      "result" : "Document",
+      "type" : "preset",
+      "acl" : [
+        "5cee3896b283b711a7015651"
+      ]
+    },
+    {
+      "path" : "/api/v1/listingsAndReviews/{id}",
+      "method" : "DELETE",
+      "name" : "deleteById",
+      "params" : [
+        {
+          "name" : "id",
+          "type" : "string",
+          "description" : "document id"
+        }
+      ],
+      "description" : "delete record by id",
+      "type" : "preset",
+      "acl" : [
+        "5cee3896b283b711a7015651"
+      ]
+    },
+    {
+      "path" : "/api/v1/listingsAndReviews",
+      "method" : "GET",
+      "name" : "findPage",
+      "params" : [
+        {
+          "name" : "page",
+          "type" : "int",
+          "defaultvalue" : 1,
+          "description" : "page number"
+        },
+        {
+          "name" : "limit",
+          "type" : "int",
+          "defaultvalue" : 20,
+          "description" : "max records per page"
+        },
+        {
+          "name" : "sort",
+          "type" : "object",
+          "description" : "sort setting,Array ,format like [{'propertyName':'ASC'}]"
+        },
+        {
+          "name" : "filter",
+          "type" : "object",
+          "description" : "search filter object,Array"
+        }
+      ],
+      "description" : "get record list by page and limit",
+      "result" : "Page<Document>",
+      "type" : "preset",
+      "acl" : [
+        "5cee3896b283b711a7015651"
+      ]
+    }
+  ],
+  "fields" : [
+    {
+      "field_name" : "_id",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 1,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : "PRI",
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "listing_url",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "name",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "summary",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "space",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "description",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "neighborhood_overview",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "notes",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "transit",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "access",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "interaction",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "house_rules",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "property_type",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "room_type",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "bed_type",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "minimum_nights",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "maximum_nights",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "cancellation_policy",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "String",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "last_scraped",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Date",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "calendar_last_scraped",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Date",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "first_review",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Date",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "last_review",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Date",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "accommodates",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Integer",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "bedrooms",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Integer",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "beds",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Integer",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "number_of_reviews",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Integer",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "bathrooms",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "amenities",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "ArrayList",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "price",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "weekly_price",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "monthly_price",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "security_deposit",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "cleaning_fee",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "extra_people",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "guests_included",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Decimal128",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "images",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Document",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "host",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Document",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "address",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Document",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "availability",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Document",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "review_scores",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "Document",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    },
+    {
+      "field_name" : "reviews",
+      "table_name" : "listingsAndReviews",
+      "data_type" : "ArrayList",
+      "primary_key_position" : 0,
+      "foreign_key_table" : null,
+      "foreign_key_column" : null,
+      "key" : null,
+      "dataType" : 0,
+      "is_nullable" : null,
+      "precision" : null,
+      "scale" : null,
+      "default_value" : null
+    }
+  ],
+  "connection" : {
+    "name" : "mongo-atlas",
+    "database_uri" : "mongodb+srv://moapi:demo@cluster0-zn8qh.mongodb.net/sample_airbnb?retryWrites=true&w=majority"
+  }
 }]
