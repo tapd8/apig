@@ -107,7 +107,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
 		// 验证api角色列表
 		// @ts-ignore
-		const hasRole = apiRoles.filter( role => roles.includes(role));
+		const hasRole = apiRoles.filter( role => '$everyone' === role || roles.includes(role));
 		if( hasRole && hasRole.length > 0){
 			cb(null, {
 				id: user_id,
