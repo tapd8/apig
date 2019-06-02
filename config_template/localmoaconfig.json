@@ -1,0 +1,9 @@
+{
+  "mode": "local",
+  "api": "api.json",
+  "host": "0.0.0.0",
+  "port": 3080,
+  "cacheDir": "cache",
+  "logDir": "logs",
+  "jwtSecretKey": "de428370350427d6f9102b12a36c8c45"
+}
