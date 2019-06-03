@@ -6,6 +6,6 @@
   "cacheDir": "cache",
   "logDir": "logs",
   "server": {
-    "uri": "http://localhost:3030"
+    "uri": "http://openapi.mongodb.expert"
   }
 }
