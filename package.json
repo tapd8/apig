@@ -36,14 +36,6 @@
   },
   "author": "",
   "license": "",
-  "files": [
-    "README.md",
-    "index.js",
-    "index.d.ts",
-    "dist/src",
-    "dist/index*",
-    "src"
-  ],
   "dependencies": {
     "@loopback/authentication": "^1.0.6",
     "@loopback/boot": "^1.0.3",
