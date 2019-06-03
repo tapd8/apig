@@ -233,8 +233,6 @@ function startServer(moaConfig, apiConfig, moaConfigFile, apiConfigFile){
 	const start = function(){
 		moaConfig.server = moaConfig.server || {};
 
-		console.log(moaConfig)
-
 		cp.fork(path.join(appHome, 'index.js'), {
 		    cwd: appHome,
 			detached: false,
