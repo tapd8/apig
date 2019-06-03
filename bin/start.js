@@ -94,7 +94,7 @@ function getApiServerConfig(request, moaConfig, loginResult, callback) {
         url: moaConfig.server.uri + "/api/ApiServers?filter[limit]=1&filter[skip]=0&filter[order]=clientName+desc&access_token=" + loginResult.id
     }, (err, response, body) => {
         if (err) {
-            console.error('Login failed ', err);
+            console.error('getApiServerConfig failed ', err);
         } else if (response.statusCode === 200) {
             var ret = JSON.parse(body);
             if (Array.isArray(ret) && ret.length > 0) {
@@ -102,7 +102,7 @@ function getApiServerConfig(request, moaConfig, loginResult, callback) {
             }
 
         } else {
-            console.error('Login failed ', body);
+            console.error('getApiServerConfig failed ', body);
         }
     });
 }
