@@ -238,7 +238,7 @@ function startServer(moaConfig, apiConfig, moaConfigFile, apiConfigFile){
 			detached: false,
 			env: Object.assign({
                 'API_SERVER_PORT': moaConfig.listen_port,
-                'API_SERVER_HOST': moaConfig.listen_host,
+                //'API_SERVER_HOST': moaConfig.listen_host,
 
                 'MODEL': moaConfig.mode,
                 'API_FILE': moaConfig.api.startsWith('/') ? moaConfig.api : path.join(configDir, moaConfig.api),
