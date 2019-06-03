@@ -153,6 +153,7 @@ function initialCloudMode(configDIR, moaConfigFile) {
         login(request, moaConfig, response, loginResult => {
 
             getApiServerConfig(request, moaConfig, loginResult, apiServerConfig =>{
+
                 getAPIServerConfigFile(fs, moaConfig, loginResult, apiServerConfig,apiServerConfigFile => {
                     var apiServerConfig = require(apiServerConfigFile);
                     if (apiServerConfig) {
@@ -177,7 +178,7 @@ function initialLocalMode(configDIR, moaConfigFile, apiConfigFile) {
     const fs = require('fs');
 
     if (!fs.existsSync(configDIR)) {
-        console.log("Moa dir does not exists." + configDIR);
+        console.log("Moa dir does not exists, will auto generate directory " + configDIR);
         fs.mkdir(configDIR, {recursive: true}, err => {
             if (err) {
                 console.log("Create moa dir failed " + err);
@@ -186,12 +187,12 @@ function initialLocalMode(configDIR, moaConfigFile, apiConfigFile) {
     }
 
     if (!fs.existsSync(moaConfigFile)) {
-
+        console.log("Moa config file does not exists, will auto generate config file " + moaConfigFile);
         var moaConfigTemplate = require("../config_template/localmoaconfig.json");
         writeConfigFile(moaConfigFile, moaConfigTemplate);
     }
     if (!fs.existsSync(apiConfigFile)) {
-
+        console.log("Api config file does not exists, will auto generate config file " + apiConfigFile);
         var apiConfigTemplate = require("../config_template/localapiconfig.json");
         writeConfigFile(apiConfigFile, apiConfigTemplate);
     }
