@@ -5,7 +5,9 @@
   "keywords": [
     "API Server"
   ],
-  "main": "bin/start.js",
+  "bin": {
+    "moa": "bin/start.js"
+  },
   "engines": {
     "node": ">=8.9"
   },

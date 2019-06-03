@@ -96,8 +96,10 @@ const convertCondition = function(cond){
  */
 module.exports = function(models){
 
-	if( !models )
+	if( !models || models.length === 0){
+		log.warn('none api to publish');
 		return null;
+	}
 
 	if( !Array.isArray(models) ){
 		log.error('配置文件不是预期的数据');
@@ -150,11 +152,8 @@ module.exports = function(models){
 
 				// 预设过滤条件
 				if( customApi.filter ){
-
-					let query = buildQuery(customApi.filter);
-
-					if( Object.keys(query).length > 0 )
-						apiConfig.filter = query;
+					if( Object.keys(customApi.filter).length > 0 )
+						apiConfig.filter = customApi.filter;
 				}
 
 				apiConfig.path = customApi.path;

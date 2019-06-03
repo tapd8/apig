@@ -1,0 +1,14 @@
+{
+	"mode": "cloud",
+	"api": "api.json",
+	"host": "0.0.0.0",
+	"port": 3080,
+	"cacheDir": "cache",
+	"logDir": "logs",
+	"jwtSecretKey": "de428370350427d6f9102b12a36c8c45",
+	"server": {
+		"uri": "http://openapi.mongodb.expert",
+		"accessCode": "ee40d4146e4f3bb3ec85ae4cda484199",
+		"process_id": "d145d3b72b33a1db7515e647d5818600"
+	}
+}

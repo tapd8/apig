@@ -407,6 +407,10 @@ exports.generator = function (config, cb) {
 	 * 适配接口返回数据
 	 */
 	config = adapterTapDataConfig(config);
+	if( config === null){
+		cb(false);
+		return;
+	}
 
 	// 检查配置文件正确性
 	const classConfig = validateConfig(config);
