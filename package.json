@@ -1,5 +1,5 @@
 {
-  "name": "@jackinhuang/moa",
+  "name": "@tapdata/moa",
   "version": "1.0.1",
   "description": "Open API",
   "keywords": [
@@ -29,8 +29,10 @@
     "prepublishOnly": "npm run test",
     "run": "node $NODE_DEBUG_OPTION app.js"
   },
+  "homepage": "https://github.com/tapd8/apig/tree/moa",
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "https://github.com/tapd8/apig/tree/moa"
   },
   "author": "",
   "license": "",
