@@ -50,7 +50,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 						return token;
 
 					token = jwtSign({
-						expireDateTime: new Date().getTime() + 300000,
+						expiredate: new Date().getTime() + 300000,
 						roles: ['$everyone'],
 						user_id: '1',
 						name: 'API Server Default User'

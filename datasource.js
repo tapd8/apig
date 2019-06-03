@@ -279,15 +279,16 @@ updateConnection = function(id, data, cb) {
 
 };
 
-setInterval(() => {
-	try{
-		getToken(token => {
-			if( token )
-				getConnection(token);
-		})
-	} catch (e) {
-		log.error('get connection to test fail:\n', e);
-	}
+if( appConfig.model === 'cloud'){
+	setInterval(() => {
+		try{
+			getToken(token => {
+				if( token )
+					getConnection(token);
+			})
+		} catch (e) {
+			log.error('get connection to test fail:\n', e);
+		}
 
-}, 2000);
-
+	}, 2000);
+}

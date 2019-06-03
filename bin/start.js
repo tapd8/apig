@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-;(function () {
 
-    const homeDIR = require('os').homedir();
-    const configDIR = homeDIR + "/.moa";
+const homeDIR = require('os').homedir();
+const configDIR = homeDIR + "/.moa";
+;(function () {
     const moaConfigFile = homeDIR + '/.moa/moa.json';
     const apiConfigFile = homeDIR + '/.moa/api.json';
 
@@ -53,7 +53,7 @@ function login(request, moaConfig, response, callback) {
 function getAPIServerConfigFile(fs, moaConfig, loginResult, apiServerConfig, callback) {
     const http = require('http');
 
-    const configFileName = "apiServerConfig.js";
+    const configFileName = configDIR + "/apiServerConfig.js";
     const configFile = fs.createWriteStream(configFileName);
     var downloadConfigURL = moaConfig.server.uri + "/api/ApiServers/download/" + apiServerConfig.id + "?access_token=" + loginResult.id;
 
@@ -65,7 +65,7 @@ function getAPIServerConfigFile(fs, moaConfig, loginResult, apiServerConfig, cal
         }).on('end', function() {
             configFile.end();
             configFile.close();
-            callback("../" + configFileName);
+            callback(configFileName);
         });
     });
 
@@ -107,7 +107,13 @@ function initialCloudMode(configDIR, moaConfigFile) {
             type: 'text',
             name: 'username',
             message: 'Username (If it does not exist, it will be automatically registered):',
-            validate: value => value ? true : "Username cannot be blank."
+            validate: value => {
+	            if( !value)
+                    return "Username cannot be blank.";
+	            if( !/^[A-Za-z0-9\u4e00-\u9fa5_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(value))
+	                return "Invalid email-address";
+                return true;
+            }
         },
         {
             type: 'text',
@@ -150,8 +156,8 @@ function initialCloudMode(configDIR, moaConfigFile) {
                 getAPIServerConfigFile(fs, moaConfig, loginResult, apiServerConfig,apiServerConfigFile => {
                     var apiServerConfig = require(apiServerConfigFile);
                     if (apiServerConfig) {
-                        moaConfig.host = apiServerConfig.host;
-                        moaConfig.port = apiServerConfig.port;
+                        moaConfig.listen_host = apiServerConfig.host;
+                        moaConfig.listen_port = apiServerConfig.port;
                         moaConfig.jwtSecretKey = apiServerConfig.jwtSecretKey;
                         moaConfig.server.accessCode = apiServerConfig.tapDataServer.accessCode;
                         moaConfig.server.process_id = apiServerConfig.reportData.process_id;
@@ -159,6 +165,7 @@ function initialCloudMode(configDIR, moaConfigFile) {
 
                     writeConfigFile(moaConfigFile, moaConfig);
 
+                    startServer(moaConfig, apiServerConfig, moaConfigFile, apiServerConfigFile);
                 });
             });
         });
@@ -195,6 +202,8 @@ function initialLocalMode(configDIR, moaConfigFile, apiConfigFile) {
     if (!moaConfig || !apiConfig) {
         console.log("Must be contain moa config and api config in local start up mode.")
     }
+
+    startServer(moaConfig, apiConfig, moaConfigFile, apiConfigFile);
 }
 
 function writeConfigFile(filePath, config) {
@@ -209,3 +218,51 @@ function readConfig(filePath) {
     return JSON.parse(fs.readFileSync(filePath, {encoding: "UTF-8"}));
 }
 
+/**
+ * start api server
+ * 1. check $app_home/dist exists
+ * 2. none exists run `npm start` else run `node index.js`
+ */
+function startServer(moaConfig, apiConfig, moaConfigFile, apiConfigFile){
+    const cp = require('child_process');
+	const path = require('path');
+	const fs = require('fs');
+	const appHome = path.join(__dirname, '../');
+	const dist = path.join(appHome, 'dist');
+	const configDir = path.dirname(moaConfigFile);
+	const start = function(){
+		moaConfig.server = moaConfig.server || {};
+
+		console.log(moaConfig)
+
+		cp.fork(path.join(appHome, 'index.js'), {
+		    cwd: appHome,
+			detached: false,
+			env: Object.assign({
+                'API_SERVER_PORT': moaConfig.listen_port,
+                'API_SERVER_HOST': moaConfig.listen_host,
+
+                'MODEL': moaConfig.mode,
+                'API_FILE': moaConfig.api.startsWith('/') ? moaConfig.api : path.join(configDir, moaConfig.api),
+                'CACHE_DIR': moaConfig.cacheDir.startsWith('/') ? moaConfig.cacheDir : path.join(configDir, moaConfig.cacheDir),
+                'LOG_DIR': moaConfig.logDir.startsWith('/') ? moaConfig.logDir : path.join(configDir, moaConfig.logDir),
+                'JWT_SECRET_KEY': moaConfig.jwtSecretKey,
+
+                'TAPDATA_ORIGIN': moaConfig.server.uri || '',
+                'TAPDATA_ACCESS_CODE': moaConfig.server.accessCode || '',
+                'API_SERVER_ID': moaConfig.server.process_id || '',
+            }, process.env)
+        })
+    };
+	if( !fs.existsSync(dist )) {
+		const buildCp = cp.spawn('npm', ["run", "build"], {
+            cwd: appHome,
+            encoding: 'utf8',
+			detached: false,
+			stdio: 'inherit'
+        });
+		buildCp.on('close', start);
+    } else {
+        start();
+    }
+}

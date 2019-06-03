@@ -34,8 +34,6 @@ class ControllerGenerator extends Generator {
 			'controller', CONTROLLER_REST_TEMPLATE_PATH
 		);
 
-		console.log(this.artifactInfo)
-
 		this.copyTemplateTpl(templatePath, tsPath, this.artifactInfo);
 		this.log.info(`generator controller ${tsPath}`);
 

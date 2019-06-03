@@ -53,12 +53,14 @@ const report = function(data, token) {
 	}
 };
 
-setInterval(() => {
-	getToken(token => {
-		if( token )
-			report(null, token)
-	})
-}, appConfig.reportIntervals || 1000);
+if( appConfig.model === 'cloud'){
+	setInterval(() => {
+		getToken(token => {
+			if( token )
+				report(null, token)
+		})
+	}, appConfig.reportIntervals || 1000);
+}
 
 exports.setStatus = function(status){
 	Object.assign(apiServerStatus, status);

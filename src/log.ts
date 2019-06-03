@@ -2,7 +2,7 @@ import {configure, getLogger} from 'log4js';
 import * as path from 'path';
 
 const appConfig = require('../../config');
-const logPath = path.join(path.resolve(path.dirname(path.dirname(__dirname))), appConfig.logDir || 'logs');
+const logPath = appConfig.logDir || `logs`;
 
 configure({
 	appenders: {

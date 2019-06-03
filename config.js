@@ -1,19 +1,30 @@
 //<Config at here>
-const api_server_port = process.env['API_SERVER_PORT'] || '3080';            // this is api-server port
-const tapdata_port = process.env['TAPDATA_PORT'] || '';                      // this is moa server port
-const tapdata_host = process.env['TAPDATA_HOST'] || 'openapi.mongodb.expert';// this is moa server ip
-const tapdata_origin = process.env['TAPDATA_ORIGIN'] || 'http://openapi.mongodb.expert';
-const process_id = process.env['API_SERVER_ID'] || 'd145d3b72b33a1db7515e647d5818600';  // this is api-server unique id
-const accessCode = process.env['TAPDATA_ACCESS_CODE'] || 'ee40d4146e4f3bb3ec85ae4cda484199';    // this is access to moa code
-const jwtSecretKey = process.env['JWT_SECRET_KEY'] || 'de428370350427d6f9102b12a36c8c45';       // this is jwt secret key
+const api_server_port = process.env['API_SERVER_PORT'] || '3083';
+const api_server_host = process.env['API_SERVER_HOST'] || '0.0.0.0';
+
+const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
+const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
+const tapdata_origin = process.env['TAPDATA_ORIGIN'] || `http://${tapdata_host}:${tapdata_port}`;
+const process_id = process.env['API_SERVER_ID'] || 'b5fd01c5996a634320ebf53cbab5fadf';
+const accessCode = process.env['TAPDATA_ACCESS_CODE'] || 'ee40d4146e4f3bb3ec85ae4cda484199';
+
+const jwtSecretKey = process.env['JWT_SECRET_KEY'] || '795a357ff5c2cc895b5a2b8e0a0e883a';
+
+const cacheDir = process.env['CACHE_DIR'] || `${__dirname}/cache`;
+const api_cache = process.env['API_CACHE'] || `${cacheDir}/server_api_definition.json`;
+const logDir = process.env['LOG_DIR'] || `${__dirname}/cache`;
+const model = process.env['MODEL'] || `cloud`;
+
+const api_file = process.env['API_FILE'] || `api.json`;
 //</Config at here>
 
 
 const config = {
+	'model': `${model}`,
 	'version': 'v1.0.0-0-gd48b0c9',
 	'intervalsDesc': 'The intervals to check the api definition, unit is milliseconds.',
 	'intervals': 5000,
-	'host': '0.0.0.0',
+	'host': api_server_host,
 	'port': api_server_port,
 	'tapDataServer': {
 		'url': `${tapdata_origin}/api/apiModules`,
@@ -30,11 +41,11 @@ const config = {
 		'process_id': process_id,
 	},
 
-	'cacheDir': 'cache',
-	'logDir': 'logs',
+	'apiCache': api_cache,
+	'logDir': logDir,
+	'apiFile': api_file,
 
 	'jwtSecretKey': jwtSecretKey,
 };
 
 module.exports = config;
-

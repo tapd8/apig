@@ -4,6 +4,7 @@ const generator = require('./generators').generator;
 const report = require('./report');
 const log = require('./dist').log.app;
 const datasource = require('./datasource');
+const fs = require('fs');
 
 
 log.info('Config file at: ', `${__dirname}/config.js`);
@@ -51,7 +52,9 @@ class Main{
 		this.startApp();
 
 		// 监听配置文件变化
-		this.startConfigChangeMonitor();
+		if( appConfig.model === 'cloud') {
+			this.startConfigChangeMonitor();
+		}
 	}
 
 	/**
@@ -138,7 +141,7 @@ class Main{
 	 * @private
 	 */
 	generator(config){
-		log.info('开始生成代码');
+		log.info('publish new api');
 		try {
 			generator(config, (result) => {
 				if( result ){
@@ -173,12 +176,18 @@ class Main{
 const main = new Main();
 main.start();
 
+if( appConfig.model === 'local' ){
+	const localConfigFilePath = appConfig.apiFile;
+	if (fs.existsSync(localConfigFilePath)) {
+		let config = fs.readFileSync(localConfigFilePath).toString();
+		config = JSON.parse(config || '{}');
+		main.generator(config);
+	}
+}
+
 const exitHandler = function(){
 	log.info("Stoping api gateway...");
 	main.stop();
 	log.info("api gateway stoped.");
 };
 process.on('exit', exitHandler);
-//process.on('SIGKILL', exitHandler);
-require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
-
