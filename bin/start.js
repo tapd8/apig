@@ -5,11 +5,18 @@ const configDIR = homeDIR + "/.moa";
 ;(function () {
     const moaConfigFile = homeDIR + '/.moa/moa.json';
     const apiConfigFile = homeDIR + '/.moa/api.json';
-
-    var args = process.argv.slice(2)
+    const fs = require('fs')
+    ;
     var startMode = 'local';
-    if (args && args.length > 0) {
-        startMode = args[0] == 'login' ? 'cloud' : startMode;
+    if (fs.existsSync(moaConfigFile)) {
+        var moaConfig = readConfig(moaConfigFile)
+        startMode = moaConfig.mode;
+    } else {
+        var args = process.argv.slice(2);
+
+        if (args && args.length > 0) {
+            startMode = args[0] == 'login' ? 'cloud' : startMode;
+        }
     }
 
     try {
@@ -33,7 +40,11 @@ function login(request, moaConfig, response, callback) {
         form: {
             email: response.username,
             password: response.password
-        }
+        },
+        headers:{
+            aslg: "f39b0328-8467-11e9-8a99-cc3d827af1b6"
+        },
+        method: 'POST'
     }, (err, response, body) => {
         if (err) {
             console.error('Login failed ', err);
@@ -61,10 +72,8 @@ function getAPIServerConfigFile(fs, moaConfig, loginResult, apiServerConfig, cal
     console.log("Download config file from url ", downloadConfigURL);
     http.get(downloadConfigURL, function(res) {
         res.on('data', function(data) {
-            configFile.write(data);
+            fs.appendFileSync(configFileName, data, {encoding: "UTF-8"});
         }).on('end', function() {
-            configFile.end();
-            configFile.close();
             callback(configFileName);
         });
     });
