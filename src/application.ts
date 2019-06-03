@@ -38,6 +38,10 @@ export class ApiGatewayApplication extends BootMixin(
 		},
 		paths: {},
 		servers: [{ url: '/' }],
+		apiExplorer: {
+			url: 'http://openapi.mongodb.expert/static/explorer/index.html',
+			httpUrl: 'http://openapi.mongodb.expert/static/explorer/index.html',
+		}
 	});
 
     // Set up default home page
