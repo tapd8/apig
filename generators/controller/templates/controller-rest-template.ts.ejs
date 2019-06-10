@@ -89,9 +89,15 @@ export class <%= className %>Controller {
         async findPage(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
+          filter = filter || {};
+          const limit = Number(filter.limit);
+          if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
+            filter.limit = 100;
+          }
+
           return {
             data: await this.<%= repositoryNameCamel %>.find(filter),
-            total: await this.<%= repositoryNameCamel %>.count(filter ? filter['where'] : {})
+            total: await this.<%= repositoryNameCamel %>.count(filter['where'] || {})
           };
         }
       <%_ } else if (val['name'] === 'findById') { %>
@@ -296,6 +302,11 @@ export class <%= className %>Controller {
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
+          const limit = Number(filter.limit);
+          if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
+            filter.limit = 100;
+          }
+
         <%_ if (val['filter']) { -%>
           filter.where = filter.where || {};
           Object.assign(filter.where, <%- JSON.stringify(val['filter']) %>);

@@ -200,7 +200,7 @@ export class MySequence implements SequenceHandler {
 
 			let result = await this.invoke(route, args);
 
-			log.app.debug('result@src/sequence.ts:180\n', result);
+			//log.app.debug('result@src/sequence.ts:180\n', result);
 			if (result) {
 				if (result.data) {
 					apiAuditLog.res_rows = result.data.length ? result.data.length : 0;
