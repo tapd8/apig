@@ -204,6 +204,23 @@ export class MySequence implements SequenceHandler {
 			if (result) {
 				if (result.data) {
 					apiAuditLog.res_rows = result.data.length ? result.data.length : 0;
+
+					if (appConfig.filterNull) {
+						// @ts-ignore
+						result.data.forEach(row => {
+							for (const key in row) {
+								if (row.hasOwnProperty(key)) {
+									const element = row[key];
+									if (!element || element == "null" || element == "") {
+										delete row[key];
+									}
+								}
+							}
+
+						});
+
+					}
+
 				} else {
 					apiAuditLog.res_rows = 1;
 				}
