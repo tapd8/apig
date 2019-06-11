@@ -5,6 +5,7 @@ const DataSourceGenerator = exports.DataSourceGenerator = require('./datasource'
 const RepositoryGenerator = exports.RepositoryGenerator = require('./repository');
 const ControllerGenerator = exports.ControllerGenerator = require('./controller');
 const adapterTapDataConfig = require('./tapDataConfigAdapter');
+const appConfig = require('../config');
 
 const deleteTs = require('./delete-ts');
 
@@ -324,6 +325,7 @@ const _generator = function (classConfig, cb) {
 	});
 	classConfig.controllers.forEach((controller) => {
 		padding++;
+		controller.appConfig = appConfig;
 		new ControllerGenerator(controller).on('done', finish);
 	});
 
@@ -334,30 +336,30 @@ const _generator = function (classConfig, cb) {
  * @param config
  * @param cb
  */
-const testConnection = function(config, cb){
+const testConnection = function (config, cb) {
 
-	if( config && config.dataSource ){
+	if (config && config.dataSource) {
 		const dsNames = Object.keys(config.dataSource);
 		let padding = 0;
-		const finish = function(dataSourceName, result){
+		const finish = function (dataSourceName, result) {
 
 			// connection unavailable, remove dataSource and api
-			if( !result){
+			if (!result) {
 				delete config.dataSource[dataSourceName];
-				for ( let i = 0; i < config.models.length; i++){
-					if( config.models[i].dataSourceName === dataSourceName){
+				for (let i = 0; i < config.models.length; i++) {
+					if (config.models[i].dataSourceName === dataSourceName) {
 						config.models.splice(i, 1);
 						i--;
 					}
 				}
-				for ( let i = 0; i < config.controllers.length; i++){
-					if( config.controllers[i].dataSourceName === dataSourceName){
+				for (let i = 0; i < config.controllers.length; i++) {
+					if (config.controllers[i].dataSourceName === dataSourceName) {
 						config.controllers.splice(i, 1);
 						i--;
 					}
 				}
-				for ( let i = 0; i < config.repositories.length; i++){
-					if( config.repositories[i].dataSourceName === dataSourceName){
+				for (let i = 0; i < config.repositories.length; i++) {
+					if (config.repositories[i].dataSourceName === dataSourceName) {
 						config.repositories.splice(i, 1);
 						i--;
 					}
@@ -365,7 +367,7 @@ const testConnection = function(config, cb){
 			}
 
 			padding--;
-			if( padding === 0 ){
+			if (padding === 0) {
 				cb(config);
 			}
 		};
@@ -375,9 +377,9 @@ const testConnection = function(config, cb){
 			let ds = config.dataSource[dataSourceName];
 			let url = ds.settings.url || '';
 
-			if( url ){
+			if (url) {
 				new mongodb.MongoClient(url, { useNewUrlParser: true }).connect((err, client) => {
-					if( err ){
+					if (err) {
 						log.error("DataSource connection is unavailable " + url, err);
 						finish(dataSourceName, false);
 					} else {

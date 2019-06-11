@@ -14,6 +14,7 @@ const config = {
 	'host': '0.0.0.0',
 	'port': api_server_port,
 	'filterNull': true,	//filter null field from find result
+	'defaultLimit': 10,
 	'tapDataServer': {
 		'url': `${tapdata_origin}/api/apiModules`,
 		'tokenUrl': `${tapdata_origin}/api/users/generatetoken`, // url to get token by accessCode
