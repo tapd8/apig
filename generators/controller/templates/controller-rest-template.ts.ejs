@@ -338,6 +338,30 @@ export class <%= className %>Controller {
           filter.fields = filter.fields || {};
           Object.assign(filter.fields, <%- JSON.stringify(val['fields']) %>);
         <%_ } -%>
+
+          const rawWhere = (filter.where || {});
+          let requires: string[] = [] ;
+
+          <%_ if (val['requires']) { -%>
+            requires = <%- JSON.stringify(val['requires']) %>;
+          <%_ } -%>
+
+          let allfield: string[] = [];
+          this.findAllField(rawWhere, allfield);
+
+          if (requires.length > 0) {
+            const err = new HttpErrors.Forbidden(`At least one of these fields ${JSON.stringify(requires)} must be in 'where' conditions: ${JSON.stringify(rawWhere)}`);
+            let ok = false;
+            for (let index = 0; index < requires.length; index++) {
+              const er = requires[index];
+              ok = allfield.includes(er);
+              if (ok) { break }
+            }
+            if (!ok) {
+              throw err;
+            }
+          }
+
         return {
           data: await this.<%= repositoryNameCamel %>.find(filter),
           total: await this.<%= repositoryNameCamel %>.count(filter['where'] || {})
