@@ -283,7 +283,9 @@ const validateConfig = function (config) {
 				api: api,
 				downloadApi: downloadApi,
 				bucketName: bucketName,
-				dataSourceName: dataSourceName
+				dataSourceName: dataSourceName,
+				availableQueryField: model.availableQueryField || [],
+				requiredQueryField: model.requiredQueryField || []
 			});
 		}
 

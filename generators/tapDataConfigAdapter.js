@@ -120,7 +120,9 @@ module.exports = function (models) {
 			basePath: model.basePath,
 			description: model.description,
 			fields: [],
-			paths: []
+			paths: [],
+			requiredQueryField: model.requiredQueryField || [],
+			availableQueryField: model.availableQueryField || []
 		};
 
 		model.fields.forEach((field) => {
