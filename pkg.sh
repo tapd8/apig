@@ -1,4 +1,10 @@
-#!/bin/sh
+#!/bin/bash
+
+if [ "$BUILD_PLATFORM" == "arm64" ]; then
+		NDK_ARC=arm64
+else
+		NDK_ARC=x64
+fi
 
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
@@ -14,11 +20,11 @@ if [ -d $TARGET_PATH ]; then
 	rm -rf $TARGET_PATH
 fi
 
-mkdir -p $TARGET_PATH/NDK/
+mkdir -p $TARGET_PATH/NDK/$NDK_ARC
 
 echo "Untaring Node Development Kit..."
-tar -xJf NDK/*.tar.xz -C $TARGET_PATH/NDK/
-mv $TARGET_PATH/NDK/node-v*/ $TARGET_PATH/NDK/node/
+tar -xJf NDK/*$NDK_ARC.tar.xz -C $TARGET_PATH/NDK/$NDK_ARC
+mv $TARGET_PATH/NDK/$NDK_ARC/node-v*/ $TARGET_PATH/NDK/$NDK_ARC/node/
 
 echo "Copying files..."
 cp -r \
@@ -45,8 +51,8 @@ rm -rf \
 
 echo "Packaging $TARGET_PATH"
 cd deploy
-tar -zcf "$TARGET_NAME.tar.gz" $TARGET_NAME
-cp howtoRunTpl.md $TARGET_NAME"-HowtoRunReadme.md.txt"
+tar -zcf "$TARGET_NAME-$NDK_ARC.tar.gz" $TARGET_NAME
+cp howtoRunTpl.md $TARGET_NAME-$NDK_ARC"-HowtoRunReadme.md.txt"
 
 echo "Cleaning..."
 rm -rf $TARGET_PATH

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
