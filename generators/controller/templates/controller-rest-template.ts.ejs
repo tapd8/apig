@@ -94,6 +94,7 @@ export class <%= className %>Controller {
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
             filter.limit = <%= appConfig.defaultLimit %>;
           }
+          filter.limit = Number(filter.limit) > <%= appConfig.maxLimit %> ? <%= appConfig.maxLimit %> : Number(filter.limit);
 
           const rawWhere = (filter.where || {});
           let requires: string[] = [] ;
@@ -347,6 +348,8 @@ export class <%= className %>Controller {
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
             filter.limit = <%= appConfig.defaultLimit %>;
           }
+          filter.limit = Number(filter.limit) > <%= appConfig.maxLimit %> ? <%= appConfig.maxLimit %> : Number(filter.limit);
+
 
         <%_ if (val['filter']) { -%>
           filter.where = filter.where || {};
