@@ -22,6 +22,7 @@ const config = {
 		'reportUrl': `${tapdata_origin}/api/Workers/upsertWithWhere`,
 		'logUrl': `${tapdata_origin}/api/Logs`,
 		'apiCallsUrl': `${tapdata_origin}/api/ApiCalls`,
+		'settingUrlBase': `${tapdata_origin}/api/Settings?filter=`,
 		'accessCode': 'bd16c77a-2111-499c-b2ae-a35c587ea83a',
 	},
 
