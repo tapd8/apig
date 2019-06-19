@@ -120,9 +120,7 @@ module.exports = function (models) {
 			basePath: model.basePath,
 			description: model.description,
 			fields: [],
-			paths: [],
-			requiredQueryField: model.requiredQueryField || [],
-			availableQueryField: model.availableQueryField || []
+			paths: []
 		};
 
 		model.fields.forEach((field) => {
@@ -137,6 +135,8 @@ module.exports = function (models) {
 
 			let apiConfig = {
 				allPathId: model.id,
+				requiredQueryField: customApi.requiredQueryField || [],
+				availableQueryField: customApi.availableQueryField || [],
 				pathTpl: customApi.path,
 				method: customApi.method,
 				rawName: customApi.name,

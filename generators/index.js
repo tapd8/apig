@@ -186,7 +186,10 @@ const validateConfig = function (config) {
 					filter = item['filter'],
 					params = item['params'],
 					fields = item['fields'],
-					roles = item['roles'];
+					roles = item['roles'],
+					availableQueryField = item.availableQueryField || [],
+					requiredQueryField = item.requiredQueryField || [];
+
 
 				if (type === 'custom') {
 					name = `findPage_${idx}`;
@@ -218,6 +221,8 @@ const validateConfig = function (config) {
 					summary: summary,
 					filter: filter,
 					params: params,
+					availableQueryField: availableQueryField,
+					requiredQueryField: requiredQueryField,
 					//fields: fields,
 					roles: roles || []
 				};
@@ -283,9 +288,7 @@ const validateConfig = function (config) {
 				api: api,
 				downloadApi: downloadApi,
 				bucketName: bucketName,
-				dataSourceName: dataSourceName,
-				availableQueryField: model.availableQueryField || [],
-				requiredQueryField: model.requiredQueryField || []
+				dataSourceName: dataSourceName
 			});
 		}
 

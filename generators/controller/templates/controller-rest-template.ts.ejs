@@ -100,12 +100,12 @@ export class <%= className %>Controller {
           let requires: string[] = [] ;
           let available: string[] = [] ;
 
-          <%_ if (requiredQueryField) { -%>
-            requires = <%- JSON.stringify(requiredQueryField) %>;
+          <%_ if (val['requiredQueryField']) { -%>
+            requires = <%- JSON.stringify(val['requiredQueryField']) %>;
           <%_ } -%>
 
-          <%_ if (availableQueryField) { -%>
-            available = <%- JSON.stringify(availableQueryField) %>;
+          <%_ if (val['availableQueryField']) { -%>
+            available = <%- JSON.stringify(val['availableQueryField']) %>;
           <%_ } -%>
 
           let allField: string[] = [];
@@ -125,7 +125,7 @@ export class <%= className %>Controller {
           }
 
           if( available.length > 0 ){
-            const err = new HttpErrors.PreconditionFailed(`'where' conditions can only contain ${JSON.stringify(available)}`);
+            const err = new HttpErrors.PreconditionFailed(`'where' conditions can only contain ${JSON.stringify(available)} , but now where is: ${JSON.stringify(rawWhere)}`);
             let ok = false;
             for (let index = 0; index < allField.length; index++) {
               const er = allField[index];
@@ -364,12 +364,12 @@ export class <%= className %>Controller {
           let requires: string[] = [] ;
           let available: string[] = [] ;
 
-          <%_ if (requiredQueryField) { -%>
-            requires = <%- JSON.stringify(requiredQueryField) %>;
+          <%_ if (val['requiredQueryField']) { -%>
+            requires = <%- JSON.stringify(val['requiredQueryField']) %>;
           <%_ } -%>
 
-          <%_ if (availableQueryField) { -%>
-            available = <%- JSON.stringify(availableQueryField) %>;
+          <%_ if (val['availableQueryField']) { -%>
+            available = <%- JSON.stringify(val['availableQueryField']) %>;
           <%_ } -%>
 
           let allField: string[] = [];
@@ -389,7 +389,7 @@ export class <%= className %>Controller {
           }
 
           if( available.length > 0 ){
-            const err = new HttpErrors.PreconditionFailed(`'where' conditions can only contain ${JSON.stringify(available)}`);
+            const err = new HttpErrors.PreconditionFailed(`'where' conditions can only contain ${JSON.stringify(available)} , but now where is: ${JSON.stringify(rawWhere)}`);
             let ok = false;
             for (let index = 0; index < allField.length; index++) {
               const er = allField[index];
