@@ -26,5 +26,5 @@ if (require.main === module) {
 		process.exit(1);
 	});
 }
-require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
+// require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
 

@@ -9,7 +9,7 @@ const log = require('./dist').log.app;
 log.info('Config file at: ', `${__dirname}/config.js`);
 log.info('Current active config is: \n', appConfig);
 
-class Main{
+class Main {
 	constructor(props) {
 
 		/**
@@ -36,7 +36,7 @@ class Main{
 	/**
 	 * 启动
 	 */
-	start(){
+	start() {
 
 		Object.assign(this.workerStatus, {
 			worker_process_id: '',
@@ -57,14 +57,14 @@ class Main{
 	/**
 	 * 停止
 	 */
-	stop(){
+	stop() {
 
-		if( this.appWorker ){
+		if (this.appWorker) {
 			this.appWorker.kill();
 			log.info('app worker process exited.');
 		}
 
-		if( this.configMonitor ){
+		if (this.configMonitor) {
 			this.configMonitor.stop();
 			log.info('configMonitor process exited.');
 		}
@@ -73,12 +73,12 @@ class Main{
 	/**
 	 * 启动 app 进程
 	 */
-	startApp(){
+	startApp() {
 
-		if( this.appWorker )
-			this.appWorker.kill();
+		// if (this.appWorker)
+		// 	this.appWorker.kill();
 
-		this.appWorker = fork(`${__dirname}/app.js`, process.argv.slice(2));
+		this.appWorker = fork(`${__dirname}/app_cluster.js`, process.argv.slice(2));
 
 		this.appWorker.on('exit', (code) => {
 			Object.assign(this.workerStatus, {
@@ -93,7 +93,8 @@ class Main{
 		});
 
 		this.appWorker.on('message', (msg) => {
-			if( msg.type === 'status') {
+			log.debug("msg@index.js:96: ", msg);
+			if (msg.type === 'status') {
 				Object.assign(this.workerStatus, {
 					worker_process_id: this.appWorker.pid,
 					worker_process_end_time: null,
@@ -111,7 +112,7 @@ class Main{
 	/**
 	 * 配置文件发生变化
 	 */
-	startConfigChangeMonitor(){
+	startConfigChangeMonitor() {
 		/**
 		 * 配置文件变化监听进程
 		 * @type {ChildProcess}
@@ -119,7 +120,7 @@ class Main{
 		this.configMonitor = require('./monitor');
 
 		this.configMonitor.on('message', (event) => {
-			if( event && event.type === 'changed'){
+			if (event && event.type === 'changed') {
 
 				log.info('config is changed, regenerator api.')
 
@@ -128,7 +129,7 @@ class Main{
 				// 生成代码
 				this.generator(config);
 			}
-		} );
+		});
 		this.configMonitor.start();
 	}
 
@@ -137,14 +138,19 @@ class Main{
 	 * @param config
 	 * @private
 	 */
-	generator(config){
+	generator(config) {
 		log.info('publish new api');
 		try {
 			generator(config, (result) => {
-				if( result ){
+				if (result) {
 					log.info('generator code successful, restart app server.');
 					this.workerStatus.status = 'restart';
-					this.startApp();
+
+					this.appWorker.send({
+						type: 'restart'
+					});
+
+					// this.startApp();
 				} else {
 					log.info('generator code fail.');
 					this.workerStatus.status = 'deploy_fail';
@@ -173,12 +179,12 @@ class Main{
 const main = new Main();
 main.start();
 
-const exitHandler = function(){
+const exitHandler = function () {
 	log.info("Stoping api gateway...");
 	main.stop();
 	log.info("api gateway stoped.");
 };
 process.on('exit', exitHandler);
 //process.on('SIGKILL', exitHandler);
-require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
+// require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\n`, { encoding: 'utf-8' });
 

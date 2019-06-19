@@ -21,7 +21,7 @@ const
 	__listeners = {},
 	loadConfig = function (token) {
 
-		// log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
+		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
 		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
@@ -36,7 +36,7 @@ const
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
-				// log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
+				// log.debug(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
 
 				if (newHashCode !== lastHashCode) {
 					lastHashCode = newHashCode;

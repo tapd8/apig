@@ -32,7 +32,7 @@ const report = function (data, token) {
 	Object.assign(data, apiServerStatus);
 
 	try {
-		// log.debug('report data', data);
+		log.debug('report data@report.js: ', data);
 		request.post({
 			url: reportServerUrl + encodeURI(`&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}`),
 			json: true,

@@ -1,9 +1,9 @@
-import {configure, getLogger} from 'log4js';
+import { configure, getLogger } from 'log4js';
 import * as path from 'path';
 
 const appConfig = require('../../config');
 // const logPath = path.join(path.resolve(path.dirname(path.dirname(__dirname))), appConfig.logDir || 'logs');
-const logPath = path.join(process.env.TAPDATA_WORK_DIR || process.cwd(), appConfig.logDir || 'logs');
+const logPath = path.join((process.env.TAPDATA_WORK_DIR || process.cwd()).replace(/^~/, require('os').homedir()), appConfig.logDir || 'logs');
 
 configure({
 	appenders: {
