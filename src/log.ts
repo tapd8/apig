@@ -1,4 +1,4 @@
-import { configure, getLogger } from 'log4js';
+import {configure, getLogger} from 'log4js';
 import * as path from 'path';
 
 const appConfig = require('../../config');
@@ -63,4 +63,3 @@ export const log = {
 	monitor: getLogger('app'),
 	generator: getLogger('app')
 };
-

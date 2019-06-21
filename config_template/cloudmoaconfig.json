@@ -1,0 +1,11 @@
+{
+  "mode": "cloud",
+  "api": "api.json",
+  "listen_host": "0.0.0.0",
+  "listen_port": 3080,
+  "cacheDir": "cache",
+  "logDir": "logs",
+  "server": {
+    "uri": "http://openapi.mongodb.expert"
+  }
+}

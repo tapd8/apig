@@ -3,6 +3,9 @@ const appConfig = require('./config');
 const generator = require('./generators').generator;
 const report = require('./report');
 const log = require('./dist').log.app;
+const datasource = require('./datasource');
+const fs = require('fs');
+
 const getToken = require('./tapdata').getToken;
 const request = require('request');
 
@@ -52,6 +55,11 @@ class Main {
 
 		// 监听配置文件变化
 		this.startConfigChangeMonitor();
+
+		// 监听配置文件变化
+		if( appConfig.model === 'cloud') {
+			this.startConfigChangeMonitor();
+		}
 	}
 
 	/**
@@ -93,8 +101,7 @@ class Main {
 		});
 
 		this.appWorker.on('message', (msg) => {
-			log.debug("msg@index.js:96: ", msg);
-			if (msg.type === 'status') {
+			if( msg.type === 'status') {
 				Object.assign(this.workerStatus, {
 					worker_process_id: this.appWorker.pid,
 					worker_process_end_time: null,
@@ -138,7 +145,7 @@ class Main {
 	 * @param config
 	 * @private
 	 */
-	generator(config) {
+	generator(config){
 		log.info('publish new api');
 		try {
 			generator(config, (result) => {
@@ -179,6 +186,16 @@ class Main {
 const main = new Main();
 main.start();
 
+if( appConfig.model === 'local' ){
+	const localConfigFilePath = appConfig.apiFile;
+	if (fs.existsSync(localConfigFilePath)) {
+		let config = fs.readFileSync(localConfigFilePath).toString();
+		config = JSON.parse(config || '{}');
+		main.generator(config);
+	}
+}
+
+const exitHandler = function(){
 setInterval(() => {
 	getToken(token => {
 		if (token) {
