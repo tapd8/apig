@@ -195,78 +195,8 @@ if( appConfig.model === 'local' ){
 	}
 }
 
-const exitHandler = function(){
-setInterval(() => {
-	getToken(token => {
-		if (token) {
-			request.get(
-				appConfig.tapDataServer.settingUrlBase
-				+ encodeURIComponent('{"where":{"id":"51"}}')
-				+ '&access_token=' + token,
-				limitSettingResHandle
-			);
-			request.get(
-				appConfig.tapDataServer.settingUrlBase
-				+ encodeURIComponent('{"where":{"id":"52"}}')
-				+ '&access_token=' + token,
-				limitSettingResHandle
-			);
-		}
-
-	});
-
-
-}, 5 * 1000);
-
-function limitSettingResHandle(err, response, body) {
-	if (err) {
-		log.error('download config fail.', err);
-	} else {
-		// log.debug('download config success.');
-
-		body = body.trim();
-
-		try {
-			let limitSetting = JSON.parse(body);
-			log.debug("limitSetting@index.js:204: ", limitSetting);
-
-			if (
-				limitSetting &&
-				limitSetting[0] &&
-				limitSetting[0].value &&
-				(!isNaN(limitSetting[0].value))
-			) {
-				switch (limitSetting[0].key) {
-					case "defaultLimit":
-						if (limitSetting[0].value != appConfig.defaultLimit) {
-							main.configMonitor.forceGetRemotConfig();
-							appConfig.defaultLimit = limitSetting[0].value;
-						}
-						break;
-					case "maxLimit":
-						if (limitSetting[0].value != appConfig.maxLimit) {
-							main.configMonitor.forceGetRemotConfig();
-							appConfig.maxLimit = limitSetting[0].value;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-
-		} catch (e) {
-			log.error('parse config error: \n', e);
-		}
-
-	}
-}
-
-const exitHandler = function () {
+process.on('exit', function () {
 	log.info("Stoping api gateway...");
 	main.stop();
 	log.info("api gateway stoped.");
-};
-process.on('exit', exitHandler);
-//process.on('SIGKILL', exitHandler);
-// require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\n`, { encoding: 'utf-8' });
-
+});

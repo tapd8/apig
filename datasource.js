@@ -17,7 +17,8 @@ const getConnection = function(token){
 	let url = appConfig.tapDataServer.connectionUrl + '?access_token=' + token;
 	try{
 		let params = {
-			'filter[where][status]': 'testing'
+			'filter[where][status]': 'testing',
+			'filter[where][database_type]': 'mongodb'
 		};
 		request.get(url, {qs: params, json: true}, function (err, response, body) {
 			if (err) {

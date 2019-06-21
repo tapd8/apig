@@ -122,7 +122,7 @@ exports.stop = function () {
 		clearInterval(intervalId);
 };
 
-exports.forceGetRemotConfig = function () {
+exports.forceGetRemoteConfig = function () {
 	lastHashCode = null;
 };
 
