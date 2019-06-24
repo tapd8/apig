@@ -103,6 +103,7 @@ const
 exports.on = function (type, listener) {
 	if (!__listeners[type])
 		__listeners[type] = [];
+	log.info('register listener on ' + type);
 	__listeners[type].push(listener);
 };
 exports.start = function () {

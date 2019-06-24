@@ -8,6 +8,7 @@ const request = require('request');
 const path = require('path');
 const appConfig = require('./config');
 const getToken = require('./tapdata').getToken;
+const checkEnableLoadSchemaFeature = require('./tapdata').checkEnableLoadSchemaFeature;
 const MongoClient = require('mongodb').MongoClient;
 const parse = require('mongodb-core').parseConnectionString;
 const parseSchema = require('mongodb-schema');
@@ -280,16 +281,26 @@ updateConnection = function(id, data, cb) {
 
 };
 
-if( appConfig.model === 'cloud'){
-	setInterval(() => {
-		try{
-			getToken(token => {
-				if( token )
-					getConnection(token);
-			})
-		} catch (e) {
-			log.error('get connection to test fail:\n', e);
-		}
+let __intervalId = null;
+exports.start = function(){
 
-	}, 2000);
-}
+	checkEnableLoadSchemaFeature(enable => {
+		if( enable ){
+			setInterval(() => {
+				try{
+					getToken(token => {
+						if( token )
+							getConnection(token);
+					})
+				} catch (e) {
+					log.error('get connection to test fail:\n', e);
+				}
+
+			}, 2000);
+		}
+	});
+};
+exports.stop = function(){
+	if( __intervalId )
+		clearInterval(__intervalId);
+};

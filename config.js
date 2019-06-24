@@ -1,3 +1,4 @@
+
 const path = require('path');
 const homedir = require('os').homedir();
 const defaultConfigDir = path.join(homedir, '.tapdata');
@@ -5,13 +6,13 @@ const defaultConfigDir = path.join(homedir, '.tapdata');
 const api_server_port = process.env['API_SERVER_PORT'] || '3080';
 const api_server_host = process.env['API_SERVER_HOST'] || '0.0.0.0';
 
-const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
-const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
+const tapdata_port = process.env['TAPDATA_PORT'] || '8080';
+const tapdata_host = process.env['TAPDATA_HOST'] || 'localhost';
 const tapdata_origin = process.env['TAPDATA_ORIGIN'] || 'http://' + tapdata_host + ':' + tapdata_port;
-const process_id = process.env['API_SERVER_ID'] || 'd2f1cc40-552a-11e9-8ff4-059b83989412';
-const accessCode = process.env['TAPDATA_ACCESS_CODE'] || 'ee40d4146e4f3bb3ec85ae4cda484199';
+const process_id = process.env['API_SERVER_ID'] || 'f3ebe1b88623ca4f933af4e27f4075a0';
+const accessCode = process.env['TAPDATA_ACCESS_CODE'] || '3324cfdf-7d3e-4792-bd32-571638d4562f';
 
-const jwtSecretKey = process.env['JWT_SECRET_KEY'] || '795a357ff5c2cc895b5a2b8e0a0e883a';
+const jwtSecretKey = process.env['JWT_SECRET_KEY'] || '3a9338dab2cb073a4444a8dc9d8706c7';
 
 const cacheDir = process.env['CACHE_DIR'] || path.join(defaultConfigDir, 'cache');
 const api_cache = process.env['API_CACHE'] || path.join(cacheDir, 'server_api_definition.json');
@@ -39,6 +40,7 @@ const config = {
 		'connectionUrl': tapdata_origin + '/api/Connections',
 		'apiCallsUrl': tapdata_origin + '/api/ApiCalls',
 		'settingUrlBase': tapdata_origin + '/api/Settings?filter=',
+		'findWorkerUrl': tapdata_origin + '/api/Workers',
 		'accessCode': accessCode,
 	},
 

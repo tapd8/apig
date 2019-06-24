@@ -66,7 +66,7 @@ const monitorLimitSetting = function(main){
 							break;
 						case "maxLimit":
 							if (limitSetting[0].value != appConfig.maxLimit) {
-								main.configMonitor.forceGetRemotConfig();
+								main.configMonitor.forceGetRemoteConfig();
 								appConfig.maxLimit = limitSetting[0].value;
 							}
 							break;
@@ -103,5 +103,37 @@ const monitorLimitSetting = function(main){
 
 };
 
+/**
+ * 检查是否启用 load schema 功能
+ */
+const checkEnableLoadSchemaFeature = function(cb){
+	getToken(token => {
+		let params = {
+			'filter[where][worker_type][in][0]': 'connector',
+			'filter[where][worker_type][in][1]': 'transformer',
+			'filter[where][ping_time][gte]': new Date().getTime() - 60000
+		};
+		request.get( appConfig.tapDataServer.findWorkerUrl + '?access_token=' + token,
+			{qs: params, json: true}, function(err, response, body){
+				if (err) {
+					console.error('get connector worker process fail.', err);
+					cb(false);
+				} else if(response.statusCode === 200) {
+					if(body && body.length > 0){
+						console.log('exists process connector or transformer, disable load schema feature');
+						cb(false);
+					} else {
+						console.log('not exists process connector or transformer, enable load schema feature');
+						cb(true);
+					}
+				} else {
+					console.error('get connector worker process error: \n', body);
+					cb(false);
+				}
+			});
+	});
+};
+
 exports.getToken = getToken;
 exports.monitorLimitSetting = monitorLimitSetting;
+exports.checkEnableLoadSchemaFeature = checkEnableLoadSchemaFeature;

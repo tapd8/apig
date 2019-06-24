@@ -54,11 +54,9 @@ class Main {
 		this.startApp();
 
 		// 监听配置文件变化
-		this.startConfigChangeMonitor();
-
-		// 监听配置文件变化
 		if( appConfig.model === 'cloud') {
 			this.startConfigChangeMonitor();
+			datasource.start();
 		}
 	}
 
@@ -76,6 +74,8 @@ class Main {
 			this.configMonitor.stop();
 			log.info('configMonitor process exited.');
 		}
+
+		datasource.stop();
 	}
 
 	/**
@@ -196,7 +196,7 @@ if( appConfig.model === 'local' ){
 }
 
 process.on('exit', function () {
-	log.info("Stoping api gateway...");
+	log.info("Stoping api server...");
 	main.stop();
-	log.info("api gateway stoped.");
+	log.info("api server stoped.");
 });

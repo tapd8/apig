@@ -8,7 +8,6 @@
 
 const util = require('util');
 const request = require('request');
-const getToken = require('./tapdata').getToken;
 const pid = process.pid;
 
 function wrapErrorsWithInspect(items) {
@@ -32,6 +31,9 @@ function format(logData) {
 function logFacesAppender(config) {
 
 	return function log(event) {
+
+		const getToken = require('./tapdata').getToken;
+
 		// convert to logFaces compact json format
 		const lfsEvent = {
 			threadId: pid,
