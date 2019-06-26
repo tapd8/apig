@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" type="image/x-icon" href="//v4.loopback.io/favicon.ico">
+  <!--<link rel="shortcut icon" type="image/x-icon" href="//v4.loopback.io/favicon.ico">-->
 
   <style>
     h3 {
@@ -56,17 +56,24 @@
 
 <body>
   <div class="info">
-    <h1>apig</h1>
+    <h1>Moa API Server</h1>
     <p>Version 1.0.0</p>
 
-    <h3>OpenAPI spec: <a href="/openapi.json">/openapi.json</a></h3>
-    <h3>API Explorer: <a href="/explorer">/explorer</a></h3>
+    <h3>OpenAPI spec: <a class="api-openapi" href="/openapi.json">/openapi.json</a></h3>
+    <h3>API Explorer: <a class="api-explorer" href="/explorer">/explorer</a></h3>
   </div>
 
   <footer class="power">
-    <a href="https://v4.loopback.io" target="_blank">
+    <!--<a href="https://v4.loopback.io" target="_blank">
       <img src="https://loopback.io/images/branding/powered-by-loopback/blue/powered-by-loopback-sm.png" />
-    </a>
+    </a>-->
   </footer>
+<script type="text/javascript">
+  setTimeout(function(){
+  	let openApiUrl = document.querySelector('.api-openapi').href;
+	  document.querySelector('.api-explorer').href = "http://openapi.mongodb.expert/static/explorer/index.html?url=" + openApiUrl
+  }, 1000);
+</script>
 </body>
 </html>
+

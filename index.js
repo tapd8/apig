@@ -3,6 +3,9 @@ const appConfig = require('./config');
 const generator = require('./generators').generator;
 const report = require('./report');
 const log = require('./dist').log.app;
+const datasource = require('./datasource');
+const fs = require('fs');
+
 const getToken = require('./tapdata').getToken;
 const request = require('request');
 
@@ -51,7 +54,10 @@ class Main {
 		this.startApp();
 
 		// 监听配置文件变化
-		this.startConfigChangeMonitor();
+		if( appConfig.model === 'cloud') {
+			this.startConfigChangeMonitor();
+			datasource.start();
+		}
 	}
 
 	/**
@@ -68,6 +74,8 @@ class Main {
 			this.configMonitor.stop();
 			log.info('configMonitor process exited.');
 		}
+
+		datasource.stop();
 	}
 
 	/**
@@ -93,8 +101,7 @@ class Main {
 		});
 
 		this.appWorker.on('message', (msg) => {
-			log.debug("msg@index.js:96: ", msg);
-			if (msg.type === 'status') {
+			if( msg.type === 'status') {
 				Object.assign(this.workerStatus, {
 					worker_process_id: this.appWorker.pid,
 					worker_process_end_time: null,
@@ -138,7 +145,7 @@ class Main {
 	 * @param config
 	 * @private
 	 */
-	generator(config) {
+	generator(config){
 		log.info('publish new api');
 		try {
 			generator(config, (result) => {
@@ -179,77 +186,17 @@ class Main {
 const main = new Main();
 main.start();
 
-setInterval(() => {
-	getToken(token => {
-		if (token) {
-			request.get(
-				appConfig.tapDataServer.settingUrlBase
-				+ encodeURIComponent('{"where":{"id":"51"}}')
-				+ '&access_token=' + token,
-				limitSettingResHandle
-			);
-			request.get(
-				appConfig.tapDataServer.settingUrlBase
-				+ encodeURIComponent('{"where":{"id":"52"}}')
-				+ '&access_token=' + token,
-				limitSettingResHandle
-			);
-		}
-
-	});
-
-
-}, 5 * 1000);
-
-function limitSettingResHandle(err, response, body) {
-	if (err) {
-		log.error('download config fail.', err);
-	} else {
-		// log.debug('download config success.');
-
-		body = body.trim();
-
-		try {
-			let limitSetting = JSON.parse(body);
-			log.debug("limitSetting@index.js:204: ", limitSetting);
-
-			if (
-				limitSetting &&
-				limitSetting[0] &&
-				limitSetting[0].value &&
-				(!isNaN(limitSetting[0].value))
-			) {
-				switch (limitSetting[0].key) {
-					case "defaultLimit":
-						if (limitSetting[0].value != appConfig.defaultLimit) {
-							main.configMonitor.forceGetRemotConfig();
-							appConfig.defaultLimit = limitSetting[0].value;
-						}
-						break;
-					case "maxLimit":
-						if (limitSetting[0].value != appConfig.maxLimit) {
-							main.configMonitor.forceGetRemotConfig();
-							appConfig.maxLimit = limitSetting[0].value;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-
-		} catch (e) {
-			log.error('parse config error: \n', e);
-		}
-
+if( appConfig.model === 'local' ){
+	const localConfigFilePath = appConfig.apiFile;
+	if (fs.existsSync(localConfigFilePath)) {
+		let config = fs.readFileSync(localConfigFilePath).toString();
+		config = JSON.parse(config || '{}');
+		main.generator(config);
 	}
 }
 
-const exitHandler = function () {
-	log.info("Stoping api gateway...");
+process.on('exit', function () {
+	log.info("Stoping api server...");
 	main.stop();
-	log.info("api gateway stoped.");
-};
-process.on('exit', exitHandler);
-//process.on('SIGKILL', exitHandler);
-// require('fs').writeFileSync(`${__dirname}/server.pid`, `${process.pid}\n`, { encoding: 'utf-8' });
-
+	log.info("api server stoped.");
+});

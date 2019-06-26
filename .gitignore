@@ -74,5 +74,4 @@ src/datasources/*.json
 src/models/*.ts
 src/repositories/*.ts
 *.tar.gz
-
 .vscode

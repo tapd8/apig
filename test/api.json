@@ -1,0 +1,36 @@
+[{
+	"apiVersion": "v1",
+	"connection": {
+		"name": "dataSourceName",
+		"database_uri": "mongodb://127.0.0.1/test"
+	},
+	"tablename": "order",
+	"basePath": "my_order",
+	"description": "trade order",
+	"fields": [{
+		"field_name": "id",
+		"data_type": "ObjectId|String|Boolean|Integer|Double|Float|Decimal128|Date|Document|ArrayList|Array",
+		"primary_key_position": 1
+	}, {
+		"field_name": "orderNo",
+		"data_type": "ObjectId|String|Boolean|Integer|Double|Float|Decimal128|Date|Document|ArrayList|Array",
+		"primary_key_position": 0
+	}],
+	"paths": [{
+		"name": "create|findPage|findById|updateById|deleteById",
+		"type": "preset",
+		"description": "API method description",
+		"roles": []
+	}, {
+		"type": "custom",
+		"description": "API method description",
+		"roles": [],
+		"path": "orderNos",
+		"fields": [{
+			"visible": true,
+			"field_name": "orderNo",
+			"description": "include field in return data records"
+		}],
+		"filter": []
+	}]
+}]

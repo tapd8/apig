@@ -1,0 +1,12 @@
+{
+  "mode": "local",
+  "api": "api.json",
+  "listen_host": "0.0.0.0",
+  "listen_port": 3080,
+  "cacheDir": "cache",
+  "logDir": "logs",
+  "jwtSecretKey": "de428370350427d6f9102b12a36c8c45",
+  "server": {
+    "uri": "http://localhost:3030"
+  }
+}

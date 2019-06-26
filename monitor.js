@@ -21,12 +21,12 @@ const
 	__listeners = {},
 	loadConfig = function (token) {
 
-		log.debug('download load config from tapDataServer ' + appConfig.tapDataServer.url);
+		log.debug('download load config from server ' + appConfig.tapDataServer.url);
 		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
-			} else {
-				// log.debug('download config success.');
+			} else if(response.statusCode === 200){
+				log.debug('download config success.');
 
 				body = body.trim();
 				/*if( ! (/^\{.*\}$/.test(body) || /^\[.*\]$/.test(body)) ){
@@ -36,12 +36,12 @@ const
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
-				// log.debug(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
+				// log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
 
 				if (newHashCode !== lastHashCode) {
 					lastHashCode = newHashCode;
 
-					log.info('tap data config is changed, cache remote config to local.');
+					log.info('api config is changed, cache remote config to local.');
 
 					// 保存到本地缓存目录
 					fs.writeFileSync(getCacheConfig(), body + "\n");
@@ -66,6 +66,8 @@ const
 						log.error('parse config error: \n', e);
 					}
 				}
+			} else {
+				log.error('get config error: \n', body);
 			}
 		});
 	},
@@ -88,18 +90,20 @@ const
 	 */
 	getCacheConfig = function () {
 
-		const cacheDirPath = appConfig.cacheDir.startsWith('/') ? appConfig.cacheDir : path.join(__dirname, appConfig.cacheDir);
-		if (!fs.existsSync(cacheDirPath)) {
-			log.info(`create cache dir ${cacheDirPath}`);
-			makeDir.sync(cacheDirPath);
+		const cacheFilePath = appConfig.apiCache.startsWith('/') ? appConfig.apiCache : path.join(__dirname, appConfig.apiCache);
+		const dir = path.dirname(cacheFilePath);
+		if (!fs.existsSync(dir)) {
+			log.info(`create cache dir ${dir}`);
+			makeDir.sync(dir);
 		}
 
-		return path.resolve(`${cacheDirPath}/tap_data_server_download_config.json`);
+		return path.resolve(cacheFilePath);
 	};
 
 exports.on = function (type, listener) {
 	if (!__listeners[type])
 		__listeners[type] = [];
+	log.info('register listener on ' + type);
 	__listeners[type].push(listener);
 };
 exports.start = function () {
@@ -119,7 +123,7 @@ exports.stop = function () {
 		clearInterval(intervalId);
 };
 
-exports.forceGetRemotConfig = function () {
+exports.forceGetRemoteConfig = function () {
 	lastHashCode = null;
 };
 
