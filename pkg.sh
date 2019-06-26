@@ -20,11 +20,11 @@ if [ -d $TARGET_PATH ]; then
 	rm -rf $TARGET_PATH
 fi
 
-mkdir -p $TARGET_PATH/NDK/$NDK_ARC
+mkdir -p $TARGET_PATH/NDK
 
 echo "Untaring Node Development Kit..."
-tar -xJf NDK/*$NDK_ARC.tar.xz -C $TARGET_PATH/NDK/$NDK_ARC
-mv $TARGET_PATH/NDK/$NDK_ARC/node-v*/ $TARGET_PATH/NDK/$NDK_ARC/node/
+tar -xJf NDK/*$NDK_ARC.tar.xz -C $TARGET_PATH/NDK
+mv $TARGET_PATH/NDK/node-v*/ $TARGET_PATH/NDK/node/
 
 echo "Copying files..."
 cp -r \
