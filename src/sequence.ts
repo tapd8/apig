@@ -145,7 +145,7 @@ export class MySequence implements SequenceHandler {
 			// send to server
 			getToken(function (token: string) {
 
-				let url = appConfig.tapDataServer.apiCallsUrl + '?access_token=' + token;
+				let url = appConfig.tapDataServer.url + '/api/ApiCalls?access_token=' + token;
 
 				requestOfcalls.post({
 					url: url,

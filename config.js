@@ -12,8 +12,6 @@ const tapdata_origin = process.env['TAPDATA_ORIGIN'] || 'http://' + tapdata_host
 const process_id = process.env['API_SERVER_ID'] || 'f3ebe1b88623ca4f933af4e27f4075a0';
 const accessCode = process.env['TAPDATA_ACCESS_CODE'] || '3324cfdf-7d3e-4792-bd32-571638d4562f';
 
-const jwtSecretKey = process.env['JWT_SECRET_KEY'] || '3a9338dab2cb073a4444a8dc9d8706c7';
-
 const cacheDir = process.env['CACHE_DIR'] || path.join(defaultConfigDir, 'cache');
 const api_cache = process.env['API_CACHE'] || path.join(cacheDir, 'server_api_definition.json');
 const logDir = process.env['LOG_DIR'] || path.join(defaultConfigDir, 'logs');
@@ -33,14 +31,7 @@ const config = {
 	'defaultLimit': 10,
 	'maxLimit': 1000,
 	'tapDataServer': {
-		'url': tapdata_origin + '/api/apiModules',
-		'tokenUrl': tapdata_origin + '/api/users/generatetoken',
-		'reportUrl':  tapdata_origin + '/api/Workers/upsertWithWhere',
-		'logUrl': tapdata_origin + '/api/Logs',
-		'connectionUrl': tapdata_origin + '/api/Connections',
-		'apiCallsUrl': tapdata_origin + '/api/ApiCalls',
-		'settingUrlBase': tapdata_origin + '/api/Settings?filter=',
-		'findWorkerUrl': tapdata_origin + '/api/Workers',
+		'url': tapdata_origin,
 		'accessCode': accessCode,
 	},
 
@@ -52,9 +43,8 @@ const config = {
 
 	'apiCache': api_cache,
 	'logDir': logDir,
-	'apiFile': api_file,
+	'apiFile': api_file
 
-	'jwtSecretKey': jwtSecretKey,
 };
 
 module.exports = config;

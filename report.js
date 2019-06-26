@@ -13,7 +13,7 @@ const apiServerStatus = {
 const report = function(data, token) {
 	const configPath = path.join(__dirname, 'config.json');
 
-	const reportServerUrl = appConfig.tapDataServer.reportUrl + '?access_token=' + token;
+	const reportServerUrl = appConfig.tapDataServer.url + '/api/Workers/upsertWithWhere?access_token=' + token;
 
 	if( !reportServerUrl || !reportServerUrl)
 		return;

@@ -10,7 +10,25 @@ import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 const appConfig = require('../../../config');
 import {log} from '../log';
 
-import {sign as jwtSign} from 'jsonwebtoken'
+const publicKey =
+`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwnEhVBLrafADQY8XWiAJ
+kApaqD6QGY95oQjp4Xg4Tg77phn3bTzXULGWDlwehuMQChQZeprg296TLQalAKQR
+N8dUdqbbWdnidx9/k6mcD6CFlCIarNH9LXhoOxAMcI+WhKBbgUZwhP/psC6k4Bq8
+KkNUsMXG3u/MycLzKl4Tqu1vQP0da35d6Z1UigpB6IqsdBss0FmgcK1NnQUHQeL1
+mMuJiU8N5cSd+h+r4NjfsRwJx2yklcH+JqlZtu1Q2DgIPSYvqPVGGeG8thptWnVF
+WhF1LttOU9Lq0fZvm0YHLInGfbaJsjajCFzpiQxsvxdB8bjIPXY35fEAnAKqAOcE
+6QIDAQAB
+-----END PUBLIC KEY-----
+`;
+/*
+payload: {
+  roles: [ '$everyone' ],
+  user_id: '1',
+  name: 'Guest user',
+  expiredate: 1561470639647
+}*/
+const guestUserToken = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyIkZXZlcnlvbmUiXSwidXNlcl9pZCI6IjEiLCJuYW1lIjoiR3Vlc3QgdXNlciIsImV4cGlyZWRhdGUiOjE1NjE0NzA2Mzk2NDd9.ec5sPJPkqN_plCwQwWHxrHPww4qZg9HrBjes6EllaL8mzQUuEtrKyd-Mw6185DQN2fda0K0vjqsxvzV6GUVakcjbNaulLSWoJRpRkjg_GOt1QWYvRfLHKPI3ga9H_7Wo9t11_C4-P6bvgBVn9kH5h7o3mThVElCgUwqXiJc0S_f3HtbmeJ33BRLgkdl-F_4K02124zGZ5x7orVbze4x5YJYeNNFdCV7MvtjjO_FdVEZWD5Cu5YGiu3cA9AV7nMu1kp6CCSDBGBSB-y9trxXYCqsG8UVOkiycwMM6IK621XpQ5Tqr_JNr8Hm3W3tMBQPJYtoWbbKz6OK3dg1re8NVWA';
 
 export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
@@ -33,7 +51,8 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 				fromQuery = ExtractJwt.fromUrlQueryParameter('token'),
 				fromBody = ExtractJwt.fromBodyField('token');
 			return new JwtStrategy({
-				secretOrKey: appConfig.jwtSecretKey,
+				secretOrKey: publicKey,
+				algorithms: ['RS256'],
 				jwtFromRequest: function(request){
 					let token = null;
 
@@ -49,12 +68,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 					if( token )
 						return token;
 
-					token = jwtSign({
-						expiredate: new Date().getTime() + 300000,
-						roles: ['$everyone'],
-						user_id: '1',
-						name: 'API Server Default User'
-					}, appConfig.jwtSecretKey);
+					token = guestUserToken;
 
 					return token;
 				},
@@ -76,10 +90,10 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
 		payload = payload || {};
 
-		const expireDateTime = payload['expiredate'],
+		const name = payload['name'],
+		  expireDateTime = name === 'Guest user' ? new Date().getTime() + 60000: payload['expiredate'],
 		  roles = payload['roles'],
 		  user_id = payload['user_id'],
-		  name = payload['name'],
 		  email = payload['email']
 		;
 

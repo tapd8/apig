@@ -15,7 +15,7 @@ const parseSchema = require('mongodb-schema');
 
 
 const getConnection = function(token){
-	let url = appConfig.tapDataServer.connectionUrl + '?access_token=' + token;
+	let url = appConfig.tapDataServer.url + '/api/Connections?access_token=' + token;
 	try{
 		let params = {
 			'filter[where][status]': 'testing',

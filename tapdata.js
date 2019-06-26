@@ -13,7 +13,7 @@ const getToken = function(cb){
 		cb(token);
 	} else {
 		request.post({
-			url: appConfig.tapDataServer.tokenUrl,
+			url: appConfig.tapDataServer.url + '/api/users/generatetoken',
 			form: {
 				accesscode: appConfig.tapDataServer.accessCode
 			}
@@ -86,13 +86,13 @@ const monitorLimitSetting = function(main){
 		getToken(token => {
 			if (token) {
 				request.get(
-					appConfig.tapDataServer.settingUrlBase
+					appConfig.tapDataServer.url + '/api/Settings?filter='
 					+ encodeURIComponent('{"where":{"id":"51"}}')
 					+ '&access_token=' + token,
 					limitSettingResHandle
 				);
 				request.get(
-					appConfig.tapDataServer.settingUrlBase
+					appConfig.tapDataServer.url + '/api/Settings?filter='
 					+ encodeURIComponent('{"where":{"id":"52"}}')
 					+ '&access_token=' + token,
 					limitSettingResHandle
@@ -113,7 +113,7 @@ const checkEnableLoadSchemaFeature = function(cb){
 			'filter[where][worker_type][in][1]': 'transformer',
 			'filter[where][ping_time][gte]': new Date().getTime() - 60000
 		};
-		request.get( appConfig.tapDataServer.findWorkerUrl + '?access_token=' + token,
+		request.get( appConfig.tapDataServer.url + '/api/Workers?access_token=' + token,
 			{qs: params, json: true}, function(err, response, body){
 				if (err) {
 					console.error('get connector worker process fail.', err);

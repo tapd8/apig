@@ -34,7 +34,7 @@ if( appConfig.model === 'cloud') {
 	appenders.http = {
 		type: path.join(__dirname, '../../log4js-http'),
 		  application: 'api-server',
-		  url: appConfig.tapDataServer.logUrl
+		  url: appConfig.tapDataServer.url + '/api/Logs'
 	}
 }
 configure({

@@ -20,9 +20,9 @@ let lastHashCode = null,
 const
 	__listeners = {},
 	loadConfig = function (token) {
-
-		log.debug('download load config from server ' + appConfig.tapDataServer.url);
-		request.get(appConfig.tapDataServer.url + '?access_token=' + token, function (err, response, body) {
+		const url = appConfig.tapDataServer.url + '/api/apiModules';
+		log.debug('download load config from server ' + url);
+		request.get(`${url}?access_token=${token}`, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
 			} else if(response.statusCode === 200){
