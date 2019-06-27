@@ -6,8 +6,8 @@ const defaultConfigDir = path.join(homedir, '.tapdata');
 const api_server_port = process.env['API_SERVER_PORT'] || '3080';
 const api_server_host = process.env['API_SERVER_HOST'] || '0.0.0.0';
 
-const tapdata_port = process.env['TAPDATA_PORT'] || '8080';
-const tapdata_host = process.env['TAPDATA_HOST'] || 'localhost';
+const tapdata_port = process.env['TAPDATA_PORT'] || '3030';
+const tapdata_host = process.env['TAPDATA_HOST'] || '127.0.0.1';
 const tapdata_origin = process.env['TAPDATA_ORIGIN'] || 'http://' + tapdata_host + ':' + tapdata_port;
 const process_id = process.env['API_SERVER_ID'] || 'f3ebe1b88623ca4f933af4e27f4075a0';
 const accessCode = process.env['TAPDATA_ACCESS_CODE'] || '3324cfdf-7d3e-4792-bd32-571638d4562f';
