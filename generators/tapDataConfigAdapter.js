@@ -6,6 +6,7 @@ const dataTypeMapping = {
 	'String': 'string',
 	'Boolean': 'boolean',
 	'Integer': 'number',
+	'Long': 'number',
 	'Double': 'number',
 	'Number': 'number',
 	'Float': 'number',
