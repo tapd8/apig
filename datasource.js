@@ -250,7 +250,7 @@ updateConnection = function(id, data, cb) {
 	log.info('update connection: ' + id);
 	getToken(function(token){
 
-		let url = appConfig.tapDataServer.connectionUrl + `/${id}?access_token=` + token;
+		let url = appConfig.tapDataServer.url + `/api/Connections/${id}?access_token=` + token;
 		try{
 			request({
 				url: url,
