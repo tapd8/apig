@@ -36,7 +36,7 @@ const
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
-				log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
+				// log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
 
 				if (newHashCode !== lastHashCode) {
 					lastHashCode = newHashCode;
