@@ -20,7 +20,7 @@ let lastHashCode = null,
 const
 	__listeners = {},
 	loadConfig = function (token) {
-		const url = appConfig.tapDataServer.url + '/api/apiModules';
+		const url = appConfig.tapDataServer.url + '/api/modules/apiDefinition';
 		log.debug('download load config from server ' + url);
 		request.get(`${url}?access_token=${token}`, function (err, response, body) {
 			if (err) {
@@ -36,7 +36,7 @@ const
 
 				//  计算 hashCode 比较是否有修改
 				let newHashCode = hashCode().value(body);
-				// log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
+				log.info(`old config hash code: ${lastHashCode}, new config hash code: ${newHashCode}`);
 
 				if (newHashCode !== lastHashCode) {
 					lastHashCode = newHashCode;
@@ -60,8 +60,6 @@ const
 									l(msg);
 							})
 						}
-
-
 					} catch (e) {
 						log.error('parse config error: \n', e);
 					}
