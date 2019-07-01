@@ -146,7 +146,7 @@ module.exports = function(apiDefinition){
 			model.fields.forEach((field)=>{
 				modelConf.fields.push({
 					field_name: field.field_name,
-					data_type: dataTypeMapping[field.data_type] || 'object',
+					data_type: dataTypeMapping[field.node_data_type || field.data_type] || 'object',
 					primary_key_position: field.primary_key_position
 				})
 			});
