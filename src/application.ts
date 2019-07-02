@@ -1,17 +1,17 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
-import {MySequence} from './sequence';
+import { BootMixin } from '@loopback/boot';
+import { ApplicationConfig } from '@loopback/core';
+import { RepositoryMixin } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
+import { ServiceMixin } from '@loopback/service-proxy';
+import { MySequence } from './sequence';
 import * as path from 'path';
 const appConfig = require('../../config');
 
 import {
-	AuthenticationComponent,
-	AuthenticationBindings,
+  AuthenticationComponent,
+  AuthenticationBindings,
 } from '@loopback/authentication';
-import {AuthStrategyProvider } from './providers';
+import { AuthStrategyProvider } from './providers';
 
 export class ApiGatewayApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -19,10 +19,10 @@ export class ApiGatewayApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-	this.component(AuthenticationComponent);
-	this.bind(AuthenticationBindings.STRATEGY).toProvider(
-	  AuthStrategyProvider
-	);
+    this.component(AuthenticationComponent);
+    this.bind(AuthenticationBindings.STRATEGY).toProvider(
+      AuthStrategyProvider
+    );
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -30,19 +30,18 @@ export class ApiGatewayApplication extends BootMixin(
     const startTime = new Date();
 
     // Set OpenAPI specification
-	this.api({
-		openapi: '3.0.0',
-		info: {
-			title: 'Tapdata OpenAPI',
-			version: appConfig.version
-		},
-		paths: {},
-		servers: [{ url: '/' }],
-		apiExplorer: {
-			url: 'http://openapi.mongodb.expert/static/explorer/index.html',
-			httpUrl: 'http://openapi.mongodb.expert/static/explorer/index.html',
-		}
-	});
+    this.api({
+      openapi: '3.0.0',
+      info: {
+        title: 'Tapdata OpenAPI',
+        version: appConfig.version
+      },
+      paths: {},
+      servers: [{ url: '/' }],
+      externalDocs: {
+        url: 'http://openapi.mongodb.expert/static/explorer/index.html'
+      }
+    });
 
     // Set up default home page
     this.static('/', path.join(__dirname, '../../public'));
