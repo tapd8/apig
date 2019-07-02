@@ -15,6 +15,12 @@ const dataTypeMapping = {
 	'Document': 'object',
 	'ArrayList': 'array',
 	'Array': 'array',
+	'string': 'string',
+	'boolean': 'boolean',
+	'number': 'number',
+	'date': 'date',
+	'object': 'object',
+	'array': 'array',
 };
 
 const convertCondition = function(cond){
