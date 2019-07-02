@@ -15,6 +15,12 @@ const dataTypeMapping = {
 	'Document': 'object',
 	'ArrayList': 'array',
 	'Array': 'array',
+	'string': 'string',
+	'boolean': 'boolean',
+	'number': 'number',
+	'date': 'date',
+	'object': 'object',
+	'array': 'array',
 };
 
 const convertCondition = function(cond){
@@ -93,16 +99,16 @@ const convertCondition = function(cond){
 
 /**
  * 将 tab data server 配置转化为 config
- * @param models
+ * @param apiDefinition
  */
-module.exports = function(models){
+module.exports = function(apiDefinition){
 
-	if( !models || models.length === 0){
+	if( !apiDefinition ){
 		log.warn('none api to publish');
 		return null;
 	}
 
-	if( !Array.isArray(models) ){
+	if( !apiDefinition.apis || !apiDefinition.connections ){
 		log.error('配置文件不是预期的数据');
 		return null;
 	}
@@ -114,86 +120,91 @@ module.exports = function(models){
 
 	const dataSource = {};
 
-	models.forEach((model) => {
-
-		let modelConf = {
-			apiVersion: model.apiVersion || 'v1',
-			tablename: model.tablename,
-			dataSourceName: model.connection.name,
-			basePath: model.basePath,
-			description: model.description,
-			fields: [],
-			paths: []
-		};
-
-		model.fields.forEach((field)=>{
-			modelConf.fields.push({
-				field_name: field.field_name,
-				data_type: dataTypeMapping[field.data_type] || 'object',
-				primary_key_position: field.primary_key_position
-			})
-		});
-		model.paths.forEach((customApi) => {
-			let apiConfig = {
-				allPathId: model.id,
-				requiredQueryField: customApi.requiredQueryField || [],
-				availableQueryField: customApi.availableQueryField || [],
-				pathTpl: customApi.path,
-				method: customApi.method,
-				rawName: customApi.name,
-				result: customApi.result,
-				type: customApi.type,
-				description: customApi.description || '',
-				roles: customApi['acl'] || []
-			};
-			if( apiConfig.type === 'preset' ){
-				apiConfig.name = customApi.name;
-			} else {
-				if( customApi.fields && customApi.fields.length > 0){
-					apiConfig.fields = [];
-					customApi.fields.forEach((field) => {
-						if( field.visible === true || field.visible === 'true'){
-							apiConfig.fields.push(field.field_name);
-						}
-					});
-				}
-
-				// 预设过滤条件
-				if( customApi.filter ){
-					if( Object.keys(customApi.filter).length > 0 )
-						apiConfig.filter = customApi.filter;
-				}
-
-				apiConfig.path = customApi.path;
-			}
-			modelConf.paths.push(apiConfig);
-		});
-
-		if( modelConf.fields.length === 0){
-			modelConf.fields.push({
-				field_name: '_id',
-				data_type: 'string',
-				primary_key_position: 1
-			})
-		}
-
-		result.models.push(modelConf);
-
-		dataSource[model.connection.name] = {
-			name: model.connection.name,
+	apiDefinition.connections.forEach( connection => {
+		dataSource[connection.id] = {
+			name: connection.name,
 			settings: {
-				url: decodeURI(model.connection.database_uri),
-				host: model.connection.database_host,
-				port: model.connection.database_port,
-				user: model.connection.database_username,
-				password: model.connection.database_password,
-				database: model.connection.database_name,
+				url: decodeURI(connection.database_uri),
+				host: connection.database_host,
+				port: connection.database_port,
+				user: connection.database_username,
+				password: connection.database_password,
+				database: connection.database_name,
 			}
 		};
-
 	});
 
-	Object.entries(dataSource).forEach(([dataSourceName, dbConf])=> {
+	apiDefinition.apis.forEach((model) => {
+
+		if( !dataSource[model.datasource] ){
+			log.error('Not found model(' + model.tablename + ') dataSource(' + model.datasource + ')');
+		} else {
+			let modelConf = {
+				apiVersion: model.apiVersion || 'v1',
+				tablename: model.tablename,
+				dataSourceName: dataSource[model.datasource].name,
+				basePath: model.basePath,
+				description: model.description,
+				fields: [],
+				paths: []
+			};
+
+			model.fields.forEach((field)=>{
+				modelConf.fields.push({
+					field_name: field.field_name,
+					data_type: dataTypeMapping[field.node_data_type || field.data_type] || 'object',
+					primary_key_position: field.primary_key_position
+				})
+			});
+			model.paths.forEach((customApi) => {
+				let apiConfig = {
+					allPathId: model.id,
+					requiredQueryField: customApi.requiredQueryField || [],
+					availableQueryField: customApi.availableQueryField || [],
+					pathTpl: customApi.path,
+					method: customApi.method,
+					rawName: customApi.name,
+					result: customApi.result,
+					type: customApi.type,
+					description: customApi.description || '',
+					roles: customApi['acl'] || []
+				};
+				if( apiConfig.type === 'preset' ){
+					apiConfig.name = customApi.name;
+				} else {
+					if( customApi.fields && customApi.fields.length > 0){
+						apiConfig.fields = [];
+						customApi.fields.forEach((field) => {
+							if( field.visible === true || field.visible === 'true'){
+								apiConfig.fields.push(field.field_name);
+							}
+						});
+					}
+
+					// 预设过滤条件
+					if( customApi.filter ){
+						if( Object.keys(customApi.filter).length > 0 )
+							apiConfig.filter = customApi.filter;
+					}
+
+					apiConfig.path = customApi.path;
+				}
+				modelConf.paths.push(apiConfig);
+			});
+
+			if( modelConf.fields.length === 0){
+				modelConf.fields.push({
+					field_name: '_id',
+					data_type: 'string',
+					primary_key_position: 1
+				})
+			}
+
+			result.models.push(modelConf);
+		}
+	});
+
+	Object.entries(dataSource).forEach(([dataSourceId, dbConf])=> {
 		result.dataSource.push(dbConf);
 	});
 
