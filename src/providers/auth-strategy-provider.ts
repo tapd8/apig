@@ -93,7 +93,7 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 		const name = payload['name'],
 		  expireDateTime = name === 'Guest user' ? new Date().getTime() + 60000: payload['expiredate'],
 		  roles = payload['roles'],
-		  user_id = payload['user_id'],
+		  user_id = payload['clientId'],
 		  email = payload['email']
 		;
 
