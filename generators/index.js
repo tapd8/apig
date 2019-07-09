@@ -351,6 +351,11 @@ const testConnection = function(config, cb){
 
 	if( config && config.dataSource ){
 		const dsNames = Object.keys(config.dataSource);
+
+		if( dsNames.length === 0 ) {
+			cb(config);
+			return;
+		}
 		let padding = 0;
 		const finish = function(dataSourceName, result){
 
