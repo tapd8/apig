@@ -34,7 +34,8 @@ const report = function (data, token) {
 	Object.assign(data, apiServerStatus);
 
 	try {
-		// log.debug('report data', data.worker_status.status);
+		delete data.worker_status.workers;
+		log.debug('report data', data);
 		request.post({
 			url: reportServerUrl + encodeURI(`&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}`),
 			json: true,
