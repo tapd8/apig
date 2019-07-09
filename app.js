@@ -16,11 +16,11 @@ if (require.main === module) {
 		},
 	};
 	application.main(config, (result) => {
-		if (result && typeof process.send === 'function')
-			process.send({
-				type: 'status',
-				data: 'running'
-			});
+		// if (result && typeof process.send === 'function')
+		// 	process.send({
+		// 		type: 'status',
+		// 		data: 'running'
+		// 	});
 	}).catch(err => {
 		console.error('Cannot start the application.', err);
 		process.exit(1);

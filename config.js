@@ -18,6 +18,7 @@ const logDir = process.env['LOG_DIR'] || path.join(defaultConfigDir, 'logs');
 const model = process.env['MODEL'] || 'cloud';
 
 const api_file = process.env['API_FILE'] || path.join(defaultConfigDir, 'api.json');
+const api_worker_count = +process.env['API_WORKER_COUNT'] || 0; //0=cpu cores
 
 
 const config = {
@@ -30,6 +31,7 @@ const config = {
 	'filterNull': true,
 	'defaultLimit': 10,
 	'maxLimit': 1000,
+	'api_worker_count': api_worker_count,
 	'tapDataServer': {
 		'url': tapdata_origin,
 		'accessCode': accessCode,
@@ -38,7 +40,7 @@ const config = {
 	'reportIntervals': 5000, // milliseconds
 	'reportData': {
 		'worker_type': 'api-server',
-		'process_id':  process_id
+		'process_id': process_id
 	},
 
 	'apiCache': api_cache,

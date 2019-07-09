@@ -23,7 +23,7 @@ echo "APP_HOME: $APP_HOME"
 echo "WORK_DIR: $WORK_DIR"
 echo
 echo "Watch logs with:"
-echo "tail -f $APP_HOME/logs/app.log"
+echo "tail -f ${TAPDATA_WORK_DIR:=~/.tapdata}/logs/api-server.log"
 echo
 echo "Config file at:"
 echo "$APP_HOME/config.js"
