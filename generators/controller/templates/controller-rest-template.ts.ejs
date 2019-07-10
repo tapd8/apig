@@ -423,7 +423,7 @@ export class <%= className %>Controller {
       });
     } else {
       for (const key in where) {
-        if (where.hasOwnProperty(key)) {
+        if (key && where.hasOwnProperty(key)) {
           allField.push(key);
         }
       }
