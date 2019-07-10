@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const makeDir = require('make-dir');
 const getToken = require('./tapdata').getToken;
+const tapdata = require('./tapdata');
 
 /**
  * 最后配置信息的 hashCode，用于比较配置文件是否更新
@@ -121,7 +122,14 @@ exports.stop = function () {
 		clearInterval(intervalId);
 };
 
-exports.forceGetRemoteConfig = function () {
+tapdata.on('defaultLimit:changed', (newVal, oldVal) => {
+	log.info('defaultLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
+	appConfig.defaultLimit = Number(newVal) || 10;
 	lastHashCode = null;
-};
+});
+tapdata.on('maxLimit:changed', (newVal, oldVal) => {
+	log.info('maxLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
+	appConfig.maxLimit = Number(newVal) || 0; // 0 not max limit
+	lastHashCode = null;
+});
 

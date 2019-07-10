@@ -418,7 +418,9 @@ export class <%= className %>Controller {
     if (!where || !allField) { return }
     const oa = where.or || where.and;
     if (oa && Object.prototype.toString.call(oa) === '[object Array]') {
-      oa.forEach(this.findAllField);
+      oa.forEach((item:any) => {
+        this.findAllField(item, allField);
+      });
     } else {
       for (const key in where) {
         if (where.hasOwnProperty(key)) {

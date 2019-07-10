@@ -5,6 +5,9 @@
  */
 const request = require('request');
 const appConfig = require('./config');
+const EventEmitter = require('events');
+const eventEmitter = new EventEmitter();
+const cluster = require('cluster');
 
 let token = null;
 const getToken = function(cb){
@@ -29,78 +32,13 @@ const getToken = function(cb){
 				if( result.ttl)
 					setTimeout(()=>{
 						token = null;
-					}, (result.ttl - 3600) * 1000) // 提前一小时获取token
+					}, (result.ttl - 10000) * 1000) // 提前10分钟获取token
 			} else {
 				console.error('Get access token error,', body);
 				cb( false )
 			}
 		})
 	}
-};
-
-const monitorLimitSetting = function(main){
-	const limitSettingResHandle = function (err, response, body) {
-		if (err) {
-			log.error('download config fail.', err);
-		} else {
-			// log.debug('download config success.');
-
-			body = body.trim();
-
-			try {
-				let limitSetting = JSON.parse(body);
-				log.debug("limitSetting@index.js:204: ", limitSetting);
-
-				if (
-					limitSetting &&
-					limitSetting[0] &&
-					limitSetting[0].value &&
-					(!isNaN(limitSetting[0].value))
-				) {
-					switch (limitSetting[0].key) {
-						case "defaultLimit":
-							if (limitSetting[0].value != appConfig.defaultLimit) {
-								main.configMonitor.forceGetRemoteConfig();
-								appConfig.defaultLimit = limitSetting[0].value;
-							}
-							break;
-						case "maxLimit":
-							if (limitSetting[0].value != appConfig.maxLimit) {
-								main.configMonitor.forceGetRemoteConfig();
-								appConfig.maxLimit = limitSetting[0].value;
-							}
-							break;
-						default:
-							break;
-					}
-				}
-
-			} catch (e) {
-				log.error('parse config error: \n', e);
-			}
-
-		}
-	};
-
-	setInterval(() => {
-		getToken(token => {
-			if (token) {
-				request.get(
-					appConfig.tapDataServer.url + '/api/Settings?filter='
-					+ encodeURIComponent('{"where":{"id":"51"}}')
-					+ '&access_token=' + token,
-					limitSettingResHandle
-				);
-				request.get(
-					appConfig.tapDataServer.url + '/api/Settings?filter='
-					+ encodeURIComponent('{"where":{"id":"52"}}')
-					+ '&access_token=' + token,
-					limitSettingResHandle
-				);
-			}
-		});
-	}, 5 * 1000);
-
 };
 
 /**
@@ -134,6 +72,51 @@ const checkEnableLoadSchemaFeature = function(cb){
 	});
 };
 
-exports.getToken = getToken;
-exports.monitorLimitSetting = monitorLimitSetting;
-exports.checkEnableLoadSchemaFeature = checkEnableLoadSchemaFeature;
+const settingCache = {};
+const loadNewSettings = function(){
+	getToken(token => {
+		if (token) {
+			let params = {
+				filter: '{"where":{"category" :"ApiServer"}}',
+				access_token: token
+			};
+			request.get(
+				appConfig.tapDataServer.url + '/api/Settings',
+				{ qs: params, json: true} ,
+				(err, response, body) => {
+					if( err ) {
+						console.error('get settings from backend fail.', err);
+					} else if( response.statusCode === 200) {
+						if( body && body.length > 0) {
+
+							body.forEach(setting => {
+								let key = setting.key;
+								let oldVal = settingCache[key] || appConfig[key];
+								let newVal = setting.value;
+								if( String(oldVal) !== String(newVal)) { // setting changed
+									eventEmitter.emit(key + ':changed', newVal, oldVal);
+									settingCache[key] = newVal;
+								}
+							});
+
+						} else {
+							console.log('not found api server settings from backend.');
+						}
+					} else {
+						console.error('get settings from backend fail.', err);
+					}
+				}
+			);
+		}
+	});
+};
+
+if( cluster.isMaster) {
+	console.log('check backend settings change in main process.');
+	// load new settings for api server.
+	setInterval(loadNewSettings, 5000);
+}
+
+module.exports = eventEmitter;
+module.exports.getToken = getToken;
+module.exports.checkEnableLoadSchemaFeature = checkEnableLoadSchemaFeature;

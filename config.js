@@ -30,7 +30,8 @@ const config = {
 	'port': api_server_port,
 	'filterNull': true,
 	'defaultLimit': 10,
-	'maxLimit': 1000,
+	'maxLimit': 0,
+	'enableApiStats': 'true',
 	'api_worker_count': api_worker_count,
 	'tapDataServer': {
 		'url': tapdata_origin,

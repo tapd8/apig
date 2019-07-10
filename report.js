@@ -62,7 +62,7 @@ if (appConfig.model === 'cloud') {
 			if (token)
 				report(null, token)
 		})
-	}, appConfig.reportIntervals || 1000);
+	}, appConfig.reportIntervals || 5000);
 }
 
 exports.setStatus = function (status) {

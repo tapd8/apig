@@ -19,6 +19,7 @@ const SequenceActions = RestBindings.SequenceActions;
 const excludeAuthPath = ['/', '/explorer', '/openapi.json'];
 
 export class MySequence implements SequenceHandler {
+	private enableApiStats: boolean = appConfig.enableApiStats === 'true';
 	constructor(
 		@inject(SequenceActions.FIND_ROUTE) protected findRoute: FindRoute,
 		@inject(SequenceActions.PARSE_PARAMS) protected parseParams: ParseParams,
@@ -29,7 +30,9 @@ export class MySequence implements SequenceHandler {
 	) {
 	}
 
-
+	setApiStats(enable: boolean){
+		this.enableApiStats = enable;
+	}
 
 	async handle(context: RequestContext) {
 
@@ -143,20 +146,22 @@ export class MySequence implements SequenceHandler {
 			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
 			// send to server
-			getToken(function (token: string) {
+			if( this.enableApiStats ){
+				getToken(function (token: string) {
 
-				let url = appConfig.tapDataServer.url + '/api/ApiCalls?access_token=' + token;
+					let url = appConfig.tapDataServer.url + '/api/ApiCalls?access_token=' + token;
 
-				requestOfcalls.post({
-					url: url,
-					json: true,
-					body: apiAuditLog,
-				}, (err: any, resp: any, body: any) => {
-					if (err) {
-						console.error('report fail', err);
-					}
+					requestOfcalls.post({
+						url: url,
+						json: true,
+						body: apiAuditLog,
+					}, (err: any, resp: any, body: any) => {
+						if (err) {
+							console.error('report fail', err);
+						}
+					});
 				});
-			});
+			}
 
 		};
 

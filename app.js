@@ -25,6 +25,11 @@ if (require.main === module) {
 		console.error('Cannot start the application.', err);
 		process.exit(1);
 	});
+	process.on('message', (event) => {
+		console.log(event);
+		if( event && event.type === 'enableApiStats:changed') {
+		}
+	});
 }
 // require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
 
