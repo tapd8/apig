@@ -28,6 +28,7 @@ export class MySequence implements SequenceHandler {
 		@inject(SequenceActions.REJECT) public reject: Reject,
 		@inject(AuthenticationBindings.AUTH_ACTION) protected authenticateRequest: AuthenticateFn,
 	) {
+		this.enableApiStats = false;
 	}
 
 	setApiStats(enable: boolean){

@@ -2,6 +2,8 @@
 
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
+export PATH=$APP_HOME/NDK/node/bin:$PATH
+
 echo
 echo "Stop API Server..."
 echo
