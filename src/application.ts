@@ -42,7 +42,7 @@ export class ApiGatewayApplication extends BootMixin(
         description: "More info.",
         url: 'http://openapi.mongodb.expert/static/explorer/index.html'
       },
-      /*components:{
+      components:{
         "securitySchemes": {
           "ApiKeyAuth": {  //arbitrary name for the security scheme
             "type": "apiKey",
@@ -55,7 +55,7 @@ export class ApiGatewayApplication extends BootMixin(
         {
           "ApiKeyAuth": []
         }
-      ]*/
+      ]
     });
 
     // Set up default home page
