@@ -14,12 +14,15 @@ import { log } from './log';
 const appConfig = require('../../config');
 const getToken = require('../../tapdata').getToken;
 const requestOfcalls = require('request');
+const Conf = require('conf');
+const config = new Conf();
+
 
 const SequenceActions = RestBindings.SequenceActions;
 const excludeAuthPath = ['/', '/explorer', '/openapi.json'];
 
 export class MySequence implements SequenceHandler {
-	private enableApiStats: boolean = appConfig.enableApiStats === 'true';
+	// private enableApiStats: boolean = (config.get("worker.enableApiStats") == 'true');
 	constructor(
 		@inject(SequenceActions.FIND_ROUTE) protected findRoute: FindRoute,
 		@inject(SequenceActions.PARSE_PARAMS) protected parseParams: ParseParams,
@@ -28,12 +31,12 @@ export class MySequence implements SequenceHandler {
 		@inject(SequenceActions.REJECT) public reject: Reject,
 		@inject(AuthenticationBindings.AUTH_ACTION) protected authenticateRequest: AuthenticateFn,
 	) {
-		this.enableApiStats = false;
+		// this.enableApiStats = false;
 	}
 
-	setApiStats(enable: boolean){
-		this.enableApiStats = enable;
-	}
+	// setApiStats(enable: boolean) {
+	// 	this.enableApiStats = enable;
+	// }
 
 	async handle(context: RequestContext) {
 
@@ -147,7 +150,8 @@ export class MySequence implements SequenceHandler {
 			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
 			// send to server
-			if( this.enableApiStats ){
+			console.log(`config.get("worker.enableApiStats")@src/sequence.ts:150:`, config.get("worker.enableApiStats"));
+			if (config.get("worker.enableApiStats") == 'true') {
 				getToken(function (token: string) {
 
 					let url = appConfig.tapDataServer.url + '/api/ApiCalls?access_token=' + token;

@@ -7,6 +7,10 @@ const fs = require('fs');
 const makeDir = require('make-dir');
 const getToken = require('./tapdata').getToken;
 const tapdata = require('./tapdata');
+const pm2 = require('pm2');
+const Conf = require('conf');
+const config = new Conf();
+
 
 /**
  * 最后配置信息的 hashCode，用于比较配置文件是否更新
@@ -125,11 +129,40 @@ exports.stop = function () {
 tapdata.on('defaultLimit:changed', (newVal, oldVal) => {
 	log.info('defaultLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
 	appConfig.defaultLimit = Number(newVal) || 10;
-	lastHashCode = null;
+	lastHashCode = null;//regenerate code
 });
 tapdata.on('maxLimit:changed', (newVal, oldVal) => {
 	log.info('maxLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
 	appConfig.maxLimit = Number(newVal) || 0; // 0 not max limit
-	lastHashCode = null;
+	lastHashCode = null;//regenerate code
 });
 
+tapdata.on('enableApiStats:changed', (newVal, oldVal) => {
+	log.info('enableApiStats is changed, new value is ' + newVal + ' and old value is ' + oldVal);
+	appConfig.enableApiStats = (newVal);
+
+	config.set("worker.enableApiStats", newVal);
+
+	// pm2.connect(function () {
+
+	// pm2.list((err, plist) => {
+	// 	// console.log(plist);
+	// 	plist.forEach((p) => {
+
+	// 		pm2.sendDataToProcessId({
+	// 			type: 'process:msg',
+	// 			data: newVal,
+	// 			id: p.pm_id, // id of procces from "pm2 list" command or from pm2.list(errback) method
+	// 			topic: 'enableApiStats'
+	// 		}, function (err, res) {
+	// 			console.log(err, res);
+	// 		});
+
+	// 	});
+
+	// });
+
+	// });
+
+	// lastHashCode = null;
+});

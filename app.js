@@ -25,11 +25,23 @@ if (require.main === module) {
 		console.error('Cannot start the application.', err);
 		process.exit(1);
 	});
-	process.on('message', (event) => {
-		console.log(event);
-		if( event && event.type === 'enableApiStats:changed') {
-		}
-	});
+	// process.on('message', (event) => {
+	// 	console.log(event);
+	// 	if (event && event.type === 'enableApiStats:changed') {
+	// 	}
+	// });
+
+	// process.on('message', function (packet) {
+	// 	console.log(packet);
+	// 	// process.send({
+	// 	// 	type: 'process:msg',
+	// 	// 	data: {
+	// 	// 		success: true
+	// 	// 	}
+	// 	// });
+	// });
+
+
 }
 // require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});
 

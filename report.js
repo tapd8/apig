@@ -25,10 +25,15 @@ const report = function (data, token) {
 	//data['worker_ip'] = hostname;
 	data['hostname'] = hostname;
 	data['port'] = appConfig.port;
+	if (apiServerStatus.worker_status.total_thread) {
 	data['total_thread'] = apiServerStatus.worker_status.total_thread;
 	delete apiServerStatus.worker_status.total_thread;
+	}
+
+	if (apiServerStatus.worker_status.running_thread) {
 	data['running_thread'] = apiServerStatus.worker_status.running_thread;
 	delete apiServerStatus.worker_status.running_thread;
+	}
 	data['version'] = appConfig.version;
 
 	Object.assign(data, apiServerStatus);

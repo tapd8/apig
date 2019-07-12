@@ -48,6 +48,7 @@
     "@loopback/service-proxy": "^1.0.1",
     "@types/mongodb": "^3.1.22",
     "change-case": "^3.0.2",
+    "conf": "^5.0.0",
     "cross-spawn": "^6.0.5",
     "download-file": "^0.1.5",
     "hashcode": "^1.0.3",
