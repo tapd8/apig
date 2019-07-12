@@ -121,6 +121,7 @@ class Main {
 					args: process.argv.slice(2),
 					exec_mode: 'cluster',        // Allows your app to be clustered
 					instances: appConfig.api_worker_count,
+					logDateFormat: "YYYY-MM-DD HH:mm:ss"
 					// max_memory_restart: '100M'   // Optional: Restarts your app if it reaches 100Mo
 				}, function (err, apps) {
 
