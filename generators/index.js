@@ -108,7 +108,7 @@ const validateConfig = function (config) {
 				return null;
 			}
 
-			let name = model.basePath + '_' + (model.apiVersion || 'v1'),
+			let name = model.basePath,
 				tableName = model.tablename,
 				fields = model.fields,
 				basePath = model.basePath || model.path || name,
@@ -274,6 +274,7 @@ const validateConfig = function (config) {
 
 			result.repositories.push({
 				name: name,
+				modelName: name,
 				tableName: tableName,
 				dataSourceName: dataSourceName,
 				idProperty: idProperty,
@@ -282,7 +283,9 @@ const validateConfig = function (config) {
 			});
 
 			result.controllers.push({
-				name: name,
+				name: name + '_' + (model.apiVersion || 'v1'),
+				modelName: name,
+				repositoryName: name,
 				tableName: tableName,
 				idType: idType,
 				api: api,

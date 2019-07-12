@@ -22,7 +22,7 @@ class RepositoryGenerator extends Generator {
 		}, repositoriesConfig);
 
 		this.artifactInfo.className = utils.toClassName(this.artifactInfo.name);
-		this.artifactInfo.modelName = utils.toClassName(this.artifactInfo.name);
+		this.artifactInfo.modelName = utils.toClassName(this.artifactInfo.modelName || this.artifactInfo.name);
 
 		this.artifactInfo.dataSourceClassName =
 			utils.toClassName(this.artifactInfo.dataSourceName) + 'DataSource';

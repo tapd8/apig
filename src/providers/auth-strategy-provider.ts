@@ -47,9 +47,9 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 		const name = this.metadata.strategy;
 		if (name === 'JwtStrategy') {
 			const
-				fromHeader = ExtractJwt.fromHeader('token'),
-				fromQuery = ExtractJwt.fromUrlQueryParameter('token'),
-				fromBody = ExtractJwt.fromBodyField('token');
+				fromHeader = ExtractJwt.fromHeader('access_token'),
+				fromQuery = ExtractJwt.fromUrlQueryParameter('access_token'),
+				fromBody = ExtractJwt.fromBodyField('access_token');
 			return new JwtStrategy({
 				secretOrKey: publicKey,
 				algorithms: ['RS256'],

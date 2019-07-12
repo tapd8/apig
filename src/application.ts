@@ -38,23 +38,37 @@ export class ApiGatewayApplication extends BootMixin(
       },
       paths: {},
       servers: [{ url: '/' }],
-      externalDocs: {
+      /*externalDocs: {
         description: "More info.",
         url: 'http://openapi.mongodb.expert/static/explorer/index.html'
-      },
+      },*/
       components:{
         "securitySchemes": {
-          "ApiKeyAuth": {  //arbitrary name for the security scheme
+          "ApiKeyAuth": {
             "type": "apiKey",
-            "in":"header", //can be "header", "query" or "cookie"
-            "name": "token" //name of the header, query parameter or cookie
+            "in": "header",
+            "name": "access_token"
+          },
+          "OAuth2": {  //arbitrary name for the security scheme
+            "type": "oauth2",
+            "flows": {
+              "clientCredentials": {
+                "tokenUrl": (appConfig.oAuthBaseUrl || '') + "/oauth/token",
+                "scopes": {}
+              },
+              "implicit": {
+                "authorizationUrl": (appConfig.oAuthBaseUrl || '') + "/oauth/authorize",
+                "scopes": {}
+              }
+            }
           }
         }
       },
       "security": [
         {
-          "ApiKeyAuth": []
-        }
+			"OAuth2": [],
+			"ApiKeyAuth": []
+		}
       ]
     });
 

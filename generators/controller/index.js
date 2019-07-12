@@ -18,8 +18,8 @@ class ControllerGenerator extends Generator {
 		}, config);
 
 		this.artifactInfo.className = utils.toClassName(this.artifactInfo.name);
-		this.artifactInfo.modelName = utils.toClassName(this.artifactInfo.name);
-		this.artifactInfo.repositoryName = utils.toClassName(this.artifactInfo.name) + 'Repository';
+		this.artifactInfo.modelName = utils.toClassName(this.artifactInfo.modelName || this.artifactInfo.name);
+		this.artifactInfo.repositoryName = utils.toClassName(this.artifactInfo.repositoryName || this.artifactInfo.name) + 'Repository';
 		this.artifactInfo.modelVariableName = utils.camelCase(this.artifactInfo.modelName);
 		this.artifactInfo.repositoryNameCamel = utils.camelCase(this.artifactInfo.repositoryName);
 

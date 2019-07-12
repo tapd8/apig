@@ -122,7 +122,7 @@ module.exports = function(apiDefinition){
 
 	apiDefinition.connections.forEach( connection => {
 		dataSource[connection.id] = {
-			name: connection.name,
+			name: connection.name || `_${connection.id}`,
 			settings: {
 				url: decodeURI(connection.database_uri),
 				host: connection.database_host,
