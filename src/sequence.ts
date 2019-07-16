@@ -11,9 +11,9 @@ import {
 } from '@loopback/rest';
 import { AuthenticationBindings, AuthenticateFn } from '@loopback/authentication';
 import { log } from './log';
-const appConfig = require('../../config');
-const getToken = require('../../tapdata').getToken;
-const requestOfcalls = require('request');
+// const appConfig = require('../../config');
+// const reportApiCallStats = require('../../reportApiCallStats');
+// const getToken = require('../../tapdata').getToken;
 const Conf = require('conf');
 const config = new Conf();
 
@@ -22,7 +22,11 @@ const SequenceActions = RestBindings.SequenceActions;
 const excludeAuthPath = ['/', '/explorer', '/openapi.json'];
 
 export class MySequence implements SequenceHandler {
-	// private enableApiStats: boolean = (config.get("worker.enableApiStats") == 'true');
+	// private enableApiStats: boolean = (config.get("enableApiStats") == 'true');
+	// private needBatchReportApiStats: boolean = false;
+	private cachedApiStats = new Conf({ configName: "cachedApiStats" });
+	// private reportTaskListOfApiStats = new Conf({ configName: "reportTaskListOfApiStats" });
+
 	constructor(
 		@inject(SequenceActions.FIND_ROUTE) protected findRoute: FindRoute,
 		@inject(SequenceActions.PARSE_PARAMS) protected parseParams: ParseParams,
@@ -31,7 +35,20 @@ export class MySequence implements SequenceHandler {
 		@inject(SequenceActions.REJECT) public reject: Reject,
 		@inject(AuthenticationBindings.AUTH_ACTION) protected authenticateRequest: AuthenticateFn,
 	) {
-		// this.enableApiStats = false;
+
+		// let self = this;
+		// setInterval(() => {
+		// 	// the latest value can be obtained well from cross process ,
+		//  // so such polling is for performance optimization,
+		//  // prevent getting value from the config.json file by synchronization io on each report
+		// 	self.enableApiStats = (config.get("enableApiStats") == 'true');
+		// }, 10 * 1000);
+		// setInterval(() => {
+		// 	//@ts-ignore
+		// 	process.needBatchReportApiStats = true;
+		// 	// self.needBatchReportApiStats = true;
+		// }, 5 * 1000);
+
 	}
 
 	// setApiStats(enable: boolean) {
@@ -42,34 +59,35 @@ export class MySequence implements SequenceHandler {
 
 		// log.app.debug(context);
 
-		let apiAuditLog = {
-			'call_id': '',
-			'allPathId': 'xxxxxxxxxxxxxxx',
-			'method': 'XXXX',
-			'api_path': 'xxxxxxxxxxxxxx',
-			'api_name': 'xxxxxxxxxxxxxx',
-			'req_path': 'xxxxxxxxxxxxxxxxxx',
-			'req_params': 'xxxxxxxxxxxxxxxxxx',
-			'req_headers': {},
-			'req_time': 0, //timestamp
-			'res_time': 0, //timestamp
-			'latency': 0, //ms,delta time
-			'req_bytes': 0,
-			'res_bytes': 0,
-			'res_rows': 0,
-			'user_ip': 'xxxxxxxxxx',
-			'user_port': 'xxxx',
-			'api_worker_uuid': 'xxxxxxxxxxxxxxxxxxxxxx',
-			'api_worker_ip': 'xxxxxxxxxxxxxx',
-			'api_worker_port': 0,
-			'api_gateway_uuid': 'xxxxxxxxxxxxxxxxxxxxx',
-			'api_gateway_ip': 'xxxxxxxxxxxx',
-			'api_gateway_port': 0,
-			'code': 0,
-			'codeMsg': 'xxxxxxxxxxx',
-			'user_id': 'xxxxxxxxxxxxxxx',
-			"report_time": 0 //timestamp,该监控日志的上报时间
-		};
+		let apiAuditLog = {};
+		// {
+		// 	'call_id': '',
+		// 	'allPathId': 'xxxxxxxxxxxxxxx',
+		// 	'method': 'XXXX',
+		// 	'api_path': 'xxxxxxxxxxxxxx',
+		// 	'api_name': 'xxxxxxxxxxxxxx',
+		// 	'req_path': 'xxxxxxxxxxxxxxxxxx',
+		// 	'req_params': 'xxxxxxxxxxxxxxxxxx',
+		// 	'req_headers': {},
+		// 	'req_time': 0, //timestamp
+		// 	'res_time': 0, //timestamp
+		// 	'latency': 0, //ms,delta time
+		// 	'req_bytes': 0,
+		// 	'res_bytes': 0,
+		// 	'res_rows': 0,
+		// 	'user_ip': 'xxxxxxxxxx',
+		// 	'user_port': 'xxxx',
+		// 	'api_worker_uuid': 'xxxxxxxxxxxxxxxxxxxxxx',
+		// 	'api_worker_ip': 'xxxxxxxxxxxxxx',
+		// 	'api_worker_port': 0,
+		// 	'api_gateway_uuid': 'xxxxxxxxxxxxxxxxxxxxx',
+		// 	'api_gateway_ip': 'xxxxxxxxxxxx',
+		// 	'api_gateway_port': 0,
+		// 	'code': 0,
+		// 	'codeMsg': 'xxxxxxxxxxx',
+		// 	'user_id': 'xxxxxxxxxxxxxxx',
+		// 	"report_time": 0 //timestamp,该监控日志的上报时间
+		// };
 
 
 		const { request, response } = context;
@@ -77,8 +95,11 @@ export class MySequence implements SequenceHandler {
 		let resEndHandler = (err: Error) => {
 
 			const _end = new Date().getTime();
+			//@ts-ignore
 			apiAuditLog.latency = _end - _start;
+			//@ts-ignore
 			apiAuditLog.req_time = _start;
+			//@ts-ignore
 			apiAuditLog.res_time = _end;
 
 			// log.app.debug(`${reqId} resp, time ${_end - _start} ms`);
@@ -103,19 +124,25 @@ export class MySequence implements SequenceHandler {
 			apiAuditLog.api_path = api_meta.options.pathTpl;
 			//@ts-ignore
 			apiAuditLog.api_name = api_meta.options.rawName;
-
+			//@ts-ignore
 			apiAuditLog.call_id = reqId;
+			//@ts-ignore
 			apiAuditLog.user_ip = `${ip}`;
 			//@ts-ignore
 			apiAuditLog.user_ips = request.ips;
+			//@ts-ignore
 			apiAuditLog.user_port = `${port}`;
+			//@ts-ignore
 			apiAuditLog.req_path = request.path;
+			//@ts-ignore
 			apiAuditLog.method = request.method;
-
+			//@ts-ignore
 			apiAuditLog.api_gateway_ip = request.connection.localAddress;
+			//@ts-ignore
 			apiAuditLog.api_gateway_port = request.connection.localPort;
-
+			//@ts-ignore
 			apiAuditLog.api_worker_ip = request.connection.localAddress;
+			//@ts-ignore
 			apiAuditLog.api_worker_port = request.connection.localPort;
 
 			// https://stackoverflow.com/questions/38423930/how-to-retrieve-client-and-server-ip-address-and-port-number-in-node-js
@@ -130,43 +157,58 @@ export class MySequence implements SequenceHandler {
 			// 	request.connection.localAddress,
 			// 	request.connection.localPort
 			// );
-
-			apiAuditLog.api_worker_uuid = appConfig.reportData.process_id;
-			apiAuditLog.api_gateway_uuid = appConfig.reportData.process_id;
+			//@ts-ignore
+			apiAuditLog.api_worker_uuid = config.get("reportData.process_id");
+			//@ts-ignore
+			apiAuditLog.api_gateway_uuid = config.get("reportData.process_id");
+			//@ts-ignore
 			apiAuditLog.req_headers = request.headers;
+			//@ts-ignore
 			apiAuditLog.req_bytes = request.socket.bytesRead;
-
+			//@ts-ignore
 			apiAuditLog.code = response.statusCode;
+			//@ts-ignore
 			apiAuditLog.codeMsg = response.statusMessage;
 
 			// log.app.debug(response.connection);
 
 			// log.app.debug(request.socket.server);
+			//@ts-ignore
 			apiAuditLog.req_bytes = request.socket.bytesRead;
+			//@ts-ignore
 			apiAuditLog.res_bytes = request.socket.bytesWritten;
 
-			apiAuditLog.report_time = new Date().getTime();
+			// console.log('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
 
-			log.app.debug('apiAuditLog@resEndHandler@src/sequence.ts:141\n', apiAuditLog);
+			if (config.get("apiStatsBatchReport.enableApiStatsBatchReport") == 'true') {
+				//@ts-ignore
+				this.cachedApiStats.set(apiAuditLog.call_id, apiAuditLog);
 
-			// send to server
-			console.log(`config.get("worker.enableApiStats")@src/sequence.ts:150:`, config.get("worker.enableApiStats"));
-			if (config.get("worker.enableApiStats") == 'true') {
-				getToken(function (token: string) {
+				// console.log('cachedApiStats@resEndHandler@src/sequence.ts:184\n', this.cachedApiStats)
 
-					let url = appConfig.tapDataServer.url + '/api/ApiCalls?access_token=' + token;
+				// } else {
+				// 	if (config.get("enableApiStatsAtomReport") == 'true') {
+				// 		//@ts-ignore
+				// 		this.reportTaskListOfApiStats.set(apiAuditLog.call_id, apiAuditLog);
+				// 		// reportApiCallStats([apiAuditLog]);
 
-					requestOfcalls.post({
-						url: url,
-						json: true,
-						body: apiAuditLog,
-					}, (err: any, resp: any, body: any) => {
-						if (err) {
-							console.error('report fail', err);
-						}
-					});
-				});
+				// 	}
+
 			}
+
+			// if (this.needBatchReportApiStats || this.cachedApiStats.length >= 1000) {
+			// 	let statsDataNeedReport = this.cachedApiStats;
+			// 	this.cachedApiStats = [];
+			// 	this.needBatchReportApiStats = false;
+
+			// 	// send to server
+			// 	console.log(`config.get("enableApiStats")@src/sequence.ts:150:`, config.get("enableApiStats"));
+			// 	if (config.get("enableApiStats") == 'true') {
+			// 		// if (this.enableApiStats) {
+
+			// 	}
+
+			// }
 
 		};
 
@@ -190,7 +232,7 @@ export class MySequence implements SequenceHandler {
 			// log.app.debug("route:", route);
 			const args = await this.parseParams(request, route);
 			log.app.debug(`${reqId} client ${ip}, ${request.method} ${request.path}, param ${JSON.stringify(args)}`);
-
+			//@ts-ignore
 			apiAuditLog.req_params = `${JSON.stringify(args)}`;
 
 			// 认证
@@ -213,9 +255,10 @@ export class MySequence implements SequenceHandler {
 			//log.app.debug('result@src/sequence.ts:180\n', result);
 			if (result) {
 				if (result.data) {
+					//@ts-ignore
 					apiAuditLog.res_rows = result.data.length ? result.data.length : 0;
 
-					if (appConfig.filterNull) {
+					if (config.get("filterNull")) {
 						// @ts-ignore
 						result.data.forEach(row => {
 							for (const key in row) {
@@ -232,6 +275,7 @@ export class MySequence implements SequenceHandler {
 					}
 
 				} else {
+					//@ts-ignore
 					apiAuditLog.res_rows = 1;
 				}
 			}
@@ -283,4 +327,5 @@ export class MySequence implements SequenceHandler {
 		}
 	}
 }
+
 

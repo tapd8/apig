@@ -1,4 +1,4 @@
-const fork = require('child_process').fork;
+// const fork = require('child_process').fork;
 const appConfig = require('./config');
 const generator = require('./generators').generator;
 const report = require('./report');
@@ -6,12 +6,19 @@ const log = require('./dist').log.app;
 const datasource = require('./datasource');
 const fs = require('fs');
 
-const getToken = require('./tapdata').getToken;
-const request = require('request');
+// const getToken = require('./tapdata').getToken;
+// const request = require('request');
 const pm2 = require('pm2');
+const Conf = require('conf');
+const config = new Conf();
 
 log.info('Config file at: ', `${__dirname}/config.js`);
 log.info('Current active config is: \n', appConfig);
+config.clear();
+config.set(appConfig);
+
+require("./reportApiCallStats");
+require("./reportApiCallStatsBatchLogic");
 
 class Main {
 	constructor(props) {

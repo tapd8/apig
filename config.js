@@ -32,7 +32,14 @@ const config = {
 	'filterNull': true,
 	'defaultLimit': 10,
 	'maxLimit': 0,
-	'enableApiStats': 'true',
+	'apiStatsBatchReport': {
+		'enableApiStatsBatchReport': 'true',
+		'sizeOfTriggerApiStatsBatchReport': "1000",
+		'timeSpanOfTriggerApiStatsBatchReport': "5000",// milliseconds
+		'_maxApiStatsBatchSizePerReportPost': 10000,
+		'_timeSpanOfScanCachedApiStats': 1000 * 3,// milliseconds
+		'_reportIntervals': 1000 * 5 // milliseconds
+	},
 	'api_worker_count': api_worker_count,
 	'tapDataServer': {
 		'url': tapdata_origin,

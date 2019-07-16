@@ -11,7 +11,7 @@ const apiServerStatus = {
 };
 
 const report = function (data, token) {
-	const configPath = path.join(__dirname, 'config.json');
+	// const configPath = path.join(__dirname, 'config.json');
 
 	const reportServerUrl = appConfig.tapDataServer.url + '/api/Workers/upsertWithWhere?access_token=' + token;
 
