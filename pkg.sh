@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ "$BUILD_PLATFORM" == "arm64" ]; then
-		NDK_ARC=arm64
-else
-		NDK_ARC=x64
-fi
-
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
 
@@ -20,11 +14,7 @@ if [ -d $TARGET_PATH ]; then
 	rm -rf $TARGET_PATH
 fi
 
-mkdir -p $TARGET_PATH/NDK
-
-echo "Untaring Node Development Kit..."
-tar -xJf NDK/*$NDK_ARC.tar.xz -C $TARGET_PATH/NDK
-mv $TARGET_PATH/NDK/node-v*/ $TARGET_PATH/NDK/node/
+mkdir -p $TARGET_PATH
 
 echo "Copying files..."
 cp -r \
