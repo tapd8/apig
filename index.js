@@ -13,6 +13,8 @@ const pm2 = require('pm2');
 log.info('Config file at: ', `${__dirname}/config.js`);
 log.info('Current active config is: \n', appConfig);
 
+const name = 'api-server-' + (appConfig.port || +process.env.PORT || 3080);
+
 class Main {
 	constructor(props) {
 
@@ -72,7 +74,7 @@ class Main {
 		// 	log.info('app worker process exited.');
 		// }
 
-		pm2.stop("api-server", (err, wks) => {
+		pm2.stop(name, (err, wks) => {
 
 			log.info(`Processes of app workers have stopped.`);
 
@@ -113,10 +115,10 @@ class Main {
 				process.exit(2);
 			}
 
-			pm2.stop("api-server", (err) => {
+			pm2.stop("api-server-" + port, (err) => {
 
 				pm2.start({
-					name: "api-server",
+					name: name,
 					script: 'app.js',         // Script to be run
 					args: process.argv.slice(2),
 					exec_mode: 'cluster',        // Allows your app to be clustered
@@ -225,7 +227,7 @@ class Main {
 					log.info('generator code successful, restart app server.');
 					this.workerStatus.status = 'restart';
 
-					pm2.reload("api-server", (err, apps) => {
+					pm2.reload(name, (err, apps) => {
 
 						pm2.list((err, plist) => {
 							// console.log(plist);
