@@ -14,6 +14,8 @@ if [ -d $TARGET_PATH ]; then
 	rm -rf $TARGET_PATH
 fi
 
+mkdir -p $TARGET_PATH
+
 echo "Copying files..."
 cp -r \
 	*.js \
