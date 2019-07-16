@@ -115,7 +115,7 @@ class Main {
 				process.exit(2);
 			}
 
-			pm2.stop("api-server-" + port, (err) => {
+			pm2.stop(name, (err) => {
 
 				pm2.start({
 					name: name,
