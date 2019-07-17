@@ -10,9 +10,9 @@ const eventEmitter = new EventEmitter();
 const cluster = require('cluster');
 
 let token = null;
-const getToken = function(cb){
-	cb = cb || function(){};
-	if( token ){
+const getToken = function (cb) {
+	cb = cb || function () { };
+	if (token) {
 		cb(token);
 	} else {
 		request.post({
@@ -21,21 +21,21 @@ const getToken = function(cb){
 				accesscode: appConfig.tapDataServer.accessCode
 			}
 		}, (err, response, body) => {
-			if( err ){
+			if (err) {
 				console.error('Get access token error', err);
 				cb(false);
-			} else if( response.statusCode === 200 ){
+			} else if (response.statusCode === 200) {
 				let result = JSON.parse(body);
 				token = result.id;
 				cb(token);
 				console.log('Get access token success,', body);
-				if( result.ttl)
-					setTimeout(()=>{
+				if (result.ttl)
+					setTimeout(() => {
 						token = null;
 					}, (result.ttl - 10000) * 1000) // 提前10分钟获取token
 			} else {
 				console.error('Get access token error,', body);
-				cb( false )
+				cb(false)
 			}
 		})
 	}
@@ -44,20 +44,20 @@ const getToken = function(cb){
 /**
  * 检查是否启用 load schema 功能
  */
-const checkEnableLoadSchemaFeature = function(cb){
+const checkEnableLoadSchemaFeature = function (cb) {
 	getToken(token => {
 		let params = {
 			'filter[where][worker_type][in][0]': 'connector',
 			'filter[where][worker_type][in][1]': 'transformer',
 			'filter[where][ping_time][gte]': new Date().getTime() - 60000
 		};
-		request.get( appConfig.tapDataServer.url + '/api/Workers?access_token=' + token,
-			{qs: params, json: true}, function(err, response, body){
+		request.get(appConfig.tapDataServer.url + '/api/Workers?access_token=' + token,
+			{ qs: params, json: true }, function (err, response, body) {
 				if (err) {
 					console.error('get connector worker process fail.', err);
 					cb(false);
-				} else if(response.statusCode === 200) {
-					if(body && body.length > 0){
+				} else if (response.statusCode === 200) {
+					if (body && body.length > 0) {
 						console.log('exists process connector or transformer, disable load schema feature');
 						cb(false);
 					} else {
@@ -72,8 +72,10 @@ const checkEnableLoadSchemaFeature = function(cb){
 	});
 };
 
-const settingCache = {};
-const loadNewSettings = function(){
+// const settingCache = {};
+const Conf = require('conf');
+const config = new Conf();
+const loadNewSettings = function () {
 	getToken(token => {
 		if (token) {
 			let params = {
@@ -82,20 +84,22 @@ const loadNewSettings = function(){
 			};
 			request.get(
 				appConfig.tapDataServer.url + '/api/Settings',
-				{ qs: params, json: true} ,
+				{ qs: params, json: true },
 				(err, response, body) => {
-					if( err ) {
+					if (err) {
 						console.error('get settings from backend fail.', err);
-					} else if( response.statusCode === 200) {
-						if( body && body.length > 0) {
+					} else if (response.statusCode === 200) {
+						if (body && body.length > 0) {
 
 							body.forEach(setting => {
 								let key = setting.key;
-								let oldVal = settingCache[key] || appConfig[key];
+								let oldVal = config.get(key); //settingCache[key] || appConfig[key];
 								let newVal = setting.value;
-								if( String(oldVal) !== String(newVal)) { // setting changed
+								if (String(oldVal) !== String(newVal)) { // setting changed
 									eventEmitter.emit(key + ':changed', newVal, oldVal);
-									settingCache[key] = newVal;
+									appConfig[key] = newVal;
+									config.set(key, newVal);
+									// settingCache[key] = newVal;
 								}
 							});
 
@@ -111,7 +115,7 @@ const loadNewSettings = function(){
 	});
 };
 
-if( cluster.isMaster) {
+if (cluster.isMaster) {
 	console.log('check backend settings change in main process.');
 	// load new settings for api server.
 	setInterval(loadNewSettings, 5000);

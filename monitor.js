@@ -137,32 +137,45 @@ tapdata.on('maxLimit:changed', (newVal, oldVal) => {
 	lastHashCode = null;//regenerate code
 });
 
-tapdata.on('enableApiStats:changed', (newVal, oldVal) => {
-	log.info('enableApiStats is changed, new value is ' + newVal + ' and old value is ' + oldVal);
-	appConfig.enableApiStats = (newVal);
+// tapdata.on('enableApiStatsAtomReport:changed', (newVal, oldVal) => {
+// 	log.info('enableApiStatsAtomReport is changed, new value is ' + newVal + ' and old value is ' + oldVal);
+// 	appConfig.enableApiStatsAtomReport = (newVal);
+// 	config.set("enableApiStatsAtomReport", newVal);
 
-	config.set("worker.enableApiStats", newVal);
+// 	// config.set(appConfig);
 
-	// pm2.connect(function () {
+// 	// pm2.connect(function () {
 
-	// pm2.list((err, plist) => {
-	// 	// console.log(plist);
-	// 	plist.forEach((p) => {
+// 	// pm2.list((err, plist) => {
+// 	// 	// console.log(plist);
+// 	// 	plist.forEach((p) => {
 
-	// 		pm2.sendDataToProcessId({
-	// 			type: 'process:msg',
-	// 			data: newVal,
-	// 			id: p.pm_id, // id of procces from "pm2 list" command or from pm2.list(errback) method
-	// 			topic: 'enableApiStats'
-	// 		}, function (err, res) {
-	// 			console.log(err, res);
-	// 		});
+// 	// 		pm2.sendDataToProcessId({
+// 	// 			type: 'process:msg',
+// 	// 			data: newVal,
+// 	// 			id: p.pm_id, // id of procces from "pm2 list" command or from pm2.list(errback) method
+// 	// 			topic: 'enableApiStats'
+// 	// 		}, function (err, res) {
+// 	// 			console.log(err, res);
+// 	// 		});
 
-	// 	});
+// 	// 	});
+
+// 	// });
+
+// 	// });
+
+// 	// lastHashCode = null;
+	// });
+// tapdata.on('enableApiStatsBatchReport:changed', (newVal, oldVal) => {
+// 	log.info('enableApiStatsBatchReport is changed, new value is ' + newVal + ' and old value is ' + oldVal);
+// 	appConfig.enableApiStatsBatchReport = (newVal);
+// 	config.set("enableApiStatsBatchReport", newVal);
+
+// 	if (newVal == "true") {
+// 		appConfig.enableApiStatsAtomReport = 'false';
+// 		config.set("enableApiStatsAtomReport", 'false');
+// 	}
 
 	// });
 
-	// });
-
-	// lastHashCode = null;
-});
