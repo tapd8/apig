@@ -49,7 +49,8 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 			const
 				fromHeader = ExtractJwt.fromHeader('access_token'),
 				fromQuery = ExtractJwt.fromUrlQueryParameter('access_token'),
-				fromBody = ExtractJwt.fromBodyField('access_token');
+				fromBody = ExtractJwt.fromBodyField('access_token'),
+				fromAuthHeaderAsBearerToken = ExtractJwt.fromAuthHeaderAsBearerToken();
 			return new JwtStrategy({
 				secretOrKey: publicKey,
 				algorithms: ['RS256'],
@@ -65,6 +66,10 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 						return token;
 
 					token = fromQuery(request);
+					if( token )
+						return token;
+
+					token = fromAuthHeaderAsBearerToken(request);
 					if( token )
 						return token;
 
