@@ -13,7 +13,7 @@ const oauth_base_url = process.env['OAUTH_BASE_URL'] || 'http://' + tapdata_host
 const process_id = process.env['API_SERVER_ID'] || 'f3ebe1b88623ca4f933af4e27f4075a0';
 const accessCode = process.env['TAPDATA_ACCESS_CODE'] || '3324cfdf-7d3e-4792-bd32-571638d4562f';
 
-const cacheDir = process.env['CACHE_DIR'] || path.join(defaultConfigDir, 'cache');
+const cacheDir = process.env['CACHE_DIR'] || path.join(__dirname, 'cache');
 const api_cache = process.env['API_CACHE'] || path.join(cacheDir, 'server_api_definition.json');
 const logDir = process.env['LOG_DIR'] || path.join(defaultConfigDir, 'logs');
 const model = process.env['MODEL'] || 'cloud';
