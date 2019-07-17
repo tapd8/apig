@@ -167,8 +167,8 @@ const validateConfig = function (config) {
 			});
 
 			if (!idProperty) {
-				log.error(`Model missing primary key.（config.models[${i}]）`);
-				return null;
+				log.error(`Model missing primary key.（config.models[${i}], ${name}）`);
+				continue;
 			}
 
 			// 校验转化 API配置
