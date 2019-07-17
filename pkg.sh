@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$BUILD_PLATFORM" == "arm64" ]; then
+	NDK_ARC=arm64
+else
+	NDK_ARC=x64
+fi
+
 WORK_DIR="`pwd`"
 APP_HOME="$(cd `dirname $0`; pwd)"
 

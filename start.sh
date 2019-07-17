@@ -45,3 +45,5 @@ else
 	echo "API Server started."
 fi
 
+echo "$APP_HOME/node_modules/pm2/bin/pm2 l"
+$APP_HOME/node_modules/pm2/bin/pm2 l
