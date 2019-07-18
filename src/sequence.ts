@@ -264,7 +264,7 @@ export class MySequence implements SequenceHandler {
 							for (const key in row) {
 								if (row.hasOwnProperty(key)) {
 									const element = row[key];
-									if (!element || element == "null" || element == "") {
+									if ((!element && element !== 0 && element !== false) || element == "null" || element == "") {
 										delete row[key];
 									}
 								}

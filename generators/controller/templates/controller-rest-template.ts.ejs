@@ -90,6 +90,14 @@ export class <%= className %>Controller {
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
+
+            if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
+                Object.keys(filter.fields).forEach(key => {
+                    // @ts-ignore
+                    filter.fields[key] = filter.fields[key] !== "false"
+                })
+            }
+
           const limit = Number(filter.limit);
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
             filter.limit = <%= appConfig.defaultLimit || 10 %>;
@@ -345,6 +353,14 @@ export class <%= className %>Controller {
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
+
+            if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
+                Object.keys(filter.fields).forEach(key => {
+                    // @ts-ignore
+                    filter.fields[key] = filter.fields[key] !== "false"
+                })
+            }
+
           const limit = Number(filter.limit);
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
             filter.limit = <%= appConfig.defaultLimit || 10 %>;
