@@ -26,7 +26,8 @@ const appenders = {
 		compress: true
 	},*/
 	out: {
-		type: 'stdout'
+		type: 'stdout',
+		level: 'debug'
 	}
 };
 if( appConfig.model === 'cloud') {
