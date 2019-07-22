@@ -2,7 +2,7 @@ const log = require('./dist').log.app;
 const request = require('request');
 const path = require('path');
 const appConfig = require('./config');
-const getToken = require('./tapdata').getToken;
+const {getToken, removeToken} = require('./tapdata');
 
 const hostname = require('os').hostname();
 // const startTime = new Date().getTime();
@@ -49,6 +49,9 @@ const report = function (data, token) {
 
 			if (err) {
 				log.error('report fail', err);
+			} else if (resp.statusCode === 401 || resp.statusCode === 403) {
+				console.error('Access token Expired');
+				removeToken();
 			} else if (resp.statusCode === 200) {
 				log.debug(`report complete:`, body);
 			} else {

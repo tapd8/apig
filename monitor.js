@@ -5,7 +5,7 @@ const hashCode = require('hashcode').hashCode;
 const path = require('path');
 const fs = require('fs');
 const makeDir = require('make-dir');
-const getToken = require('./tapdata').getToken;
+const {getToken, removeToken} = require('./tapdata');
 const tapdata = require('./tapdata');
 const pm2 = require('pm2');
 const Conf = require('conf');
@@ -30,6 +30,9 @@ const
 		request.get(`${url}?access_token=${token}`, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
+			} else if(response.statusCode === 401 || response.statusCode === 403){
+				console.error('Access token Expired');
+				removeToken();
 			} else if(response.statusCode === 200){
 				log.debug('download config success.');
 

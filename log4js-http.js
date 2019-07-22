@@ -32,7 +32,7 @@ function logFacesAppender(config) {
 
 	return function log(event) {
 
-		const getToken = require('./tapdata').getToken;
+		const {getToken, removeToken} = require('./tapdata');
 
 		// convert to logFaces compact json format
 		const lfsEvent = {
@@ -60,6 +60,9 @@ function logFacesAppender(config) {
 			}, (err, resp, body) => {
 				if( err ){
 					console.error('report fail', err);
+				} else if(resp.statusCode === 401 || resp.statusCode === 403) {
+					console.error('Access token Expired');
+					removeToken();
 				}
 			});
 		});

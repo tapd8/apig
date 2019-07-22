@@ -7,7 +7,7 @@ const log = require('./dist').log.app;
 const request = require('request');
 const path = require('path');
 const appConfig = require('./config');
-const getToken = require('./tapdata').getToken;
+const {getToken, removeToken} = require('./tapdata');
 const checkEnableLoadSchemaFeature = require('./tapdata').checkEnableLoadSchemaFeature;
 const MongoClient = require('mongodb').MongoClient;
 const parse = require('mongodb-core').parseConnectionString;
@@ -261,6 +261,13 @@ updateConnection = function(id, data, cb) {
 				if (err) {
 					log.error('update connection fail.', err);
 					cb(err, null);
+				} else if (response.statusCode === 401 || response.statusCode === 403) {
+					log.error('Access token Expired');
+					removeToken();
+					cb({
+						statusCode: response.statusCode,
+						msg: 'Access token expired'
+					}, null)
 				} else if(response.statusCode === 200){
 
 					log.info('update connection success ' + id);

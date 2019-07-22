@@ -1,4 +1,4 @@
-const getToken = require('./tapdata').getToken;
+const {getToken, removeToken} = require('./tapdata');
 const requestOfcalls = require('request');
 const Conf = require('conf');
 const config = new Conf();
@@ -43,6 +43,9 @@ function reportApiCallStats(apiAuditLogs) {
 					apiAuditLogs.forEach(errCall => {
 						reportTaskListOfApiStats.delete(`${errCall.call_id}.reporting`);
 					});
+				} else if (resp.statusCode === 401 || resp.statusCode === 403) {
+					console.error('Access token Expired');
+					removeToken();
 				} else {
 					apiStatsRptTimeStamp.set("lastReport", new Date());
 					// console.log("resp:\n", resp);

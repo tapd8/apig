@@ -39,6 +39,9 @@ const getToken = function (cb) {
 			}
 		})
 	}
+},
+removeToken = function(){
+	token = null;
 };
 
 /**
@@ -56,6 +59,9 @@ const checkEnableLoadSchemaFeature = function (cb) {
 				if (err) {
 					console.error('get connector worker process fail.', err);
 					cb(false);
+				} else if (response.statusCode === 401 || response.statusCode === 403) {
+					console.error('Access token Expired');
+					removeToken();
 				} else if (response.statusCode === 200) {
 					if (body && body.length > 0) {
 						console.log('exists process connector or transformer, disable load schema feature');
@@ -88,6 +94,9 @@ const loadNewSettings = function () {
 				(err, response, body) => {
 					if (err) {
 						console.error('get settings from backend fail.', err);
+					} else if (response.statusCode === 401 || response.statusCode === 403) {
+						console.error('Access token Expired');
+						removeToken();
 					} else if (response.statusCode === 200) {
 						if (body && body.length > 0) {
 
@@ -123,4 +132,5 @@ if (cluster.isMaster) {
 
 module.exports = eventEmitter;
 module.exports.getToken = getToken;
+module.exports.removeToken = removeToken;
 module.exports.checkEnableLoadSchemaFeature = checkEnableLoadSchemaFeature;
