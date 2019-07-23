@@ -143,6 +143,8 @@ module.exports = function(apiDefinition){
 				apiVersion: model.apiVersion || 'v1',
 				tablename: model.tablename,
 				dataSourceName: dataSource[model.datasource].name,
+				dataSource: model.datasource,
+				apiId: model.id,
 				basePath: model.basePath,
 				description: model.description,
 				fields: [],
@@ -152,6 +154,7 @@ module.exports = function(apiDefinition){
 			model.fields.forEach((field)=>{
 				modelConf.fields.push({
 					field_name: field.field_name,
+					field_alias: field.field_alias || '',
 					data_type: dataTypeMapping[field.node_data_type || field.data_type] || 'object',
 					primary_key_position: field.primary_key_position
 				})

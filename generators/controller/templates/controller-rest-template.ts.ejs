@@ -52,7 +52,8 @@ export class <%= className %>Controller {
               content: {'application/json': {schema: {'x-ts-type': <%= modelName %>}}},
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async create(@requestBody() <%= modelVariableName %>: <%= modelName %>): Promise<<%= modelName %>> {
           return await this.<%= repositoryNameCamel %>.create(<%= modelVariableName %>);
@@ -84,7 +85,8 @@ export class <%= className %>Controller {
               },
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async findPage(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
@@ -171,7 +173,8 @@ export class <%= className %>Controller {
               content: {'application/json': {schema: {'x-ts-type': <%= modelName %>}}},
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async findById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<<%= modelName %>> {
           return await this.<%= repositoryNameCamel %>.findById(id);
@@ -195,7 +198,8 @@ export class <%= className %>Controller {
               description: '<%= modelName %> PATCH success',
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async updateById(
           @param.path.<%= idType %>('id') id: <%= idType %>,
@@ -222,7 +226,8 @@ export class <%= className %>Controller {
               description: '<%= modelName %> DELETE success',
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
           await this.<%= repositoryNameCamel %>.deleteById(id);
@@ -250,7 +255,8 @@ export class <%= className %>Controller {
                 description: 'file not found'
             },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async downloadById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<any> {
           let file : any = await this.<%= repositoryNameCamel %>.findById(id);
@@ -294,7 +300,8 @@ export class <%= className %>Controller {
                     description: 'file not found'
                 },
           },
-          "x-table-name": "<%=tableName%>"
+          "x-table-name": "<%=tableName%>",
+          "x-api-id": "<%=apiId%>"
         })
         async download(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
@@ -348,7 +355,8 @@ export class <%= className %>Controller {
           },
         },
         "x-table-name": "<%=tableName%>",
-        "x-fields": <%- JSON.stringify(val['fields']) %>
+        "x-fields": <%- JSON.stringify(val['fields'] || {}) %>,
+        "x-api-id": "<%=apiId%>"
       })
       async <%= val['name'] %>(
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,

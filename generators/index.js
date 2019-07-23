@@ -110,9 +110,11 @@ const validateConfig = function (config) {
 
 			let name = model.basePath,
 				tableName = model.tablename,
+				apiId = model.apiId,
 				fields = model.fields,
 				basePath = model.basePath || model.path || name,
 				dataSourceName = model.dataSourceName,
+				dataSource = model.dataSource,
 				apiVersion = model.apiVersion || 'v1';
 			let idProperty = null,
 				idType = '',
@@ -122,6 +124,7 @@ const validateConfig = function (config) {
 			fields.forEach((field, idx) => {
 
 				let name = field['field_name'],
+					field_alias = field['field_alias'] || '',
 					isId = field['primary_key_position'] === 1,
 					type = field['data_type'] || '',
 					description = field['description'] || null,
@@ -153,6 +156,7 @@ const validateConfig = function (config) {
 					type: type,
 					id: isId,
 					required: required === true || required === 'true',
+					alias: field_alias
 				};
 
 				if (type === 'array')
@@ -266,6 +270,7 @@ const validateConfig = function (config) {
 			result.models.push({
 				name: name,
 				tableName: tableName,
+				apiId: apiId,
 				properties: properties,
 				downloadApi: downloadApi,
 				bucketName: bucketName,
@@ -276,6 +281,7 @@ const validateConfig = function (config) {
 				name: name,
 				modelName: name,
 				tableName: tableName,
+				apiId: apiId,
 				dataSourceName: dataSourceName,
 				idProperty: idProperty,
 				downloadApi: downloadApi,
@@ -287,6 +293,7 @@ const validateConfig = function (config) {
 				modelName: name,
 				repositoryName: name,
 				tableName: tableName,
+				apiId: apiId,
 				idType: idType,
 				api: api,
 				downloadApi: downloadApi,
