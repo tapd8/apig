@@ -44,11 +44,11 @@ export class ApiGatewayApplication extends BootMixin(
       },*/
       components:{
         "securitySchemes": {
-          "ApiKeyAuth": {
+          /*"ApiKeyAuth": {
             "type": "apiKey",
             "in": "header",
             "name": "access_token"
-          },
+          },*/
           "OAuth2": {  //arbitrary name for the security scheme
             "type": "oauth2",
             "flows": {
@@ -67,7 +67,7 @@ export class ApiGatewayApplication extends BootMixin(
       "security": [
         {
 			"OAuth2": [],
-			"ApiKeyAuth": []
+			//"ApiKeyAuth": []
 		}
       ]
     });
