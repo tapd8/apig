@@ -38,10 +38,10 @@ export class ApiGatewayApplication extends BootMixin(
       },
       paths: {},
       servers: [{ url: '/' }],
-      /*externalDocs: {
-        description: "More info.",
-        url: 'http://openapi.mongodb.expert/static/explorer/index.html'
-      },*/
+      externalDocs: {
+        description: "Find out more about Tapdata.",
+        url: 'https://tapdata.io'
+      },
       components:{
         "securitySchemes": {
           /*"ApiKeyAuth": {
