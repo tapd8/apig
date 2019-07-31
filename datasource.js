@@ -116,9 +116,10 @@ testConnection = function(connection){
 								client.close();
 							});
 						} else {
-							const databaseName = uriObj['defaultDatabase'] || 'test';
+							let databaseName = uriObj['defaultDatabase'] || 'test';
+							log.info('connect mongodb, database name is ' + databaseName);
+							databaseName = databaseName.split('/').join('_');
 							const db = client.db(databaseName);
-							log.info('connected mongodb, database name is ' + db.databaseName);
 
 							db.collections(function(err, collections){
 
