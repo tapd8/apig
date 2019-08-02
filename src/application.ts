@@ -5,7 +5,9 @@ import { RestApplication } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
 import { MySequence } from './sequence';
 import * as path from 'path';
-const appConfig = require('../../config');
+// const appConfig = require('../../config');
+const Conf = require('conf');
+const config = new Conf();
 
 import {
   AuthenticationComponent,
@@ -34,7 +36,7 @@ export class ApiGatewayApplication extends BootMixin(
       openapi: '3.0.0',
       info: {
         title: 'Tapdata OpenAPI',
-        version: appConfig.version
+        version: config.get('version')
       },
       paths: {},
       servers: [{ url: '/' }],
@@ -42,7 +44,7 @@ export class ApiGatewayApplication extends BootMixin(
         description: "Find out more about Tapdata.",
         url: 'https://tapdata.io'
       },
-      components:{
+      components: {
         "securitySchemes": {
           /*"ApiKeyAuth": {
             "type": "apiKey",
@@ -53,11 +55,11 @@ export class ApiGatewayApplication extends BootMixin(
             "type": "oauth2",
             "flows": {
               "clientCredentials": {
-                "tokenUrl": (appConfig.oAuthBaseUrl || '') + "/oauth/token",
+                "tokenUrl": (config.get('oAuthBaseUrl') || '') + "/oauth/token",
                 "scopes": {}
               },
               "implicit": {
-                "authorizationUrl": (appConfig.oAuthBaseUrl || '') + "/oauth/authorize",
+                "authorizationUrl": (config.get('oAuthBaseUrl') || '') + "/oauth/authorize",
                 "scopes": {}
               }
             }
@@ -66,9 +68,9 @@ export class ApiGatewayApplication extends BootMixin(
       },
       "security": [
         {
-			"OAuth2": [],
-			//"ApiKeyAuth": []
-		}
+          "OAuth2": [],
+          //"ApiKeyAuth": []
+        }
       ]
     });
 

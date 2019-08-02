@@ -1,8 +1,11 @@
 const log = require('./dist').log.app;
 const request = require('request');
 const path = require('path');
-const appConfig = require('./config');
-const {getToken, removeToken} = require('./tapdata');
+// const appConfig = require('./config');
+const Conf = require('conf');
+const config = new Conf();
+
+const { getToken, removeToken } = require('./tapdata');
 
 const hostname = require('os').hostname();
 // const startTime = new Date().getTime();
@@ -13,28 +16,28 @@ const apiServerStatus = {
 const report = function (data, token) {
 	// const configPath = path.join(__dirname, 'config.json');
 
-	const reportServerUrl = appConfig.tapDataServer.url + '/api/Workers/upsertWithWhere?access_token=' + token;
+	const reportServerUrl = config.get('tapDataServer.url') + '/api/Workers/upsertWithWhere?access_token=' + token;
 
 	if (!reportServerUrl || !reportServerUrl)
 		return;
 
-	data = Object.assign(data || {}, appConfig.reportData);
+	data = Object.assign(data || {}, config.get('reportData'));
 
 	// data['start_time'] = startTime;
 	//	data['ping_time'] = new Date().getTime();
 	//data['worker_ip'] = hostname;
 	data['hostname'] = hostname;
-	data['port'] = appConfig.port;
+	data['port'] = config.get('port');
 	if (apiServerStatus.worker_status.total_thread) {
-	data['total_thread'] = apiServerStatus.worker_status.total_thread;
-	delete apiServerStatus.worker_status.total_thread;
+		data['total_thread'] = apiServerStatus.worker_status.total_thread;
+		delete apiServerStatus.worker_status.total_thread;
 	}
 
 	if (apiServerStatus.worker_status.running_thread) {
-	data['running_thread'] = apiServerStatus.worker_status.running_thread;
-	delete apiServerStatus.worker_status.running_thread;
+		data['running_thread'] = apiServerStatus.worker_status.running_thread;
+		delete apiServerStatus.worker_status.running_thread;
 	}
-	data['version'] = appConfig.version;
+	data['version'] = config.get('version');
 
 	Object.assign(data, apiServerStatus);
 
@@ -42,7 +45,7 @@ const report = function (data, token) {
 		delete data.worker_status.workers;
 		log.debug('report data', data);
 		request.post({
-			url: reportServerUrl + encodeURI(`&[where][process_id]=${appConfig.reportData.process_id}&[where][worker_type]=${appConfig.reportData.worker_type}`),
+			url: reportServerUrl + encodeURI(`&[where][process_id]=${config.get('reportData.process_id')}&[where][worker_type]=${config.get('reportData.worker_type')}`),
 			json: true,
 			body: data
 		}, (err, resp, body) => {
@@ -64,13 +67,13 @@ const report = function (data, token) {
 	}
 };
 
-if (appConfig.model === 'cloud') {
+if (config.get('model') === 'cloud') {
 	setInterval(() => {
 		getToken(token => {
 			if (token)
 				report(null, token)
 		})
-	}, appConfig.reportIntervals || 5000);
+	}, config.get('reportIntervals') || 5000);
 }
 
 exports.setStatus = function (status) {

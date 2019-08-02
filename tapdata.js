@@ -4,10 +4,12 @@
  * @description
  */
 const request = require('request');
-const appConfig = require('./config');
+// const appConfig = require('./config');
 const EventEmitter = require('events');
 const eventEmitter = new EventEmitter();
 const cluster = require('cluster');
+const Conf = require('conf');
+const config = new Conf();
 
 let token = null;
 const getToken = function (cb) {
@@ -16,9 +18,9 @@ const getToken = function (cb) {
 		cb(token);
 	} else {
 		request.post({
-			url: appConfig.tapDataServer.url + '/api/users/generatetoken',
+			url: config.get('tapDataServer.url') + '/api/users/generatetoken',
 			form: {
-				accesscode: appConfig.tapDataServer.accessCode
+				accesscode: config.get('tapDataServer.accessCode')
 			}
 		}, (err, response, body) => {
 			if (err) {
@@ -40,9 +42,9 @@ const getToken = function (cb) {
 		})
 	}
 },
-removeToken = function(){
-	token = null;
-};
+	removeToken = function () {
+		token = null;
+	};
 
 /**
  * 检查是否启用 load schema 功能
@@ -54,7 +56,7 @@ const checkEnableLoadSchemaFeature = function (cb) {
 			'filter[where][worker_type][in][1]': 'transformer',
 			'filter[where][ping_time][gte]': new Date().getTime() - 60000
 		};
-		request.get(appConfig.tapDataServer.url + '/api/Workers?access_token=' + token,
+		request.get(config.get('tapDataServer.url') + '/api/Workers?access_token=' + token,
 			{ qs: params, json: true }, function (err, response, body) {
 				if (err) {
 					console.error('get connector worker process fail.', err);
@@ -79,8 +81,6 @@ const checkEnableLoadSchemaFeature = function (cb) {
 };
 
 // const settingCache = {};
-const Conf = require('conf');
-const config = new Conf();
 const loadNewSettings = function () {
 	getToken(token => {
 		if (token) {
@@ -89,7 +89,7 @@ const loadNewSettings = function () {
 				access_token: token
 			};
 			request.get(
-				appConfig.tapDataServer.url + '/api/Settings',
+				config.get('tapDataServer.url') + '/api/Settings',
 				{ qs: params, json: true },
 				(err, response, body) => {
 					if (err) {
@@ -106,7 +106,7 @@ const loadNewSettings = function () {
 								let newVal = setting.value;
 								if (String(oldVal) !== String(newVal)) { // setting changed
 									eventEmitter.emit(key + ':changed', newVal, oldVal);
-									appConfig[key] = newVal;
+									//appConfig[key] = newVal;
 									config.set(key, newVal);
 									// settingCache[key] = newVal;
 								}

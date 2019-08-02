@@ -102,10 +102,10 @@ export class <%= className %>Controller {
 
           const limit = Number(filter.limit);
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
-            filter.limit = <%= appConfig.defaultLimit || 10 %>;
+            filter.limit = <%= config.get('defaultLimit') || 10 %>;
           }
-          <%_ if(appConfig.maxLimit) { -%>
-            filter.limit = Number(filter.limit) > <%= appConfig.maxLimit %> ? <%= appConfig.maxLimit %> : Number(filter.limit);
+          <%_ if(config.get('maxLimit')) { -%>
+            filter.limit = Number(filter.limit) > <%= config.get('maxLimit') %> ? <%= config.get('maxLimit') %> : Number(filter.limit);
           <%_ } -%>
           const rawWhere = (filter.where || {});
           let requires: string[] = [] ;
@@ -372,10 +372,10 @@ export class <%= className %>Controller {
 
           const limit = Number(filter.limit);
           if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
-            filter.limit = <%= appConfig.defaultLimit || 10 %>;
+            filter.limit = <%= config.get('defaultLimit') || 10 %>;
           }
-        <%_ if(appConfig.maxLimit) { -%>
-          filter.limit = Number(filter.limit) > <%= appConfig.maxLimit %> ? <%= appConfig.maxLimit %> : Number(filter.limit);
+        <%_ if(config.get('maxLimit')) { -%>
+          filter.limit = Number(filter.limit) > <%= config.get('maxLimit') %> ? <%= config.get('maxLimit') %> : Number(filter.limit);
         <%_ } -%>
 
 

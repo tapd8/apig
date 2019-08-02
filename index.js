@@ -20,7 +20,7 @@ config.set(appConfig);
 require("./reportApiCallStats");
 require("./reportApiCallStatsBatchLogic");
 
-const name = 'api-server-' + (appConfig.port || +process.env.PORT || 3080);
+const name = 'api-server-' + (config.get('port') || +process.env.PORT || 3080);
 
 class Main {
 	constructor(props) {
@@ -65,7 +65,7 @@ class Main {
 		this.startApp();
 
 		// 监听配置文件变化
-		if (appConfig.model === 'cloud') {
+		if (config.get('model') === 'cloud') {
 			this.startConfigChangeMonitor();
 			datasource.start();
 		}
@@ -129,7 +129,7 @@ class Main {
 					script: 'app.js',         // Script to be run
 					args: process.argv.slice(2),
 					exec_mode: 'cluster',        // Allows your app to be clustered
-					instances: appConfig.api_worker_count,
+					instances: config.get('api_worker_count'),
 					logDateFormat: "YYYY-MM-DD HH:mm:ss"
 					// max_memory_restart: '100M'   // Optional: Restarts your app if it reaches 100Mo
 				}, function (err, apps) {
@@ -287,8 +287,8 @@ class Main {
 const main = new Main();
 main.start();
 
-if (appConfig.model === 'local') {
-	const localConfigFilePath = appConfig.apiFile;
+if (config.get('model') === 'local') {
+	const localConfigFilePath = config.get('apiFile');
 	if (fs.existsSync(localConfigFilePath)) {
 		let config = fs.readFileSync(localConfigFilePath).toString();
 		config = JSON.parse(config || '{}');

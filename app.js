@@ -1,21 +1,23 @@
-global.appConfig = require('./config');
+// global.appConfig = require('./config');
 const application = require('./dist');
+const Conf = require('conf');
+const config = new Conf();
 
 module.exports = application;
 
 if (require.main === module) {
 	// Run the application
-	const config = {
+	const configm = {
 		rest: {
-			port: appConfig.port || +process.env.PORT || 3030,
-			host: appConfig.host || process.env.HOST || 'localhost',
+			port: config.get('port') || +process.env.PORT || 3030,
+			host: config.get('host') || process.env.HOST || 'localhost',
 			openApiSpec: {
 				// useful when used with OASGraph to locate your application
 				setServersFromRequest: true,
 			},
 		},
 	};
-	application.main(config, (result) => {
+	application.main(configm, (result) => {
 		// if (result && typeof process.send === 'function')
 		// 	process.send({
 		// 		type: 'status',

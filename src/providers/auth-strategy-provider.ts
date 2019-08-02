@@ -1,17 +1,17 @@
-import {Provider, inject, ValueOrPromise} from '@loopback/context';
-import {Strategy} from 'passport';
-import {Request} from 'express';
+import { Provider, inject, ValueOrPromise } from '@loopback/context';
+import { Strategy } from 'passport';
+import { Request } from 'express';
 import {
 	AuthenticationBindings,
 	AuthenticationMetadata,
 	UserProfile,
 } from '@loopback/authentication';
-import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
-const appConfig = require('../../../config');
-import {log} from '../log';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+// const appConfig = require('../../../config');
+import { log } from '../log';
 
 const publicKey =
-`-----BEGIN PUBLIC KEY-----
+	`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwnEhVBLrafADQY8XWiAJ
 kApaqD6QGY95oQjp4Xg4Tg77phn3bTzXULGWDlwehuMQChQZeprg296TLQalAKQR
 N8dUdqbbWdnidx9/k6mcD6CFlCIarNH9LXhoOxAMcI+WhKBbgUZwhP/psC6k4Bq8
@@ -33,8 +33,8 @@ const guestUserToken = 'eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyIkZXZlcnlvbmUiXSwidXN
 export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 
 	constructor(
-	  @inject(AuthenticationBindings.METADATA)
-	  private metadata: AuthenticationMetadata,
+		@inject(AuthenticationBindings.METADATA)
+		private metadata: AuthenticationMetadata,
 	) {
 
 	}
@@ -54,23 +54,23 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 			return new JwtStrategy({
 				secretOrKey: publicKey,
 				algorithms: ['RS256'],
-				jwtFromRequest: function(request){
+				jwtFromRequest: function (request) {
 					let token = null;
 
 					token = fromHeader(request);
-					if( token )
+					if (token)
 						return token;
 
 					token = fromBody(request);
-					if( token )
+					if (token)
 						return token;
 
 					token = fromQuery(request);
-					if( token )
+					if (token)
 						return token;
 
 					token = fromAuthHeaderAsBearerToken(request);
-					if( token )
+					if (token)
 						return token;
 
 					token = guestUserToken;
@@ -85,9 +85,9 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 	}
 
 	verify(
-	  request: Request,
-	  payload: any,
-	  cb: (err: any, user?: UserProfile | false, info?: any) => void,
+		request: Request,
+		payload: any,
+		cb: (err: any, user?: UserProfile | false, info?: any) => void,
 	) {
 
 		// @ts-ignore
@@ -96,14 +96,14 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 		payload = payload || {};
 
 		const name = payload['name'],
-		  expireDateTime = name === 'Guest user' ? new Date().getTime() + 60000: payload['expiredate'],
-		  roles = payload['roles'],
-		  user_id = payload['clientId'],
-		  email = payload['email']
-		;
+			expireDateTime = name === 'Guest user' ? new Date().getTime() + 60000 : payload['expiredate'],
+			roles = payload['roles'],
+			user_id = payload['clientId'],
+			email = payload['email']
+			;
 
 		const reqMethod = request.method,
-		  reqPath = request.path;
+			reqPath = request.path;
 
 		log.app.debug(`auth user ${user_id} for ${reqMethod} ${reqPath}, payload is ${JSON.stringify(payload)}, api roles is ${JSON.stringify(apiRoles)}`);
 
@@ -113,26 +113,26 @@ export class AuthStrategyProvider implements Provider<Strategy | undefined>{
 		request["api_meta"] = this.metadata;
 
 
-		if( !apiRoles || apiRoles.length === 0){
+		if (!apiRoles || apiRoles.length === 0) {
 			log.app.error(`${reqMethod} ${reqPath} not config roles.`);
 			cb(null, false, `no role config for path ${reqPath} and method ${reqMethod}`);
 			return;
 		}
 
-		if( !expireDateTime || !roles || roles.length === 0 || !user_id ){
+		if (!expireDateTime || !roles || roles.length === 0 || !user_id) {
 			cb(null, false, 'invalid token');
 			return;
 		}
 		// 验证过期时间
-		if( expireDateTime < new Date().getTime() ){
+		if (expireDateTime < new Date().getTime()) {
 			cb(null, false, 'token expired');
 			return;
 		}
 
 		// 验证api角色列表
 		// @ts-ignore
-		const hasRole = apiRoles.filter( role => '$everyone' === role || roles.includes(role));
-		if( hasRole && hasRole.length > 0){
+		const hasRole = apiRoles.filter(role => '$everyone' === role || roles.includes(role));
+		if (hasRole && hasRole.length > 0) {
 			cb(null, {
 				id: user_id,
 				name: name,

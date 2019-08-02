@@ -5,15 +5,17 @@
  */
 
 const request = require('request');
-const appConfig = require('../config');
+const Conf = require('conf');
+const config = new Conf();
+
 
 request.post({
-	url: appConfig.tapDataServer.tokenUrl,
+	url: config.get('tapDataServer.tokenUrl'),
 	form: {
-		accesscode: appConfig.tapDataServer.accessCode
+		accesscode: config.get('tapDataServer.accessCode')
 	}
 }, (err, response, body) => {
-	if( response.statusCode === 200 ){
+	if (response.statusCode === 200) {
 		console.log(JSON.parse(body).id)
 	} else {
 		console.log(err)

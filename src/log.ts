@@ -1,8 +1,10 @@
-import {configure, getLogger} from 'log4js';
+import { configure, getLogger } from 'log4js';
 import * as path from 'path';
+const Conf = require('conf');
+const config = new Conf();
 
-const appConfig = require('../../config');
-const logPath = appConfig.logDir || path.join( require('os').homedir(), '.tapdata', 'logs');
+// const appConfig = require('../../config');
+const logPath = config.get('logDir') || path.join(require('os').homedir(), '.tapdata', 'logs');
 const appenders = {
 	app: {
 		type: 'file',
@@ -30,12 +32,12 @@ const appenders = {
 		level: 'debug'
 	}
 };
-if( appConfig.model === 'cloud') {
+if (config.get('model') === 'cloud') {
 	// @ts-ignore
 	appenders.http = {
 		type: path.join(__dirname, '../../log4js-http'),
-		  application: 'api-server',
-		  url: appConfig.tapDataServer.url + '/api/Logs'
+		application: 'api-server',
+		url: config.get('tapDataServer.url') + '/api/Logs'
 	}
 }
 configure({

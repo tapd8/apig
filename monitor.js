@@ -1,11 +1,11 @@
 const log = require('./dist').log.monitor;
 const request = require('request');
-const appConfig = require('./config');
+// const appConfig = require('./config');
 const hashCode = require('hashcode').hashCode;
 const path = require('path');
 const fs = require('fs');
 const makeDir = require('make-dir');
-const {getToken, removeToken} = require('./tapdata');
+const { getToken, removeToken } = require('./tapdata');
 const tapdata = require('./tapdata');
 const pm2 = require('pm2');
 const Conf = require('conf');
@@ -25,15 +25,15 @@ let lastHashCode = null,
 const
 	__listeners = {},
 	loadConfig = function (token) {
-		const url = appConfig.tapDataServer.url + '/api/modules/apiDefinition';
+		const url = config.get('tapDataServer.url') + '/api/modules/apiDefinition';
 		log.debug('download load config from server ' + url);
 		request.get(`${url}?access_token=${token}`, function (err, response, body) {
 			if (err) {
 				log.error('download config fail.', err);
-			} else if(response.statusCode === 401 || response.statusCode === 403){
+			} else if (response.statusCode === 401 || response.statusCode === 403) {
 				console.error('Access token Expired');
 				removeToken();
-			} else if(response.statusCode === 200){
+			} else if (response.statusCode === 200) {
 				log.debug('download config success.');
 
 				body = body.trim();
@@ -96,7 +96,7 @@ const
 	 */
 	getCacheConfig = function () {
 
-		const cacheFilePath = appConfig.apiCache.startsWith('/') ? appConfig.apiCache : path.join(__dirname, appConfig.apiCache);
+		const cacheFilePath = config.get('apiCache').startsWith('/') ? config.get('apiCache') : path.join(__dirname, config.get('apiCache'));
 		const dir = path.dirname(cacheFilePath);
 		if (!fs.existsSync(dir)) {
 			log.info(`create cache dir ${dir}`);
@@ -121,7 +121,7 @@ exports.start = function () {
 				}
 			})
 
-		}, appConfig.intervals);
+		}, config.get('intervals'));
 	});
 };
 exports.stop = function () {
@@ -131,12 +131,12 @@ exports.stop = function () {
 
 tapdata.on('defaultLimit:changed', (newVal, oldVal) => {
 	log.info('defaultLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
-	appConfig.defaultLimit = Number(newVal) || 10;
+	config.set('defaultLimit', Number(newVal) || 10);
 	lastHashCode = null;//regenerate code
 });
 tapdata.on('maxLimit:changed', (newVal, oldVal) => {
 	log.info('maxLimit is changed, new value is ' + newVal + ' and old value is ' + oldVal);
-	appConfig.maxLimit = Number(newVal) || 0; // 0 not max limit
+	config.set('maxLimit', Number(newVal) || 0); // 0 not max limit
 	lastHashCode = null;//regenerate code
 });
 
