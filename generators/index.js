@@ -128,16 +128,16 @@ const validateConfig = function (config) {
 				let name = field['field_name'],
 					field_alias = field['field_alias'] || '',
 					isId = field['primary_key_position'] === 1,
-					type = field['data_type'] || '',
+					type = field['data_type'] || 'string',
 					description = field['description'] || null,
 					required = field['required'],
-					itemType = type === 'array' ? (field['itemType'] || 'any') : null;
+					itemType = type === 'array' ? (field['itemType'] || 'object') : null;
 
-				type = type.toLowerCase();
+				/*type = type.toLowerCase();
 				if (['int', 'integer', 'long', 'double'].includes(type))
 					type = 'number';
 				else if (itemType === 'any')
-					itemType = 'object';
+					itemType = 'object';*/
 
 				if (!typeChoices.includes(type)) {
 					log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].data_type）: ${type}`);
@@ -149,8 +149,9 @@ const validateConfig = function (config) {
 					else if (itemType === 'any')
 						itemType = 'object';
 					if (!typeChoices.includes(itemType)) {
-						log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
-						return;
+						/*log.error(`Invalid model field data type.（config.models[${i}].fields[${idx}].itemType）: ${itemType}`);
+						return;*/
+						itemType = 'object';
 					}
 				}
 
@@ -162,7 +163,7 @@ const validateConfig = function (config) {
 				};
 
 				if (type === 'array')
-					properties[name]['itemType'] = itemType;
+					properties[name]['itemType'] = itemType || 'object';
 				if (description)
 					properties[name]['description'] = `'${description}'`;
 

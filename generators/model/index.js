@@ -44,7 +44,7 @@ class ModelGenerator extends Generator {
 			if (val.type === 'array') {
 				if (TS_TYPES.includes(val.itemType)) {
 					val.tsType = `${val.itemType}[]`;
-				} else if (val.type === 'buffer') {
+				} else if (val.itemType === 'buffer') {
 					val.tsType = 'Buffer[]';
 				} else {
 					val.tsType = 'string[]';

@@ -1,27 +1,6 @@
 const log = require('../dist').log.generator;
 
-const dataTypeMapping = {
-	'ObjectId': 'string',
-	'ObjectID': 'string',
-	'String': 'string',
-	'Boolean': 'boolean',
-	'Integer': 'number',
-	'Long': 'number',
-	'Double': 'number',
-	'Number': 'number',
-	'Float': 'number',
-	'Decimal128': 'number',
-	'Date': 'date',
-	'Document': 'object',
-	'ArrayList': 'array',
-	'Array': 'array',
-	'string': 'string',
-	'boolean': 'boolean',
-	'number': 'number',
-	'date': 'date',
-	'object': 'object',
-	'array': 'array',
-};
+const {APIDefineDataTypeToModel} = require('./data-type-mapping');
 
 const convertCondition = function(cond){
 
@@ -152,12 +131,16 @@ module.exports = function(apiDefinition){
 			};
 
 			model.fields.forEach((field)=>{
-				modelConf.fields.push({
+				let conf = {
 					field_name: field.field_name,
 					field_alias: field.field_alias || '',
-					data_type: dataTypeMapping[field.node_data_type || field.data_type] || 'object',
+					data_type: APIDefineDataTypeToModel[field.node_data_type || field.data_type] || 'string',
 					primary_key_position: field.primary_key_position
-				})
+				};
+				if( conf.data_type === 'array') {
+					conf.itemType = APIDefineDataTypeToModel[field.itemType] || 'object';
+				}
+				modelConf.fields.push(conf);
 			});
 			model.paths.forEach((customApi) => {
 				let apiConfig = {

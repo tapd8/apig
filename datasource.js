@@ -14,7 +14,7 @@ const parse = require('mongodb-core').parseConnectionString;
 const parseSchema = require('mongodb-schema');
 const Conf = require('conf');
 const config = new Conf();
-
+const {MongoDataTypeToJava} = require('./generators/data-type-mapping');
 
 const getConnection = function (token) {
 	let url = config.get('tapDataServer.url') + '/api/Connections?access_token=' + token;
@@ -211,12 +211,27 @@ const getConnection = function (token) {
 								let arr = field.type.filter(v => v !== 'Undefined' && v !== 'Null');
 								type = arr[0] || 'String';
 							}
-							if (type === 'ObjectID')
-								type = 'ObjectId';
+							type = MongoDataTypeToJava[type] || 'String';
+							let itemType = null;
+							if( type === 'Array') {
+								field.types.forEach(v => {
+									if( v.name === 'Array' && v.types ) {
+										v.types.forEach(t => {
+											if( !itemType && t.name !== "Null") {
+												itemType = t.name;
+											}
+										});
+									}
+								});
+							}
+							if( itemType ){
+								itemType = MongoDataTypeToJava[itemType];
+							}
 							result.fields.push({
 								"field_name": field.name,
 								"table_name": collectionName,
 								"data_type": type,
+								"itemType": itemType,
 								"primary_key_position": field.name === '_id' ? 1 : 0,
 								"foreign_key_table": null,
 								"foreign_key_column": null,
@@ -230,7 +245,7 @@ const getConnection = function (token) {
 						result.fields.push({
 							"field_name": "_id",
 							"table_name": collectionName,
-							"data_type": 'ObjectId',
+							"data_type": MongoDataTypeToJava['ObjectId'],
 							"primary_key_position": 1,
 							"foreign_key_table": null,
 							"foreign_key_column": null,
