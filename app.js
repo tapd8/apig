@@ -2,7 +2,7 @@
 const application = require('./dist');
 const Conf = require('conf');
 const config = new Conf();
-
+require('./mixin');
 module.exports = application;
 
 if (require.main === module) {
