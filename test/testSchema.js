@@ -4,20 +4,44 @@
  * @description
  */
 const mongodb = require('mongodb');
-const parseSchema = require('mongodb-schema');
+const { getCollectionSchema } = require('../load_schema_mongo');
 
-new mongodb.MongoClient('mongodb://127.0.0.1/tapdata_target').connect((err, client) => {
+new mongodb.MongoClient('mongodb://127.0.0.1/tapdata_target', {
+	useNewUrlParser: true
+}).connect((err, client) => {
 
 	console.log("Connected successfully to server");
 
 	const db = client.db();
 
-	let cursor = db.collection('test').find().sort('_id', -1).limit(10);
+	db.collections(function(err, collections){
 
-	parseSchema(cursor, function(err, schema){
-		console.log(JSON.stringify(schema, '', '\t'));
+		let pending = 0;
+		const schema = {
+				tables: []
+			},
+			errors = [],
+			finish = function () {
+				pending--;
+				if (pending === 0) {
+					console.log(JSON.stringify(schema, '', '\t'));
+					client.close();
+				}
+			};
+		collections.forEach((collection) => {
+			pending++;
+			getCollectionSchema(collection, function (err, collectionSchema) {
+				if (err) {
+					log.error('get collection schema fail\n', err);
+					errors.push(err);
+				} else {
+					schema.tables.push(collectionSchema);
+				}
+				finish();
+			});
 
-		client.close();
+		});
+
 	});
 
 });

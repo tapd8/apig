@@ -131,6 +131,9 @@ module.exports = function(apiDefinition){
 			};
 
 			model.fields.forEach((field)=>{
+				if( field.field_name.indexOf('.') !== -1){
+					return ;
+				}
 				let conf = {
 					field_name: field.field_name,
 					field_alias: field.field_alias || '',

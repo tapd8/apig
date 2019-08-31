@@ -11,10 +11,9 @@ const { getToken, removeToken } = require('./tapdata');
 const checkEnableLoadSchemaFeature = require('./tapdata').checkEnableLoadSchemaFeature;
 const MongoClient = require('mongodb').MongoClient;
 const parse = require('mongodb-core').parseConnectionString;
-const parseSchema = require('mongodb-schema');
 const Conf = require('conf');
 const config = new Conf();
-const {MongoDataTypeToJava} = require('./generators/data-type-mapping');
+const { getCollectionSchema } = require('./load_schema_mongo');
 
 const getConnection = function (token) {
 	let url = config.get('tapDataServer.url') + '/api/Connections?access_token=' + token;
@@ -184,83 +183,6 @@ const getConnection = function (token) {
 			log.error('test connection fail\n', e);
 		}
 
-	},
-
-	getCollectionSchema = function (collection, cb) {
-		let collectionName = collection.collectionName;
-		try {
-			let cursor = collection.find().sort('_id', -1).limit(10);
-
-			parseSchema(cursor, function (err, schema) {
-				if (err) {
-					log.error('get collection ' + collectionName + ' schema fail\n', err);
-					cb(err, null);
-				} else {
-
-					const result = {
-						table_name: collectionName,
-						fields: []
-					};
-
-					if (schema && schema.fields.length > 0) {
-						schema.fields.forEach(field => {
-							let type = 'String';
-							if (typeof field.type === 'string')
-								type = field.type;
-							else if (Object.prototype.toString.call(field.type) === '[object Array]') {
-								let arr = field.type.filter(v => v !== 'Undefined' && v !== 'Null');
-								type = arr[0] || 'String';
-							}
-							type = MongoDataTypeToJava[type] || 'String';
-							let itemType = null;
-							if( type === 'Array') {
-								field.types.forEach(v => {
-									if( v.name === 'Array' && v.types ) {
-										v.types.forEach(t => {
-											if( !itemType && t.name !== "Null") {
-												itemType = t.name;
-											}
-										});
-									}
-								});
-							}
-							if( itemType ){
-								itemType = MongoDataTypeToJava[itemType];
-							}
-							result.fields.push({
-								"field_name": field.name,
-								"table_name": collectionName,
-								"data_type": type,
-								"itemType": itemType,
-								"primary_key_position": field.name === '_id' ? 1 : 0,
-								"foreign_key_table": null,
-								"foreign_key_column": null,
-								"key": "PRI",
-								"precision": null,
-								"scale": null
-							});
-						});
-					}
-					if (result.fields.length === 0) {
-						result.fields.push({
-							"field_name": "_id",
-							"table_name": collectionName,
-							"data_type": MongoDataTypeToJava['ObjectId'],
-							"primary_key_position": 1,
-							"foreign_key_table": null,
-							"foreign_key_column": null,
-							"key": "PRI",
-							"precision": null,
-							"scale": null
-						})
-					}
-					cb(null, result);
-				}
-			});
-
-		} catch (e) {
-			log.error(`get collection ${collectionName} schema fail`, e)
-		}
 	},
 
 	updateConnection = function (id, data, cb) {
