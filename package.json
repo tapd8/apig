@@ -24,7 +24,7 @@
     "tslint:fix": "npm run tslint -- --fix",
     "pretest": "npm run clean && npm run build",
     "test": "echo \"no test specified.\"",
-    "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js && npm run posttest",
+    "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js",
     "prestart": "npm run build",
     "start": "node $NODE_DEBUG_OPTION .",
     "prepublishOnly": "npm run test",
