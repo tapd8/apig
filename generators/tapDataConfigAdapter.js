@@ -137,7 +137,7 @@ module.exports = function(apiDefinition){
 				let conf = {
 					field_name: field.field_name,
 					field_alias: field.field_alias || '',
-					data_type: APIDefineDataTypeToModel[field.node_data_type || field.data_type] || 'string',
+					data_type: APIDefineDataTypeToModel[field.node_data_type || field.javaType || field.data_type] || 'string',
 					primary_key_position: field.primary_key_position
 				};
 				if( conf.data_type === 'array') {
