@@ -1,7 +1,7 @@
 import { BootMixin } from '@loopback/boot';
 import { ApplicationConfig } from '@loopback/core';
 import { RepositoryMixin } from '@loopback/repository';
-import { RestApplication } from '@loopback/rest';
+import { RestApplication, SequenceActions } from '@loopback/rest';
 import { ServiceMixin } from '@loopback/service-proxy';
 import { MySequence } from './sequence';
 import * as path from 'path';
@@ -13,7 +13,7 @@ import {
   AuthenticationComponent,
   AuthenticationBindings,
 } from '@loopback/authentication';
-import { AuthStrategyProvider } from './providers';
+import { AuthStrategyProvider, SendProvider, RejectProvider } from './providers';
 
 export class ApiGatewayApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -23,8 +23,10 @@ export class ApiGatewayApplication extends BootMixin(
 
     this.component(AuthenticationComponent);
     this.bind(AuthenticationBindings.STRATEGY).toProvider(
-      AuthStrategyProvider
+      AuthStrategyProvider,
     );
+    this.bind(SequenceActions.SEND).toProvider( SendProvider );
+    this.bind(SequenceActions.REJECT).toProvider( RejectProvider );
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -36,42 +38,42 @@ export class ApiGatewayApplication extends BootMixin(
       openapi: '3.0.0',
       info: {
         title: 'Tapdata OpenAPI',
-        version: config.get('version')
+        version: config.get('version'),
       },
       paths: {},
       servers: [{ url: '/' }],
       externalDocs: {
-        description: "Find out more about Tapdata.",
-        url: 'https://tapdata.io'
+        description: 'Find out more about Tapdata.',
+        url: 'https://tapdata.io',
       },
       components: {
-        "securitySchemes": {
+        'securitySchemes': {
           /*"ApiKeyAuth": {
             "type": "apiKey",
             "in": "header",
             "name": "access_token"
           },*/
-          "OAuth2": {  //arbitrary name for the security scheme
-            "type": "oauth2",
-            "flows": {
-              "clientCredentials": {
-                "tokenUrl": (config.get('oAuthBaseUrl') || '') + "/oauth/token",
-                "scopes": {}
+          'OAuth2': {  //arbitrary name for the security scheme
+            'type': 'oauth2',
+            'flows': {
+              'clientCredentials': {
+                'tokenUrl': (config.get('oAuthBaseUrl') || '') + '/oauth/token',
+                'scopes': {},
               },
-              "implicit": {
-                "authorizationUrl": (config.get('oAuthBaseUrl') || '') + "/oauth/authorize",
-                "scopes": {}
-              }
-            }
-          }
-        }
+              'implicit': {
+                'authorizationUrl': (config.get('oAuthBaseUrl') || '') + '/oauth/authorize',
+                'scopes': {},
+              },
+            },
+          },
+        },
       },
-      "security": [
+      'security': [
         {
-          "OAuth2": [],
+          'OAuth2': [],
           //"ApiKeyAuth": []
-        }
-      ]
+        },
+      ],
     });
 
     // Set up default home page

@@ -302,7 +302,7 @@ export class MySequence implements SequenceHandler {
 		if (type === 'json') {
 			return Buffer.from(JSON.stringify(data), 'utf8');
 		} else if (type === 'csv') {
-			let separatedBy = '|';
+			let separatedBy = ',';
 			let delimiter = '"';
 			data = data || {};
 			// @ts-ignore
