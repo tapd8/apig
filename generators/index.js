@@ -159,7 +159,7 @@ const validateConfig = function (config) {
 					type: type,
 					id: isId,
 					required: required === true || required === 'true',
-					alias: field_alias
+					title: field_alias
 				};
 
 				if (type === 'array')

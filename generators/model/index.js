@@ -66,11 +66,10 @@ class ModelGenerator extends Generator {
 
 			// Convert Type to include '' for template
 			val.type = `'${val.type}'`;
-			if (val.alias) {
-				val.alias = `'${val.alias}'`;
-			} else {
-				delete val.alias
+			if (val.title) {
+				val.title = `'${val.title}'`;
 			}
+			delete val.alias;
 			if (val.itemType) {
 				val.itemType = `'${val.itemType}'`;
 			}
