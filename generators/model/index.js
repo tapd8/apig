@@ -68,8 +68,9 @@ class ModelGenerator extends Generator {
 			val.type = `'${val.type}'`;
 			if (val.title) {
 				val.title = `'${val.title}'`;
+			} else {
+				delete val.title
 			}
-			delete val.alias;
 			if (val.itemType) {
 				val.itemType = `'${val.itemType}'`;
 			}
