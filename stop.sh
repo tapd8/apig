@@ -21,8 +21,6 @@ else
 	port="$API_SERVER_PORT"
 fi
 
-$APP_HOME/node_modules/pm2/bin/pm2 delete "api-server-$port"
-
 kill `ps x | grep "$APP_HOME/app.js" | grep -v grep | awk '{print $1}'` > /dev/null 2>&1
 kill `ps x | grep "$APP_HOME/app_cluster.js" | grep -v grep | awk '{print $1}'` > /dev/null 2>&1
 kill `ps x | grep "$APP_HOME/index.js" | grep -v grep | awk '{print $1}'` > /dev/null 2>&1

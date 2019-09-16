@@ -18,31 +18,21 @@ if (require.main === module) {
 		},
 	};
 	application.main(configm, (result) => {
-		// if (result && typeof process.send === 'function')
-		// 	process.send({
-		// 		type: 'status',
-		// 		data: 'running'
-		// 	});
+		if (result && typeof process.send === 'function'){
+			process.send({
+				type: 'status',
+				data: 'running'
+			});
+		}
 	}).catch(err => {
 		console.error('Cannot start the application.', err);
+		process.send({
+			type: 'status',
+			data: 'exit',
+			msg: err.toString()
+		});
 		process.exit(1);
 	});
-	// process.on('message', (event) => {
-	// 	console.log(event);
-	// 	if (event && event.type === 'enableApiStats:changed') {
-	// 	}
-	// });
-
-	// process.on('message', function (packet) {
-	// 	console.log(packet);
-	// 	// process.send({
-	// 	// 	type: 'process:msg',
-	// 	// 	data: {
-	// 	// 		success: true
-	// 	// 	}
-	// 	// });
-	// });
-
 
 }
 // require('fs').writeFileSync(`${__dirname}/app.pid`, `${process.pid}\n`, { encoding: 'utf-8'});

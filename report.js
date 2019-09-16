@@ -42,7 +42,7 @@ const report = function (data, token) {
 	Object.assign(data, apiServerStatus);
 
 	try {
-		delete data.worker_status.workers;
+		// delete data.worker_status.workers;
 		log.debug('report data', data);
 		request.post({
 			url: reportServerUrl + encodeURI(`&[where][process_id]=${config.get('reportData.process_id')}&[where][worker_type]=${config.get('reportData.worker_type')}`),

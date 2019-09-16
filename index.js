@@ -5,10 +5,11 @@ const report = require('./report');
 const log = require('./dist').log.app;
 const datasource = require('./datasource');
 const fs = require('fs');
+const cpus = require('os').cpus().length;
+const cluster = require('cluster');
 
 // const getToken = require('./tapdata').getToken;
 // const request = require('request');
-const pm2 = require('pm2');
 const Conf = require('conf');
 const config = new Conf();
 
@@ -29,7 +30,7 @@ class Main {
 		 * 应用工作进程
 		 * @type {ChildProcess}
 		 */
-		// this.appWorker = null;
+		this.appWorkers = {};
 
 		/**
 		 * 配置文件变化监听进程
@@ -39,7 +40,7 @@ class Main {
 
 		this.workerStatus = {
 			workers: null,//workers info array
-			worker_process_id: null, //pm2 pid
+			worker_process_id: null,
 			worker_process_start_time: null,
 			worker_process_end_time: null,
 			status: 'stop',
@@ -53,8 +54,10 @@ class Main {
 	start() {
 
 		Object.assign(this.workerStatus, {
+			workers: [],
 			worker_process_id: '',
 			worker_process_start_time: new Date().getTime(),
+			worker_process_end_time: null,
 			status: 'starting'
 		});
 		report.setStatus({
@@ -69,6 +72,17 @@ class Main {
 			this.startConfigChangeMonitor();
 			datasource.start();
 		}
+
+		setInterval(() => {
+			Object.keys(cluster.workers).forEach(id => {
+				this.appWorkers[id].worker_status = cluster.workers[id].state;
+				this.appWorkers[id].pid = cluster.workers[id].process.pid;
+			}, 5000);
+			this.workerStatus.workers = this.appWorkers;
+			report.setStatus({
+				worker_status: this.workerStatus
+			});
+		})
 	}
 
 	/**
@@ -76,32 +90,24 @@ class Main {
 	 */
 	stop() {
 
-		// if (this.appWorker) {
-		// 	this.appWorker.kill();
-		// 	log.info('app worker process exited.');
-		// }
-
-		pm2.stop(name, (err, wks) => {
-
-			log.info(`Processes of app workers have stopped.`);
-
-			pm2.list((err, plist) => {
-				// console.log(plist);
-
-				Object.assign(main.workerStatus, {
-					workers: plist,
-					running_thread: 2,
-					total_thread: plist.length + 2,
-					status: 'stop',
-				});
-				report.setStatus({
-					worker_status: main.workerStatus
-				});
-
+		let workerIds = Object.keys(this.appWorkers || {});
+		if (workerIds.length > 0) {
+			workerIds.forEach(id => {
+				let worker = cluster.workers[id];
+				worker.kill();
+				log.info(`${worker.id} worker process exited.`);
 			});
-
+			log.info(`Processes of app workers have stopped.`);
+		}
+		Object.assign(this.workerStatus, {
+			workers: null,
+			running_thread: 1,
+			total_thread: 1,
+			status: 'stop',
 		});
-
+		report.setStatus({
+			worker_status: this.workerStatus
+		});
 
 		if (this.configMonitor) {
 			this.configMonitor.stop();
@@ -111,90 +117,93 @@ class Main {
 		datasource.stop();
 	}
 
+	forkWorker() {
+		let me = this;
+		cluster.setupMaster({
+			exec: `${__dirname}/app.js`,
+			args: process.argv.slice(2),
+			silent: true
+		});
+		let worker = cluster.fork();
+		worker.on('exit', (code, signal) => {
+			if( signal !== 'HUP' && code !== 0 ){
+				console.log(code)
+				me.restartWorkerById(worker.id);
+			}
+		});
+		worker.on('disconnected', (code) => {
+			me.restartWorkerById(worker.id);
+		});
+
+		worker.on('message', (msg) => {
+			if (msg.type === 'status') {
+				Object.keys(cluster.workers).forEach(id => {
+					if( me.appWorkers[id] === worker) {
+						me.appWorkers[id].worker_status = msg.data;
+						me.appWorkers[id].worker_msg = msg.msg;
+					}
+				});
+				Object.assign(this.workerStatus, {
+					workers: me.appWorkers,
+					status: 'running',
+					exit_code: null
+				});
+				report.setStatus({
+					worker_status: this.workerStatus
+				});
+			}
+		});
+		return worker;
+	}
+
 	/**
 	 * 启动 app 进程
 	 */
 	startApp() {
 
-		pm2.connect(function (err) {
-			if (err) {
-				console.error(err);
-				process.exit(2);
-			}
+		let workerIds = Object.keys(this.appWorkers || {});
+		if (workerIds.length > 0){
 
-			pm2.stop(name, (err) => {
-
-				pm2.start({
-					name: name,
-					script: 'app.js',         // Script to be run
-					args: process.argv.slice(2),
-					exec_mode: 'cluster',        // Allows your app to be clustered
-					instances: config.get('api_worker_count'),
-					logDateFormat: "YYYY-MM-DD HH:mm:ss"
-					// max_memory_restart: '100M'   // Optional: Restarts your app if it reaches 100Mo
-				}, function (err, apps) {
-
-					pm2.list((err, plist) => {
-						// console.log(plist);
-
-						Object.assign(main.workerStatus, {
-							workers: plist,
-							running_thread: plist.length + 2,
-							total_thread: plist.length + 2,
-							worker_process_id: (fs.readFileSync(pm2.Client.conf.PM2_PID_FILE_PATH, 'utf-8')),
-							worker_process_end_time: null,
-							worker_process_start_time: new Date().getTime(),
-							status: 'running',
-							exit_code: null
-						});
-						report.setStatus({
-							worker_status: main.workerStatus
-						});
-
-						pm2.disconnect();   // Disconnects from PM2
-					});
-
-					if (err) throw err
-				});
-
+			let me = this;
+			workerIds.forEach( id => {
+				this.restartWorkerById(id)
 			});
 
-		});
+		} else {
+			const workerCount =
+				appConfig.api_worker_count === 0 ? cpus : appConfig.api_worker_count;
+			let me = this;
 
+			for( let i = 0; i < workerCount; i++){
 
+				let worker = this.forkWorker();
 
-		// if (this.appWorker)
-		// 	this.appWorker.kill();
+				this.appWorkers[worker.id] = {
+					id: worker.id,
+					worker_status: worker.state,
+					worker_start_time: new Date().getTime()
+				};
+			}
+		}
+	}
 
-		// this.appWorker = fork(`${__dirname}/app_cluster.js`, process.argv.slice(2));
+	restartWorkerById(id) {
+		log.info('restart worker ' + id + ', process id is ' + (cluster.workers[id] ? cluster.workers[id].process.pid : '-1'));
+		let newWorker = this.forkWorker();
+		this.appWorkers[newWorker.id] = {
+			id: newWorker.id,
+			worker_status: newWorker.state,
+			worker_start_time: new Date().getTime()
+		};
 
-		// this.appWorker.on('exit', (code) => {
-		// andy:here is not stop logic,but update logic,refactor, 2019-7-9
-		// 	Object.assign(this.workerStatus, {
-		// 		worker_process_id: '',
-		// 		worker_process_end_time: new Date().getTime(),
-		// 		status: 'stop',
-		// 		exit_code: code
-		// 	});
-		// 	report.setStatus({
-		// 		worker_status: this.workerStatus
-		// 	});
-		// });
-
-		// this.appWorker.on('message', (msg) => {
-		// 	if (msg.type === 'status') {
-		// 		Object.assign(this.workerStatus, {
-		// 			worker_process_id: this.appWorker.pid,
-		// 			worker_process_end_time: null,
-		// 			worker_process_start_time: new Date().getTime(),
-		// 			status: msg.data,
-		// 			exit_code: null
-		// 		});
-		// 		report.setStatus({
-		// 			worker_status: this.workerStatus
-		// 		});
-		// 	}
-		// })
+		let oldWorker =  this.appWorkers[id]
+		if( oldWorker ){
+			let workerProcess = cluster.workers[oldWorker.id]
+			if( workerProcess ){
+				workerProcess.destroy();
+			}
+		}
+		delete this.appWorkers[id];
 	}
 
 	/**
@@ -234,31 +243,8 @@ class Main {
 					log.info('generator code successful, restart app server.');
 					this.workerStatus.status = 'restart';
 
-					pm2.reload(name, (err, apps) => {
+					this.startApp();
 
-						pm2.list((err, plist) => {
-							// console.log(plist);
-
-							Object.assign(main.workerStatus, {
-								workers: plist,
-								running_thread: plist.length + 2,
-								total_thread: plist.length + 2,
-								status: 'running',
-							});
-							report.setStatus({
-								worker_status: main.workerStatus
-							});
-
-							// pm2.disconnect();   // Disconnects from PM2
-						});
-
-					});
-
-					// this.appWorker.send({
-					// 	type: 'restart'
-					// });
-
-					// this.startApp();
 				} else {
 					log.info('generator code fail.');
 					this.workerStatus.status = 'deploy_fail';
@@ -300,12 +286,5 @@ if (config.get('model') === 'local') {
 let exitHdl = function (signal) {
 	log.info("Stoping api server...");
 	main.stop();
-	// log.info("api server stoped.");
-	// if ('SIGINT' == signal) {
-	// 	console.log('Received SIGINT. Press Control-D to exit.');
-	// }
 };
-
-// process.on('exit', exitHdl);
 process.on('beforeExit', exitHdl);
-// process.on('SIGINT', exitHdl);
