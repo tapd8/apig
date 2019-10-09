@@ -131,45 +131,21 @@ class Main {
 			log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal)
 			if( signal !== 'HUP' && code !== 0 && code !== null ){
 
-				let restart_count = me.appWorkers[worker.id] ? me.appWorkers[worker.id].restart_count : 0;
-				if ( restart_count <= maxRestartCount ) {
-
-					log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal + ', restart count is ' + restart_count + ', restart it.')
-
-					me.appWorkers[worker.id] = me.appWorkers[worker.id] || {}
-					me.appWorkers[worker.id].restart_count = restart_count + 1;
-
-					setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
-
-				} else {
-					log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal + ', restart count is ' + restart_count + ', max restart count is ' + maxRestartCount);
-				}
-			}
-
-			delete me.appWorkers[worker.id];
-		});
-		worker.on('disconnected', (code) => {
-
-			let restart_count = me.appWorkers[worker.id] ? me.appWorkers[worker.id].restart_count : 0;
-			if ( restart_count <= maxRestartCount ) {
-
-				log.warn('process ' + worker.id + ' disconnected, code is ' + code + ', restart count is ' + restart_count + ', restart it.')
-
-				me.appWorkers[worker.id] = me.appWorkers[worker.id] || {}
-				me.appWorkers[worker.id].restart_count = restart_count + 1;
+				log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal + ', restart it.')
 
 				setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
 
-			} else {
-				log.warn('process ' + worker.id + ' disconnected, code is ' + code + ', restart count is ' + restart_count + ', max restart count is ' + maxRestartCount);
 			}
+		});
+		worker.on('disconnected', (code) => {
+
+			log.warn('process ' + worker.id + ' disconnected, code is ' + code + ', restart it.')
+
+			setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
 		});
 
 		worker.on('message', (msg) => {
 			if (msg.type === 'status') {
-				if(me.appWorkers[worker.id]){
-					me.appWorkers[worker.id].restart_count = 0;
-				}
 
 				Object.keys(cluster.workers).forEach(id => {
 					if( me.appWorkers[id] === worker) {
@@ -214,7 +190,6 @@ class Main {
 
 				this.appWorkers[worker.id] = {
 					id: worker.id,
-					restart_count: 0,
 					worker_status: worker.state,
 					worker_start_time: new Date().getTime()
 				};
@@ -230,15 +205,17 @@ class Main {
 			let workerProcess = cluster.workers[oldWorker.id]
 			if( workerProcess ){
 				workerProcess.destroy();
-
-				let newWorker = this.forkWorker();
-				this.appWorkers[newWorker.id] = Object.assign(oldWorker || {}, {
-					id: newWorker.id,
-					worker_status: newWorker.state,
-					worker_start_time: new Date().getTime()
-				});
 			}
+
+			let newWorker = this.forkWorker();
+			this.appWorkers[newWorker.id] = Object.assign(oldWorker, {
+				id: newWorker.id,
+				worker_status: newWorker.state,
+				worker_start_time: new Date().getTime()
+			});
 		}
+
+		delete this.appWorkers[id];
 	}
 
 	/**
