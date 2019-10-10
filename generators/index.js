@@ -133,6 +133,12 @@ const validateConfig = function (config) {
 					required = field['required'],
 					itemType = type === 'array' ? (field['itemType'] || 'object') : null;
 
+				if( name ){
+					name = name.replace(/[^a-zA-Z0-9\u4E00-\u9FA5_]/g, '_')
+				} else {
+					return;
+				}
+
 				/*type = type.toLowerCase();
 				if (['int', 'integer', 'long', 'double'].includes(type))
 					type = 'number';
