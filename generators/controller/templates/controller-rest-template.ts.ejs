@@ -98,7 +98,7 @@ export class <%= className %>Controller {
             if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
                 Object.keys(filter.fields).forEach(key => {
                     // @ts-ignore
-                    filter.fields[key] = filter.fields[key] !== "false"
+                    filter.fields[key] = filter.fields[key] !== "false" && filter.fields[key] !== false
                 })
             }
 
@@ -192,7 +192,7 @@ export class <%= className %>Controller {
             if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
                 Object.keys(filter.fields).forEach(key => {
                     // @ts-ignore
-                    filter.fields[key] = filter.fields[key] !== "false"
+                    filter.fields[key] = filter.fields[key] !== "false" && filter.fields[key] !== false
                 })
             }
 
@@ -522,7 +522,7 @@ export class <%= className %>Controller {
             if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
                 Object.keys(filter.fields).forEach(key => {
                     // @ts-ignore
-                    filter.fields[key] = filter.fields[key] !== "false"
+                    filter.fields[key] = filter.fields[key] !== "false" && filter.fields[key] !== false
                 })
             }
 

@@ -30,6 +30,7 @@ new mongodb.MongoClient('mongodb://127.0.0.1/tapdata_target', {
 			};
 		collections.forEach((collection) => {
 			pending++;
+			console.log(`get collection ${collection.s.dbName + collection.s.name} schema`);
 			getCollectionSchema(collection, function (err, collectionSchema) {
 				if (err) {
 					log.error('get collection schema fail\n', err);
