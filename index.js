@@ -79,7 +79,7 @@ class Main {
 			Object.keys(cluster.workers).forEach(id => {
 				this.appWorkers[id].worker_status = cluster.workers[id].state;
 				this.appWorkers[id].pid = cluster.workers[id].process.pid;
-			}, 5000);
+			});
 			this.workerStatus.workers = this.appWorkers;
 			report.setStatus({
 				worker_status: this.workerStatus
@@ -92,11 +92,11 @@ class Main {
 	 */
 	stop() {
 
-		let workerIds = Object.keys(this.appWorkers || {});
+		let workerIds = Object.keys(cluster.workers || this.appWorkers || {});
 		if (workerIds.length > 0) {
 			workerIds.forEach(id => {
 				let worker = cluster.workers[id];
-				worker.kill();
+				worker.destroy('SIGSTOP');
 				log.info(`${worker.id} worker process exited.`);
 			});
 			log.info(`Processes of app workers have stopped.`);
@@ -129,7 +129,7 @@ class Main {
 		let worker = cluster.fork();
 		worker.on('exit', (code, signal) => {
 			log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal)
-			if( signal !== 'HUP' && code !== 0 && code !== null ){
+			if( signal !== 'SIGSTOP' ){
 
 				log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal + ', restart it.')
 
@@ -141,7 +141,8 @@ class Main {
 
 			log.warn('process ' + worker.id + ' disconnected, code is ' + code + ', restart it.')
 
-			setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
+			// setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
+			worker.destroy('SIGHUP');
 		});
 
 		worker.on('message', (msg) => {
@@ -171,29 +172,35 @@ class Main {
 	 */
 	startApp() {
 
-		let workerIds = Object.keys(this.appWorkers || {});
-		if (workerIds.length > 0){
+		const workerCount = appConfig.api_worker_count === 0 ? cpus : appConfig.api_worker_count;
+		let me = this;
+
+		for( let i = 0; i < workerCount; i++){
+
+			let worker = this.forkWorker();
+
+			this.appWorkers[worker.id] = {
+				id: worker.id,
+				worker_status: worker.state,
+				worker_start_time: new Date().getTime()
+			};
+		}
+	}
+
+	/**
+	 * 重启 app 进程
+	 */
+	restartApp() {
+
+		let workerIds = Object.keys(cluster.workers || this.appWorkers || {});
+		if (workerIds.length > 0) {
 
 			let me = this;
-			workerIds.forEach( id => {
+			workerIds.forEach(id => {
 				this.restartWorkerById(id)
 			});
-
 		} else {
-			const workerCount =
-				appConfig.api_worker_count === 0 ? cpus : appConfig.api_worker_count;
-			let me = this;
-
-			for( let i = 0; i < workerCount; i++){
-
-				let worker = this.forkWorker();
-
-				this.appWorkers[worker.id] = {
-					id: worker.id,
-					worker_status: worker.state,
-					worker_start_time: new Date().getTime()
-				};
-			}
+			this.startApp();
 		}
 	}
 
@@ -204,7 +211,7 @@ class Main {
 		if( oldWorker ){
 			let workerProcess = cluster.workers[oldWorker.id]
 			if( workerProcess ){
-				workerProcess.destroy();
+				workerProcess.destroy('SIGHUP');
 			}
 
 			let newWorker = this.forkWorker();
@@ -255,7 +262,7 @@ class Main {
 					log.info('generator code successful, restart app server.');
 					this.workerStatus.status = 'restart';
 
-					this.startApp();
+					this.restartApp();
 
 				} else {
 					log.info('generator code fail.');
