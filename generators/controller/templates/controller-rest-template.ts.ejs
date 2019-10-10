@@ -155,6 +155,101 @@ export class <%= className %>Controller {
             total: await this.<%= repositoryNameCamel %>.count(filter['where'] || {})
           };
         }
+
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+        })
+        @post('<%= val['path'] %>/find', {
+            summary: '<%= val['summary']%>',
+            tags:['<%= name %>'],
+            responses: {
+                '200': {
+                    description: 'Object of page data, result.data is <%= modelName %> model instances, result.total is model count.',
+                    content: {
+                        'application/json': {
+                            schema: {type: 'object', properties: {
+                            data: {type: 'array', items: {'x-ts-type': <%= modelName %>}},
+                            total: { type: 'object', properties: { count: { type: 'number' } } }
+                        }},
+                    },
+                },
+            },
+        },
+        "x-table-name": "<%=tableName%>",
+        "x-api-id": "<%=apiId%>",
+        "x-bsm-operation": "<%= modelName %>.list"
+        })
+        async findPage_post( @requestBody() filter?: Filter<<%= modelName %>>,
+            ): Promise<{data: <%= modelName %>[], total:Count}> {
+            filter = filter || {};
+
+            if( typeof filter.fields === 'object' && Object.keys(filter.fields).length > 0){
+                Object.keys(filter.fields).forEach(key => {
+                    // @ts-ignore
+                    filter.fields[key] = filter.fields[key] !== "false"
+                })
+            }
+
+            const limit = Number(filter.limit);
+            if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
+                filter.limit = <%= config.get('defaultLimit') || 10 %>;
+            }
+            <%_ if(config.get('maxLimit')) { -%>
+                filter.limit = Number(filter.limit) > <%= config.get('maxLimit') %> ? <%= config.get('maxLimit') %> : Number(filter.limit);
+            <%_ } -%>
+            const rawWhere = (filter.where || {});
+            let requires: string[] = [] ;
+            let available: string[] = [] ;
+
+            <%_ if (val['requiredQueryField']) { -%>
+                requires = <%- JSON.stringify(val['requiredQueryField']) %>;
+            <%_ } -%>
+
+            <%_ if (val['availableQueryField']) { -%>
+                available = <%- JSON.stringify(val['availableQueryField']) %>;
+            <%_ } -%>
+
+            let allField: string[] = [];
+            this.findAllField(rawWhere, allField);
+
+            if (requires.length > 0) {
+                const err = new HttpErrors.PreconditionFailed(`'where' conditions ${JSON.stringify(rawWhere)} must contain all fields of ${JSON.stringify(requires)}`);
+                let ok = false;
+                for (let index = 0; index < requires.length; index++) {
+                    const er = requires[index];
+                    ok = allField.includes(er);
+                    if (!ok) { break }
+                }
+                if (!ok) {
+                    throw err;
+                }
+            }
+
+            if( available.length > 0 ){
+            const err = new HttpErrors.PreconditionFailed(`'where' conditions can only contain ${JSON.stringify(available)} , but now where is: ${JSON.stringify(rawWhere)}`);
+            let ok = true;
+                for (let index = 0; index < allField.length; index++) {
+                    const er = allField[index];
+                    ok = available.includes(er);
+                    if (!ok) { break }
+                }
+                if (!ok) {
+                    throw err;
+                }
+            }
+
+            return {
+                data: await this.<%= repositoryNameCamel %>.find(filter),
+                total: await this.<%= repositoryNameCamel %>.count(filter['where'] || {})
+            };
+        }
+
       <%_ } else if (val['name'] === 'findById') { %>
 
         @authenticate('JwtStrategy', {
@@ -211,6 +306,34 @@ export class <%= className %>Controller {
         ): Promise<void> {
           await this.<%= repositoryNameCamel %>.updateById(id, <%= modelVariableName %>);
         }
+
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>',
+            roles: <%- JSON.stringify(val['roles'])%>
+        })
+        @post('<%= val['path'] %>/{id}', {
+            summary: '<%= val['summary']%>',
+            tags:['<%= name %>'],
+            responses: {
+                '204': {
+                description: '<%= modelName %> PATCH success',
+                },
+            },
+            "x-table-name": "<%=tableName%>",
+            "x-api-id": "<%=apiId%>",
+            "x-bsm-operation": "<%= modelName %>.update"
+        })
+        async updateById_post(
+            @param.path.<%= idType %>('id') id: <%= idType %>,
+            @requestBody() <%= modelVariableName %>: <%= modelName %>,
+            ): Promise<void> {
+            await this.<%= repositoryNameCamel %>.updateById(id, <%= modelVariableName %>);
+        }
       <%_ } else if (val['name'] === 'deleteById') { %>
 
         @authenticate('JwtStrategy', {
@@ -236,6 +359,31 @@ export class <%= className %>Controller {
         })
         async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
           await this.<%= repositoryNameCamel %>.deleteById(id);
+        }
+
+        @authenticate('JwtStrategy', {
+            allPathId:'<%= val['allPathId'] %>',
+            rawName:'<%= val['rawName'] %>',
+            result:'<%= val['result'] %>',
+            description:'<%= val['description'] %>',
+            type:'<%= val['type'] %>',
+            pathTpl:'<%= val['pathTpl'] %>/delete',
+            roles: <%- JSON.stringify(val['roles'])%>
+        })
+        @get('<%= val['path'] %>/{id}/delete', {
+            summary: '<%= val['summary']%>',
+            tags:['<%= name %>'],
+            responses: {
+                '204': {
+                    description: '<%= modelName %> DELETE success',
+                },
+            },
+            "x-table-name": "<%=tableName%>",
+            "x-api-id": "<%=apiId%>",
+            "x-bsm-operation": "<%= modelName %>.delete"
+        })
+        async deleteById_get(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
+            await this.<%= repositoryNameCamel %>.deleteById(id);
         }
       <%_ } else if (val['name'] === 'downloadById') { %>
 
