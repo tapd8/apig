@@ -96,7 +96,7 @@ class Main {
 		if (workerIds.length > 0) {
 			workerIds.forEach(id => {
 				let worker = cluster.workers[id];
-				worker.destroy('SIGSTOP');
+				worker.destroy();
 				log.info(`${worker.id} worker process exited.`);
 			});
 			log.info(`Processes of app workers have stopped.`);
@@ -129,11 +129,11 @@ class Main {
 		let worker = cluster.fork();
 		worker.on('exit', (code, signal) => {
 			log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal)
-			if( signal !== 'SIGSTOP' ){
+			if( code !== 0 ){
 
 				log.warn('process ' + worker.id + ' exit, code is ' + code + ', signal is ' + signal + ', restart it.')
 
-				setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
+				setTimeout( function() { me.restartWorkerById(worker.id); }, 2000);
 
 			}
 		});
@@ -142,7 +142,7 @@ class Main {
 			log.warn('process ' + worker.id + ' disconnected, code is ' + code + ', restart it.')
 
 			// setTimeout( () => { me.restartWorkerById(worker.id); }, 2000);
-			worker.destroy('SIGHUP');
+			worker.destroy();
 		});
 
 		worker.on('message', (msg) => {
@@ -211,7 +211,7 @@ class Main {
 		if( oldWorker ){
 			let workerProcess = cluster.workers[oldWorker.id]
 			if( workerProcess ){
-				workerProcess.destroy('SIGHUP');
+				workerProcess.destroy();
 			}
 
 			let newWorker = this.forkWorker();
