@@ -109,6 +109,13 @@ module.exports = function(apiDefinition){
 				user: connection.database_username,
 				password: connection.database_password,
 				database: connection.database_name,
+				ssl: connection.ssl || false,
+				sslKey: connection.sslKey,
+				sslCert: connection.sslCert,
+				sslPass: connection.sslPass,
+				sslValidate: connection.sslValidate,
+				sslCA: [connection.sslCA],
+				checkServerIdentity: connection.checkServerIdentity,
 			}
 		};
 	});

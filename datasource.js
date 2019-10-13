@@ -49,6 +49,25 @@ const getConnection = function (token) {
 			if (connection) {
 
 				//const uri = "mongodb+srv://<username>:<password>@<your-cluster-url>/test?retryWrites=true";
+				const validOptionNames = [
+					'ssl',
+					'sslValidate',
+					'sslCA',
+					'sslCert',
+					'sslKey',
+					'sslPass',
+					'sslCRL',
+					'checkServerIdentity'
+				];
+				const validOptions = {
+					useNewUrlParser: true
+				};
+				let lbOptions = Object.keys(connection);
+				lbOptions.forEach(function(option) {
+					if (validOptionNames.indexOf(option) > -1) {
+						validOptions[option] = connection[option];
+					}
+				});
 				const uri = connection.database_uri;
 				const validate_details = [];
 				parse(uri, (err, uriObj) => {
@@ -91,9 +110,7 @@ const getConnection = function (token) {
 							}
 						}, function (err, data) { });
 					} else {
-						const client = new MongoClient(uri, {
-							useNewUrlParser: true
-						});
+						const client = new MongoClient(uri, validOptions);
 						client.connect(err => {
 
 							validate_details.push({

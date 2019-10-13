@@ -412,8 +412,28 @@ const testConnection = function (config, cb) {
 			let ds = config.dataSource[dataSourceName];
 			let url = ds.settings.url || '';
 
+			const validOptionNames = [
+				'ssl',
+				'sslValidate',
+				'sslCA',
+				'sslCert',
+				'sslKey',
+				'sslPass',
+				'sslCRL',
+				'checkServerIdentity'
+			];
+			const validOptions = {
+				useNewUrlParser: true
+			};
+			let lbOptions = Object.keys(ds.settings);
+			lbOptions.forEach(function(option) {
+				if (validOptionNames.indexOf(option) > -1) {
+					validOptions[option] = ds.settings[option];
+				}
+			});
+
 			if (url) {
-				new mongodb.MongoClient(url, { useNewUrlParser: true }).connect((err, client) => {
+				new mongodb.MongoClient(url, validOptions).connect((err, client) => {
 					if (err) {
 						log.error("DataSource connection is unavailable " + url, err);
 						finish(dataSourceName, false);
