@@ -65,9 +65,17 @@ const getConnection = function (token) {
 				let lbOptions = Object.keys(connection);
 				lbOptions.forEach(function(option) {
 					if (validOptionNames.indexOf(option) > -1) {
-						validOptions[option] = connection[option];
+						if( connection[option]){
+							validOptions[option] = connection[option];
+						}
 					}
 				});
+				if( validOptions.sslValidate) {
+					validOptions.sslCA = Array.isArray(validOptions.sslCA) ? validOptions.sslCA :
+						( validOptions.sslCA ? [validOptions.sslCA] : [])
+				} else {
+					delete validOptions.sslCA;
+				}
 				const uri = connection.database_uri;
 				const validate_details = [];
 				parse(uri, (err, uriObj) => {

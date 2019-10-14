@@ -114,7 +114,7 @@ module.exports = function(apiDefinition){
 				sslCert: connection.sslCert,
 				sslPass: connection.sslPass,
 				sslValidate: connection.sslValidate,
-				sslCA: [connection.sslCA],
+				sslCA: connection.sslCA ? [connection.sslCA] : [],
 				checkServerIdentity: connection.checkServerIdentity,
 			}
 		};

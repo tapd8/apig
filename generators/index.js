@@ -428,9 +428,17 @@ const testConnection = function (config, cb) {
 			let lbOptions = Object.keys(ds.settings);
 			lbOptions.forEach(function(option) {
 				if (validOptionNames.indexOf(option) > -1) {
-					validOptions[option] = ds.settings[option];
+					if( ds.settings[option]){
+						validOptions[option] = ds.settings[option];
+					}
 				}
 			});
+			if( validOptions.sslValidate) {
+				validOptions.sslCA = Array.isArray(validOptions.sslCA) ? validOptions.sslCA :
+					( validOptions.sslCA ? [validOptions.sslCA] : [])
+			} else {
+				delete validOptions.sslCA;
+			}
 
 			if (url) {
 				new mongodb.MongoClient(url, validOptions).connect((err, client) => {
