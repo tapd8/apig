@@ -67,7 +67,9 @@ const report = function (data, token) {
 	}
 };
 
+log.info('Current run model is ' + config.get('model'));
 if (config.get('model') === 'cloud') {
+	log.info('start report api server status to management');
 	setInterval(() => {
 		getToken(token => {
 			if (token)
