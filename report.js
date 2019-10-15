@@ -43,7 +43,7 @@ const report = function (data, token) {
 
 	try {
 		// delete data.worker_status.workers;
-		log.info('report data', data);
+		log.info('report data', JSON.stringify(data));
 		request.post({
 			url: reportServerUrl + encodeURI(`&[where][process_id]=${config.get('reportData.process_id')}&[where][worker_type]=${config.get('reportData.worker_type')}`),
 			json: true,
