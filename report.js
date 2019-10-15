@@ -12,6 +12,7 @@ const hostname = require('os').hostname();
 const apiServerStatus = {
 	worker_status: {}
 };
+let lastReportData = '';
 
 const report = function (data, token) {
 	// const configPath = path.join(__dirname, 'config.json');
@@ -43,7 +44,11 @@ const report = function (data, token) {
 
 	try {
 		// delete data.worker_status.workers;
-		log.info('report data', JSON.stringify(data));
+		let reportData = JSON.stringify(data);
+		if( lastReportData !== reportData){
+			log.info('report data', JSON.stringify(data));
+			lastReportData = reportData;
+		}
 		request.post({
 			url: reportServerUrl + encodeURI(`&[where][process_id]=${config.get('reportData.process_id')}&[where][worker_type]=${config.get('reportData.worker_type')}`),
 			json: true,
