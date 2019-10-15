@@ -1,22 +1,24 @@
 // const fork = require('child_process').fork;
 const appConfig = require('./config');
-const generator = require('./generators').generator;
-const report = require('./report');
-const log = require('./dist').log.app;
-const datasource = require('./datasource');
-const fs = require('fs');
-const cpus = require('os').cpus().length;
-const cluster = require('cluster');
 
 // const getToken = require('./tapdata').getToken;
 // const request = require('request');
 const Conf = require('conf');
 const config = new Conf();
 
-log.info('Config file at: ', `${__dirname}/config.js`);
-log.info('Current active config is: \n', appConfig);
 config.clear();
 config.set(appConfig);
+
+const log = require('./dist').log.app;
+const generator = require('./generators').generator;
+const datasource = require('./datasource');
+const fs = require('fs');
+const cpus = require('os').cpus().length;
+const cluster = require('cluster');
+const report = require('./report');
+
+log.info('Config file at: ', `${__dirname}/config.js`);
+log.info('Current active config is: \n', appConfig);
 
 require("./reportApiCallStats");
 require("./reportApiCallStatsBatchLogic");
