@@ -92,6 +92,7 @@ export class <%= className %>Controller {
         })
         async findPage(
           @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
+          @param.query.string('filename') filename?: String,
         ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
 
@@ -102,9 +103,11 @@ export class <%= className %>Controller {
                 })
             }
 
-          const limit = Number(filter.limit);
-          if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
-            filter.limit = <%= config.get('defaultLimit') || 10 %>;
+          if( !filename ){
+            const limit = Number(filter.limit);
+            if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
+              filter.limit = <%= config.get('defaultLimit') || 10 %>;
+            }
           }
           <%_ if(config.get('maxLimit')) { -%>
             filter.limit = Number(filter.limit) > <%= config.get('maxLimit') %> ? <%= config.get('maxLimit') %> : Number(filter.limit);
@@ -516,6 +519,7 @@ export class <%= className %>Controller {
       })
       async <%= val['name'] %>(
         @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
+        @param.query.string('filename') filename?: String,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
 
@@ -526,9 +530,11 @@ export class <%= className %>Controller {
                 })
             }
 
-          const limit = Number(filter.limit);
-          if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
-            filter.limit = <%= config.get('defaultLimit') || 10 %>;
+          if( !filename ){
+            const limit = Number(filter.limit);
+            if (isNaN(limit) || limit <= 0 || Math.ceil(limit) !== limit) {
+              filter.limit = <%= config.get('defaultLimit') || 10 %>;
+            }
           }
         <%_ if(config.get('maxLimit')) { -%>
           filter.limit = Number(filter.limit) > <%= config.get('maxLimit') %> ? <%= config.get('maxLimit') %> : Number(filter.limit);

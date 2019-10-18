@@ -16,6 +16,7 @@ import { log } from './log';
 // const getToken = require('../../tapdata').getToken;
 const Conf = require('conf');
 const config = new Conf();
+const xl = require('excel4node');
 
 
 const SequenceActions = RestBindings.SequenceActions;
@@ -285,11 +286,17 @@ export class MySequence implements SequenceHandler {
 			if (filename) {
 				response.setHeader('Content-Disposition', 'attachment; filename="' + filename + '"');
 				result = this.convertToBuffer(type, result);
-			} else if (result && result.filename && result.stream) {
+			} else if (result && result.filename && result.stream) { // download file from gridfs
 				response.setHeader('Content-Disposition', 'attachment; filename="' + result.filename + '"');
 				result = result.stream;
 			}
-			this.send(response, result);
+			if( result instanceof Promise) {
+				result
+				  .then( res => this.send(response, res))
+				  .catch(err => this.reject(context, err));
+			} else {
+				this.send(response, result);
+			}
 
 		} catch (err) {
 			this.reject(context, err);
@@ -298,6 +305,7 @@ export class MySequence implements SequenceHandler {
 	}
 
 	convertToBuffer(type: String, data: object) {
+		log.app.info(`export data to ${type}`);
 		type = type ? type.toLowerCase() : 'json';
 		if (type === 'json') {
 			return Buffer.from(JSON.stringify(data), 'utf8');
@@ -316,11 +324,65 @@ export class MySequence implements SequenceHandler {
 				records.forEach((record: object) => {
 					let row: string[] = [];
 					// @ts-ignore
-					fields.forEach(v => row.push(`${delimiter}${typeof record[v] === 'object' ? JSON.stringify(record[v]) : (record[v] || '')}${delimiter}`));
+					fields.forEach((field :string) => {
+						// @ts-ignore
+						let value = record[field] || '';
+
+						if( value instanceof Date) {
+							value = value.toISOString();
+						} else if( typeof value === 'object'){
+							value = JSON.stringify(value)
+						}
+
+						row.push(`${delimiter}${value}${delimiter}`)
+					});
 					contents.push(row.join(separatedBy));
 				});
 				let content = contents.join("\n");
-				return Buffer.from(content, 'utf8');
+				return Buffer.concat([
+					Buffer.from([-17, -69, -65]), // add unicode bom
+					Buffer.from(content, 'utf8')
+				])
+			} else {
+				return Buffer.alloc(0);
+			}
+		} else if ( type === 'excel') {
+
+			// @ts-ignore
+			let records = Array.isArray(data['data']) ? data['data'] : [data['data']];
+
+			if( records && records.length > 0) {
+				const wb = new xl.Workbook();
+				const ws = wb.addWorksheet('Sheet 1');
+
+				let rowIdx=1, cellIdx = 1;
+
+				let fields = Object.keys(records[0]);
+
+				// header
+				fields.forEach(v => ws.cell(rowIdx, cellIdx++).string(v) );
+				rowIdx++;
+
+				records.forEach( (record: object) => {
+					cellIdx = 1;
+					fields.forEach((field :string) => {
+						// @ts-ignore
+						let value = record[field] || '';
+
+						if( value instanceof Date) {
+							value = value.toISOString();
+						} else if( typeof value === 'object'){
+							value = JSON.stringify(value)
+						}
+						ws.cell(rowIdx, cellIdx).string(value);
+						cellIdx++;
+					});
+					rowIdx++;
+				});
+
+				return wb.writeToBuffer(); // return
+			} else {
+				return Buffer.alloc(0);
 			}
 		} else {
 			return Buffer.alloc(0);
