@@ -54,6 +54,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.create"
         })
         async create(@requestBody() <%= modelVariableName %>: <%= modelName %>): Promise<<%= modelName %>> {
@@ -88,6 +89,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.list"
         })
         async findPage(
@@ -186,6 +188,7 @@ export class <%= className %>Controller {
         },
         "x-table-name": "<%=tableName%>",
         "x-api-id": "<%=apiId%>",
+        "x-api-name": "<%=apiName%>",
         "x-bsm-operation": "<%= modelName %>.list"
         })
         async findPage_post( @requestBody() filter?: Filter<<%= modelName %>>,
@@ -275,6 +278,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.get"
         })
         async findById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<<%= modelName %>> {
@@ -301,6 +305,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.update"
         })
         async updateById(
@@ -329,6 +334,7 @@ export class <%= className %>Controller {
             },
             "x-table-name": "<%=tableName%>",
             "x-api-id": "<%=apiId%>",
+            "x-api-name": "<%=apiName%>",
             "x-bsm-operation": "<%= modelName %>.update"
         })
         async updateById_post(
@@ -358,6 +364,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.delete"
         })
         async deleteById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
@@ -383,6 +390,7 @@ export class <%= className %>Controller {
             },
             "x-table-name": "<%=tableName%>",
             "x-api-id": "<%=apiId%>",
+            "x-api-name": "<%=apiName%>",
             "x-bsm-operation": "<%= modelName %>.delete"
         })
         async deleteById_get(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<void> {
@@ -413,6 +421,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.downloadById"
         })
         async downloadById(@param.path.<%= idType %>('id') id: <%= idType %>): Promise<any> {
@@ -459,6 +468,7 @@ export class <%= className %>Controller {
           },
           "x-table-name": "<%=tableName%>",
           "x-api-id": "<%=apiId%>",
+          "x-api-name": "<%=apiName%>",
           "x-bsm-operation": "<%= modelName %>.download"
         })
         async download(
@@ -515,6 +525,7 @@ export class <%= className %>Controller {
         "x-table-name": "<%=tableName%>",
         "x-fields": <%- JSON.stringify(val['fields'] || {}) %>,
         "x-api-id": "<%=apiId%>",
+        "x-api-name": "<%=apiName%>",
         "x-bsm-operation": "<%= modelName %>.list"
       })
       async <%= val['name'] %>(

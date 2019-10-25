@@ -131,6 +131,7 @@ module.exports = function(apiDefinition){
 				dataSourceName: dataSource[model.datasource].name,
 				dataSource: model.datasource,
 				apiId: model.id,
+				apiName: model.description,
 				basePath: model.basePath,
 				description: model.description,
 				fields: [],
