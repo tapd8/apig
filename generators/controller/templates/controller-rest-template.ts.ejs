@@ -506,7 +506,7 @@ export class <%= className %>Controller {
           pathTpl:'<%= val['pathTpl'] %>',
           roles: <%- JSON.stringify(val['roles'])%>
         })
-      @get('<%= val['path'] %>', {
+      @post('<%= val['path'] %>', {
         summary: '<%= val['summary']%>',
         tags:['<%= name %>'],
         responses: {
