@@ -529,7 +529,7 @@ export class <%= className %>Controller {
         "x-bsm-operation": "<%= modelName %>.list"
       })
       async <%= val['name'] %>(
-        @param.query.object('filter', getFilterSchemaFor(<%= modelName %>)) filter?: Filter<<%= modelName %>>,
+        @requestBody() filter?: Filter<<%= modelName %>>,
         @param.query.string('filename') filename?: String,
       ): Promise<{data: <%= modelName %>[], total:Count}> {
           filter = filter || {};
